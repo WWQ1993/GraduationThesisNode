@@ -21,7 +21,29 @@ define(function (require, exports, module) {
         addEventListener();
         popLogin();
         //  mapDemo();
+        initBtn();
     };
+    var initBtn = function () {
+        btns.knowledge = $('.knowledge');
+        btns.decision = $('.decision');
+        btns.system = $('.system');
+        btns.tools = $('.tools button');
+        btns.inputArea = $('.information button');
+
+        btns.inputArea.eq(0).click(function () {
+            var input = [];
+            $('.information .items .item').each(function (i) {
+                var options = $("option:selected",$(this));
+                input.push({
+                    title:$('.tag',$(this)).text(),
+                    kind:options.eq(0).text(),
+                    truth:options.eq(1).text()
+                });
+            });
+            console.log(input);
+        })
+    }
+
     var addEventListener = function () {
         component._window.bind('resize', function () {
             component.popup.main.css({
