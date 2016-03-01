@@ -87,7 +87,7 @@ define(function (require, exports, module) {
     };
 
     var popLogin = function () {
-        component.loginArea.show();
+        //component.loginArea.show();
         component._window.trigger('resize');
     }
 })

@@ -29,6 +29,8 @@ module.exports = {
         );
     },
     index: function (req, res, next) {
-        res.status(200).sendFile(app.get( 'views')+'/index.html');
+        res.render('index', {loginDisplay: 'none'});
+
+        //res.status(200).sendFile(app.get( 'views')+'/index.html');
     }
 };

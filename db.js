@@ -1,7 +1,7 @@
 
 var mysql = require('mysql');
 
-var TEST_DATABASE = 'test';
+var TEST_DATABASE = 'firefight0626';
 //创建连接
 var client = mysql.createConnection({
     user: 'root',

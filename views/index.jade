@@ -1,8 +1,198 @@
-extends layout
-
-block content
-    form( action="/search" method="get")
-        p First name:
-            input(type="text" name="get")
-        input(type="submit" value="Submit" )
-
+doctype html
+head
+    meta(charset='UTF-8')
+    link(rel='stylesheet', href='css/index.css')
+    title 城市消防决策支持系统
+nav
+    button.knowledge 知识库管理
+    button.decision 辅助决策
+    button.system 系统管理
+.tools
+    div
+        button.btn1
+        button.btn2
+        button.btn3
+        button.btn4
+        button.btn5
+        button.btn6
+.content
+    .information
+        .title 火灾信息
+        .items
+            .item
+                span.tag 发生地点：
+                span.right
+                    input
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 火灾类别：
+                span.right
+                    select
+                        option 一般性建筑火灾
+                        option 高层建筑火灾
+                        option 地下空间火灾
+                        option 油类火灾
+                        option 一般气体火灾
+                        option 毒气火灾
+                        option 露天堆场火灾
+                        option 交通工具火灾
+                        option 一般性火灾
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 火灾面积：
+                span.right
+                    select
+                        option 大于1000平米
+                        option 少于1000平米
+                        option 少于600平米
+                        option 少于300平米
+                        option 少于100平米
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 火灾容积：
+                span.right
+                    select
+                        option 大于10000立方米
+                        option 少于10000立方米
+                        option 少于5000立方米
+                        option 少于3000立方米
+                        option 少于1000立方米
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 呼叫次数：
+                span.right
+                    select
+                        option 大于5次
+                        option 大于3次且小于5次
+                        option 少于3次
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 所处阶段：
+                span.right
+                    select
+                        option 初期
+                        option 发展期
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 火灾火势：
+                span.right
+                    select
+                        option 较小
+                        option 小
+                        option 大
+                        option 很大
+                        option 严峻
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 蔓延状态：
+                span.right
+                    select
+                        option 迅猛
+                        option 迅速
+                        option 快
+                        option 无
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 被困人数：
+                span.right
+                    select
+                        option 大于15
+                        option 大于10
+                        option 小于10
+                        option 小于5
+                        option 0
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 受伤人数：
+                span.right
+                    select
+                        option 20人以上
+                        option 10人以上
+                        option 小于10
+                        option 小于5
+                        option 0
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 死亡人数：
+                span.right
+                    select
+                        option 大于10人
+                        option 大于3人以上
+                        option 小于3人
+                        option 0
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+            .item
+                span.tag 突变险情：
+                span.right
+                    select
+                        option 无
+                        option 爆炸
+                    select
+                        option 肯定(1.0,0.9)
+                        option 大概(0.8,0.7)
+                        option 可能(0.6,0.5)
+        .buttons
+            button 确认
+            button 解释器
+            button 显示
+            button 返回
+    .result
+        .title 结果信息
+        textarea
+        #container
+.loginArea(style='display:#{loginDisplay};')
+    .shield
+    .popup
+        .bar
+            a(href='javascript:;') ×
+        .bg
+        .username
+            span.title 用户名：
+            input
+        .password
+            span.title 密   码：
+            input(type='password')
+        .tip
+        .buttons
+            a(href='javascript:;') 登录
+            a(href='javascript:;') 重置
+script(type='text/javascript', src='http://webapi.amap.com/maps?v=1.3&key=be75ce22e574d1f8e6f015ae1c338539')
+script(src='js/sea.js')
+script(src='js/sea-config.js')
+script.
+    seajs.use('./js/index.js', function (i) {
+        i.init();
+    })
