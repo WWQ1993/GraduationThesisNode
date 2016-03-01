@@ -7,7 +7,7 @@ var client = mysql.createConnection({
     user: 'root',
     password: 'azsxdc',
 });
-client.TEST_TABLE = 'user';
+client.TABLE = 'user';
 
 client.connect();
 
