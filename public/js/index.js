@@ -3,6 +3,7 @@
  */
 define(function (require, exports, module) {
     var $ = require('./jquery.js');
+
     var component = {
         _window: $(window),
         loginArea: $('.loginArea'),
@@ -14,6 +15,13 @@ define(function (require, exports, module) {
             usernameInput: $('.loginArea .popup .username input'),
             pwdInput: $('.loginArea .popup .password input'),
             tip: $('.loginArea .popup .tip')
+        },
+        buttons: {
+            knowledge: $('.knowledge'),
+            decision: $('.decision'),
+            system: $('.system'),
+            tools: $('.tools button'),
+            inputArea: $('.information button')
         }
     }
 
@@ -24,27 +32,24 @@ define(function (require, exports, module) {
         initBtn();
     };
     var initBtn = function () {
-        btns.knowledge = $('.knowledge');
-        btns.decision = $('.decision');
-        btns.system = $('.system');
-        btns.tools = $('.tools button');
-        btns.inputArea = $('.information button');
 
-        btns.inputArea.eq(0).click(function () {
-            var input = [];
-            $('.information .items .item').each(function (i) {
-                var options = $("option:selected",$(this));
-                input.push({
-                    title:$('.tag',$(this)).text(),
-                    kind:options.eq(0).text(),
-                    truth:options.eq(1).text()
-                });
-            });
-            console.log(input);
-        })
     }
 
     var addEventListener = function () {
+
+        component.buttons.inputArea.eq(0).click(function () {
+            var input = [];
+            $('.information .items .item').each(function (i) {
+                var options = $("option:selected", $(this));
+                input.push({
+                    title: $('.tag', $(this)).text(),
+                    kind: options.eq(0).text(),
+                    truth: options.eq(1).text()
+                });
+            });
+             console.log(input);
+        })
+
         component._window.bind('resize', function () {
             component.popup.main.css({
                 top: (component._window.height() - component.popup.main.height()) / 2,
@@ -66,22 +71,22 @@ define(function (require, exports, module) {
                 url: 'http://localhost:3000/authentication',
                 data: {username: userName, password: pwd},
                 type: 'POST',
-                dataType:'json',
+                dataType: 'json',
                 success: function (data) {
-                    if(data.returnState){
+                    if (data.returnState) {
                         component.popup.tip.hide();
                         component.loginArea.hide();
-                    }else{
+                    } else {
                         component.popup.tip.text('账号密码错误');
                         component.popup.tip.show();
-                        component.popup.loginBtn.one('click',login);
+                        component.popup.loginBtn.one('click', login);
                     }
 
                 },
                 error: function () {
                     component.popup.tip.text('请检查网络连接');
                     component.popup.tip.show();
-                    component.popup.loginBtn.one('click',login);
+                    component.popup.loginBtn.one('click', login);
                 }
             })
         });
