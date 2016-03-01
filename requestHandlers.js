@@ -7,7 +7,7 @@ var app = express();
 var crypto = require('crypto');
 
 module.exports = {
-    login: function (req, res, next) {
+    login: function  (req, res, next) {
 
         var username = req.body.username;
         var password = req.body.password;
