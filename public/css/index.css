@@ -177,21 +177,24 @@ button:hover {
     outline: none;
     background-color: #eeeeee;
 
+    margin-right: 10px;
 }
 
 .content .information .item input {
     width: 126px;
-    height:20px;
+    height:16px;
+    margin-right: 10px;
+
 }
 
 .content .information .buttons {
     text-align: center;
-
+    margin-top: -10px;
 }
 
 .content .information button {
     padding: 2px 6px;
-
+    margin: 0 3px;
 }
 
 .content .result textarea {
