@@ -25,9 +25,11 @@ a {
 button {
     cursor: pointer;
 }
-input{
+
+input {
     outline: none;
 }
+
 nav {
     width: 100%;
 
@@ -173,7 +175,7 @@ button:hover {
 
 .content .information .item select {
     width: 130px;
-    height:20px;
+    height: 20px;
     outline: none;
     background-color: #eeeeee;
 
@@ -182,7 +184,7 @@ button:hover {
 
 .content .information .item input {
     width: 126px;
-    height:16px;
+    height: 16px;
     margin-right: 10px;
 
 }
@@ -202,20 +204,17 @@ button:hover {
     height: 45%;
     margin: auto;
     display: block;
-
     resize: none;
     outline: none;
 }
 
 #container {
     margin: auto;
-
     width: 90%;
     height: 50%;
 }
 
-.loginArea{
-    /*display: none;*/
+.loginArea {
     position: fixed;
     top: 0;
     left: 0;
@@ -224,53 +223,59 @@ button:hover {
     background-color: rgba(221, 221, 221, 0.62);
 }
 
-.loginArea .popup{
+.loginArea .popup {
     width: 280px;
     position: fixed;
     background-color: rgb(239, 239, 239);
     border: 5px solid rgb(209, 209, 209);
-
 }
-.loginArea .popup .bar{
+
+.loginArea .popup .bar {
     width: 100%;
     height: 20px;
     background-color: rgb(209, 209, 209);
 }
-.loginArea .popup .bar a{
+
+.loginArea .popup .bar a {
     display: block;
     float: right;
-    width:  20px;
+    width: 20px;
     line-height: 20px;
     font-size: 25px;
     margin-top: -3px;
     text-align: center;
     color: black;
 }
+
 .loginArea .popup .bar a:active {
     color: white;
 }
-.loginArea .popup .bg{
+
+.loginArea .popup .bg {
     background: url("../img/login.jpg");
     width: 280px;
     height: 60px;
 }
-.loginArea .popup .title{
+
+.loginArea .popup .title {
     display: inline-block;
     width: 60px;
     text-align: center;
 }
-.loginArea .popup .username,.loginArea .popup .password ,.loginArea .popup .buttons{
+
+.loginArea .popup .username, .loginArea .popup .password, .loginArea .popup .buttons {
     margin: 10px auto;
     width: 100%;
     text-align: center;
 }
-.loginArea .popup .tip{
+
+.loginArea .popup .tip {
     text-align: center;
     color: red;
     display: none;
 }
 
-.loginArea .popup .buttons a{
+.loginArea .popup .buttons a {
     display: inline-block;
     margin: auto 5px;
     color: black;
@@ -279,7 +284,8 @@ button:hover {
     font-size: 12px;
     width: 60px;
 }
-.loginArea .popup .buttons a:active{
+
+.loginArea .popup .buttons a:active {
     background-color: rgba(179, 179, 179, 0.37);
 }
 

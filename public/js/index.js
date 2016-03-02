@@ -22,7 +22,8 @@ define(function (require, exports, module) {
             system: $('.system'),
             tools: $('.tools button'),
             inputArea: $('.information button')
-        }
+        },
+        resultText: $('.content .result textarea')
     }
 
     exports.init = function () {
@@ -38,16 +39,41 @@ define(function (require, exports, module) {
     var addEventListener = function () {
 
         component.buttons.inputArea.eq(0).click(function () {
-            var input = [];
+            var input = [],
+                str = '',
+                i = 0
+
             $('.information .items .item').each(function (i) {
                 var options = $("option:selected", $(this));
                 input.push({
                     title: $('.tag', $(this)).text(),
-                    kind: options.eq(0).text(),
-                    truth: options.eq(1).text()
+                    kind: options.eq(1).text() ? options.eq(0).text() : $('input', $(this)).val(),
+                    truth: options.eq(1).text() || options.eq(0).text()
                 });
             });
-             console.log(input);
+            console.log(input);
+            for (; i < input.length; i++) {
+                var obj = input[i];
+                str += i + ': ' + obj.title + obj.kind + ', ' + obj.truth + '\n';
+            }
+
+            component.resultText.text(str + 'computing...\n');
+
+            $.ajax({
+                url: 'http://localhost:3000/decision',
+                data: {data: JSON.stringify(input)},
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+
+                    component.resultText.text(str + '\n 结果如下： \n' + data.returnMsg + '\n');
+                },
+                error: function () {
+                    console.log('fail');
+
+                }
+            })
+
         })
 
         component._window.bind('resize', function () {

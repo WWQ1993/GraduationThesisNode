@@ -3,17 +3,18 @@
  */
 var express = require('express');
 var db = require('./db');
+var tools = require('./tools');
 var app = express();
 var crypto = require('crypto');
 
 module.exports = {
-    login: function  (req, res, next) {
+    login: function (req, res, next) {
 
         var username = req.body.username;
         var password = req.body.password;
 
         db.query(
-            'SELECT * FROM ' + db.TABLE + ' where username ="' + username + '" and password = "' + password + '"',
+            'SELECT * FROM user where username ="' + username + '" and password = "' + password + '"',
             function selectCb(err, results) {
                 if (err) {
                     res.status(200).send({returnState: false});
@@ -38,6 +39,69 @@ module.exports = {
         }, function () {
             res.render('index', {loginDisplay: 'block'});
         });
+    },
+    decision: function (req, res, next) {
+        var input = JSON.parse(req.body.data),
+            str = '',
+            i = 0,
+            breakLoop = false
+
+        for (; i < input.length; i++) {
+            var obj = input[i],
+                title = obj.title,
+                kind = obj.kind,
+                truth = obj.truth,
+                truth1 = truth.split('(')[1].split(',')[0],
+                truth0 = truth.split(')')[0].split(',')[1],
+                Searchfields = ['ComburentName',];
+            if (i === 0) {  //确定事件类型
+
+                db.query('SELECT * FROM t_comburent where ComburentName ="' + kind + '"',
+                    function selectCb(err, results) {
+                        if (err) {
+                            res.status(200).send({returnState: -1});
+                            console.log(err.message);
+                            breakLoop = true;
+                            return
+                        }
+                        if (results.length > 0) { //查询成功
+                            var ComburentId = tools.getValFromResults(results, 'ComburentId', true)[0];
+
+                            db.query('SELECT * FROM t_firetype where FireTypeId ="' + ComburentId + '"',
+                                function selectCb(err, results) {
+                                    if (err) {
+                                        res.status(200).send({returnState: -1});
+                                        console.log(err.message);
+                                        breakLoop = true;
+                                        return
+                                    }
+                                    if (results.length > 0) { //查询成功
+                                        var fireType = tools.getValFromResults(results, 'FireTypeName', false, true)[0];
+                                        var msg = (fireType.id + (fireType.truth0 * truth0) + ' ' + (fireType.truth1 * truth1))
+                                        res.status(200).send({returnState: 1, returnMsg: msg});
+
+                                    }
+                                    else {
+                                        res.status(200).send({returnState: 0, returnMsg: '"发生地点"无法识别'});
+                                        breakLoop = true;
+                                    }
+                                });
+
+                        }
+                        else {
+                            res.status(200).send({returnState: 0, returnMsg: '"发生地点"无法识别'});
+                            breakLoop = true;
+                        }
+                    });
+            }
+            else if (!breakLoop) {
+
+            }
+
+            str += i + ': ' + obj.title + obj.kind + ', ' + obj.truth + '\n';
+        }
+
+
     }
 };
 
@@ -49,17 +113,17 @@ var controller = {
             fail();
             return false;
         }
+
         var username = authentication.username,
             password = authentication.password;
 
         //尝试登录
         db.query(
-            'SELECT * FROM ' + db.TABLE + ' where username ="' + username + '" and md = "' + password + '"',
+            'SELECT * FROM  user where username ="' + username + '" and md = "' + password + '"',
             function selectCb(err, results) {
                 if (err) {
-                    res.status(200).send({returnState: false});
                     console.log('select md5值失败', err.message);
-                    res.render('index', {loginDisplay: 'block'});
+                    res.status(200).render('index', {loginDisplay: 'block'});
                     return;
                 }
                 if (results.length > 0) { //登录成功
@@ -80,7 +144,7 @@ var controller = {
         });
 
         //设置数据库中账户的密码加密值
-        db.query('update ' + db.TABLE + ' set md="' + mdPassword + '" where username ="' + username + '"', function (err, result) {
+        db.query('update user set md="' + mdPassword + '" where username ="' + username + '"', function (err, result) {
             if (err) {
                 console.log('update md5值失败 ', err.message);
             }
