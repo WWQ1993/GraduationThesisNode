@@ -30,9 +30,27 @@ define(function (require, exports, module) {
         addEventListener();
         popLogin();
         //  mapDemo();
-        initBtn();
+        setTimeout(function () {
+            //test();
+        //
+        },1000)
+
     };
-    var initBtn = function () {
+    var test = function () {
+        for(var i =0;i<1000;i++){
+            $.ajax({
+                url: 'http://localhost:3000/test',
+                data: {data: Math.random()},
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.returnMsg)
+                },
+                error: function () {
+                    console.log('fail');
+                }
+            })
+        }
 
     }
 
