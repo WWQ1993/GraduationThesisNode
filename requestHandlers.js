@@ -36,9 +36,9 @@ module.exports = {
     index: function (req, res, next) { //每次访问主页时触发
 
         this.autoLogin(req, function () {
-            res.render('index', {loginDisplay: 'none'});
+            res.render('index', {login: true});
         }, function () {
-            res.render('index', {loginDisplay: 'block'});
+            res.render('index', {login: false});
         });
     },
     test: function (req, res, next) {

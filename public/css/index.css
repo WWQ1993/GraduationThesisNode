@@ -47,19 +47,18 @@ nav button {
     margin: 5px .5rem;
     border: 0;
     outline: none;
-
-
+}
+nav button.logout,nav button.login{
+    float: right;
 }
 
 nav button:active {
     cursor: default;
     border: black solid 1px;
-
 }
 
 nav button:hover {
-
-
+    background-color: #b4b4b4;
 }
 
 .tools {
@@ -204,8 +203,10 @@ nav button:hover {
     height: 45%;
     margin: auto;
     display: block;
-    resize: none;
+    resize: vertical;
     outline: none;
+    overflow-y: scroll;
+    background-color: #fafafa;
 }
 
 #container {
@@ -215,6 +216,7 @@ nav button:hover {
 }
 
 .loginArea {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;

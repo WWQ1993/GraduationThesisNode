@@ -7,6 +7,12 @@ nav
     button.knowledge 知识库管理
     button.decision 辅助决策
     button.system 系统管理
+    if  login
+        button.logout 注销
+        button.login(style='display:none;') 登录
+    else
+        button.login 登录
+        button.logout(style='display:none;') 注销
 .tools
     div
         button.btn1
@@ -171,9 +177,10 @@ nav
             button 返回
     .result
         .title 结果信息
-        textarea
+        textarea(disabled="disabled")
         #container
-.loginArea(style='display:#{loginDisplay};')
+
+.loginArea(data-login='#{login}')
     .shield
     .popup
         .bar
@@ -189,6 +196,7 @@ nav
         .buttons
             a(href='javascript:;') 登录
             a(href='javascript:;') 重置
+
 script(type='text/javascript', src='http://webapi.amap.com/maps?v=1.3&key=be75ce22e574d1f8e6f015ae1c338539')
 script(src='js/sea.js')
 script(src='js/sea-config.js')
