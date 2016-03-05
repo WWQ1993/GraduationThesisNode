@@ -47,7 +47,7 @@ nav button {
     margin: 5px .5rem;
     border: 0;
     outline: none;
-    opacity: 0.6;
+
 
 }
 
@@ -57,8 +57,8 @@ nav button:active {
 
 }
 
-button:hover {
-    opacity: 1;
+nav button:hover {
+
 
 }
 
