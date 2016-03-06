@@ -7,6 +7,7 @@ var tools = require('./tools');
 var app = express();
 var crypto = require('crypto');
 
+
 module.exports = {
     login: function (req, res, next) {
 
@@ -35,11 +36,7 @@ module.exports = {
     },
     index: function (req, res, next) { //每次访问主页时触发
 
-        this.autoLogin(req, function () {
-            res.render('index', {login: true});
-        }, function () {
-            res.render('index', {login: false});
-        });
+
     },
     //test: function (req, res, next) {
     //    db.query(
@@ -58,12 +55,39 @@ module.exports = {
     //            }
     //        });
     //},
-    autoLogin: function (req, success, fail) { //自动登录——从cookie中读取用户名和密码以尝试登录，失败则显示登录窗口
+    autoLogin: function (req, res, next) { //自动登录——从cookie中读取用户名和密码以尝试登录，失败则显示登录窗口
+        var currentPage = '',
+            successHandler,
+            failHandler;
+        switch (req.url) {
+            case '/':
+                currentPage = 'index';
+                successHandler = function () {
+                    res.render('index', {login: true});
+                    next();
+                }
+                failHandler = function () {
+                    res.render('index', {login: false});
+                    return false;
+                };
+                break;
+            case '/decision':
+                currentPage = 'decision';
+                successHandler = function () {
+                    next();
+                };
+                failHandler = function () {
+                    res.status(200).send({returnState: -2});
+                    return false;
+                };
+                break;
+        }
+        console.log(+'000');
+
         //读取cookie
         var authentication = req.cookies.authentication;
         if (!authentication) {
-            fail();
-            return false;
+            failHandler();
         }
 
         var username = authentication.username,
@@ -79,10 +103,10 @@ module.exports = {
                     return;
                 }
                 if (results.length > 0) { //登录成功
-                    success();
+                    successHandler();
                 }
                 else {
-                    fail();
+                    failHandler();
                 }
             });
     },

@@ -34,7 +34,7 @@ nav {
     width: 100%;
 
     height: 30px;
-    background-color: #eeeeee;
+    background-color: #f4f4f4;
     border-bottom: 3px solid white;
 }
 
@@ -48,7 +48,8 @@ nav button {
     border: 0;
     outline: none;
 }
-nav button.logout,nav button.login{
+
+nav button.logout, nav button.login {
     float: right;
 }
 
@@ -63,9 +64,8 @@ nav button:hover {
 
 .tools {
     width: 100%;
-
     height: 40px;
-    background-color: #eeeeee;
+    background-color: #f4f4f4;
     border-bottom: 5px solid deepskyblue;
 }
 
@@ -75,21 +75,17 @@ nav button:hover {
     width: 38px;
     height: 38px;
     margin: 0px 2px;
-    border: 4px solid #eeeeee;
+    border: 4px solid #f4f4f4;
     outline: none;
-    opacity: 0.6;
-
 }
 
 .tools button:hover {
-    opacity: 1;
-
+    border: 4px solid #e2e2e2;
 }
 
 .tools button:active {
     border: 4px solid #d9d9d9;
     cursor: default;
-
 }
 
 .tools div {
@@ -125,7 +121,7 @@ nav button:hover {
 .content {
     width: 100%;
     height: 500px;
-    background-color: #eeeeee;
+    background-color: #f4f4f4;
     padding-top: 1px;
 }
 
@@ -164,7 +160,6 @@ nav button:hover {
     width: 95%;
     line-height: 34px;
     font-size: 16px;
-    /*height: ;*/
 }
 
 .content .information .item .right {
@@ -176,8 +171,7 @@ nav button:hover {
     width: 130px;
     height: 20px;
     outline: none;
-    background-color: #eeeeee;
-
+    background-color: #f4f4f4;
     margin-right: 10px;
 }
 
@@ -185,7 +179,6 @@ nav button:hover {
     width: 126px;
     height: 16px;
     margin-right: 10px;
-
 }
 
 .content .information .buttons {
