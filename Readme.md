@@ -8,6 +8,7 @@
 ### 数据库相关
 1. 安装MYSQL5.6
 2. 创建数据库firefight0806,执行firefight0806.sql
+
 ### node.js环境相关
 1. 安装node.js
     * 下载[node.js v5.4.0](http://nodejs.org/dist/v5.4.0/node-v5.4.0.tar.gz)并以默认安装node.js
