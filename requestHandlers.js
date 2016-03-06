@@ -41,23 +41,23 @@ module.exports = {
             res.render('index', {login: false});
         });
     },
-    test: function (req, res, next) {
-        db.query(
-            'SELECT * FROM  user where username ="' + '1' + '" and md = "' + '2' + '"',
-            function selectCb(err, results) {
-                if (err) {
-                    console.log('select md5值失败', err.message);
-                    res.status(200).render('index', {loginDisplay: 'block'});
-                    return;
-                }
-                if (results.length > 0) { //登录成功
-                    success();
-                }
-                else {
-                    res.status(200).send({returnState: -1});
-                }
-            });
-    },
+    //test: function (req, res, next) {
+    //    db.query(
+    //        'SELECT * FROM  user where username ="' + '1' + '" and md = "' + '2' + '"',
+    //        function selectCb(err, results) {
+    //            if (err) {
+    //                console.log('select md5值失败', err.message);
+    //                res.status(200).render('index', {loginDisplay: 'block'});
+    //                return;
+    //            }
+    //            if (results.length > 0) { //登录成功
+    //                success();
+    //            }
+    //            else {
+    //                res.status(200).send({returnState: -1});
+    //            }
+    //        });
+    //},
     autoLogin: function (req, success, fail) { //自动登录——从cookie中读取用户名和密码以尝试登录，失败则显示登录窗口
         //读取cookie
         var authentication = req.cookies.authentication;

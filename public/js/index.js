@@ -31,7 +31,7 @@ define(function (require, exports, module) {
     exports.init = function () {
         addEventListener();
         popLogin();
-        //  mapDemo();
+        mapDemo();
         setTimeout(function () {
             //test();
             //
