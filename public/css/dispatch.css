@@ -1,0 +1,90 @@
+
+.content {
+    width: 100%;
+    height: 500px;
+    background-color: #f4f4f4;
+    padding-top: 1px;
+}
+
+.content > * {
+    display: inline-block;
+    height: 95%;
+    border: 1px #e0e0e0 double;
+    margin-top: 10px;
+}
+
+.content .information {
+    margin-left: 4px;
+    width: 400px;
+    vertical-align: top;
+}
+
+.content .title {
+    position: relative;
+    top: -10px;
+    left: 10px;
+}
+
+.content .result {
+    width: 600px;
+    vertical-align: top;
+
+}
+
+.content .information .items {
+    width: 100%;
+    margin: 0px 5px 20px 5px;
+
+}
+
+.content .information .item {
+    width: 95%;
+    line-height: 34px;
+    font-size: 16px;
+}
+
+.content .information .item .right {
+    float: right;
+
+}
+
+.content .information .item select {
+    width: 130px;
+    height: 20px;
+    outline: none;
+    background-color: #f4f4f4;
+    margin-right: 10px;
+}
+
+.content .information .item input {
+    width: 126px;
+    height: 16px;
+    margin-right: 10px;
+}
+
+.content .information .buttons {
+    text-align: center;
+    margin-top: -10px;
+}
+
+.content .information button {
+    padding: 2px 6px;
+    margin: 0 3px;
+}
+
+.content .result textarea {
+    width: 90%;
+    height: 45%;
+    margin: auto;
+    display: block;
+    resize: vertical;
+    outline: none;
+    overflow-y: scroll;
+    background-color: #fafafa;
+}
+
+#container {
+    margin: auto;
+    width: 90%;
+    height: 50%;
+}

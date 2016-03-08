@@ -15,7 +15,7 @@ module.exports = {
         var password = req.body.password;
 
         db.query(
-            'SELECT * FROM user where username ="' + username + '" and password = "' + password + '"',
+            'SELECT * FROM t_operator where name ="' + username + '" and password = "' + password + '"',
             function selectCb(err, results) {
                 if (err) {
                     res.status(200).send({returnState: false});
@@ -38,52 +38,32 @@ module.exports = {
 
 
     },
-    //test: function (req, res, next) {
-    //    db.query(
-    //        'SELECT * FROM  user where username ="' + '1' + '" and md = "' + '2' + '"',
-    //        function selectCb(err, results) {
-    //            if (err) {
-    //                console.log('select md5值失败', err.message);
-    //                res.status(200).render('index', {loginDisplay: 'block'});
-    //                return;
-    //            }
-    //            if (results.length > 0) { //登录成功
-    //                success();
-    //            }
-    //            else {
-    //                res.status(200).send({returnState: -1});
-    //            }
-    //        });
-    //},
+
     autoLogin: function (req, res, next) { //自动登录——从cookie中读取用户名和密码以尝试登录，失败则显示登录窗口
         var currentPage = '',
             successHandler,
             failHandler;
-        switch (req.url) {
-            case '/':
-                currentPage = 'index';
-                successHandler = function () {
-                    res.render('index', {login: true});
-                    next();
-                }
-                failHandler = function () {
-                    res.render('index', {login: false});
-                    return false;
-                };
-                break;
-            case '/decision':
-                currentPage = 'decision';
-                successHandler = function () {
-                    next();
-                };
-                failHandler = function () {
-                    res.status(200).send({returnState: -2});
-                    return false;
-                };
-                break;
-        }
-        console.log(+'000');
+        if (req.url === '/') {
 
+            currentPage = 'index';
+            successHandler = function () {
+                res.render('index', {login: true});
+                next();
+            }
+            failHandler = function () {
+                res.render('index', {login: false});
+                return false;
+            };
+        } else {
+            currentPage = 'decision';
+            successHandler = function () {
+                next();
+            };
+            failHandler = function () {
+                res.status(200).send({returnState: -2});
+                return false;
+            };
+        }
         //读取cookie
         var authentication = req.cookies.authentication;
         if (!authentication) {
@@ -95,7 +75,7 @@ module.exports = {
 
         //尝试登录
         db.query(
-            'SELECT * FROM  user where username ="' + username + '" and md = "' + password + '"',
+            'SELECT * FROM  t_operator where name ="' + username + '" and identityCard = "' + password + '"',
             function selectCb(err, results) {
                 if (err) {
                     console.log('select md5值失败', err.message);
@@ -129,7 +109,7 @@ module.exports = {
                 db.query('SELECT * FROM t_comburent where ComburentName ="' + kind + '"',
                     function selectCb(err, results) {
                         if (err) {
-                            res.status(200).send({returnState: -1});
+                            res.status(200).send({returnState: -1, returnMsg: err.message});
                             console.log(err.message);
                             breakLoop = true;
                             return
@@ -140,7 +120,7 @@ module.exports = {
                             db.query('SELECT * FROM t_firetype where FireTypeId ="' + ComburentId + '"',
                                 function selectCb(err, results) {
                                     if (err) {
-                                        res.status(200).send({returnState: -1});
+                                        res.status(200).send({returnState: -1, returnMsg: err.message});
                                         console.log(err.message);
                                         breakLoop = true;
                                         return
@@ -167,7 +147,6 @@ module.exports = {
             else if (!breakLoop) {
 
             }
-
             str += i + ': ' + obj.title + obj.kind + ', ' + obj.truth + '\n';
         }
     },
@@ -181,11 +160,103 @@ module.exports = {
         });
 
         //设置数据库中账户的密码加密值
-        db.query('update user set md="' + mdPassword + '" where username ="' + username + '"', function (err, result) {
+        db.query('update t_operator set identityCard="' + mdPassword + '" where name ="' + username + '"', function (err, result) {
             if (err) {
                 console.log('update md5值失败 ', err.message);
             }
         });
+    },
+    fireType: {
+        get: function (req, res, next) {
+            db.query(
+                'SELECT * FROM t_firetype',
+                function selectCb(err, results) {
+                    if (err) {
+                        res.status(200).send({returnState: -1, returnMsg: err.message});
+                        console.log('get firetype fail', err.message);
+                        return;
+                    }
+                    if (results.length > 0) {   //登录成功
+                        res.status(200).send({returnState: 1, data: results});
+                    }
+                    else {  //失败
+                        res.status(200).send({returnState: 0});
+                    }
+                }
+            );
+        },
+        post: function (req, res, next) {
+            var method = req.body.method,
+                data = JSON.parse(req.body.data),
+                sqlStatement = ''
+            console.log(data);
+            switch (method) {
+                case 'ADD':
+                    var arr1 = [],
+                        arr2 = [];
+                    for (var i = 0; i < data.length; i++) {
+                        for (var name in data[i]) {
+                            arr1.push(name.split(':')[0]);
+                            arr2.push("'" + data[i][name] + "'");
+                        }
+                    }
+                    sqlStatement = 'insert into t_firetype(' + arr1.join(',') + ') values(' + arr2.join(',') + ')';
+                    db.query(sqlStatement, function selectCb(err, results) {
+                            if (err) {
+                                res.status(200).send({returnState: -1, returnMsg: err.message});
+                                console.log(err.message);
+                                return;
+                            }
+                            res.status(200).send({returnState: 1, data: results});
+                        }
+                    );
+                    break;
+                case 'UPDATE':
+                    var value = '',
+                        arr = []
+                    for (var i = 0; i < data.length; i++) {
+                        for (var name in data[i]) {
+                            arr.push(name.split(':')[0] + '="' + data[i][name] + '"');
+                        }
+                    }
+                    sqlStatement = 'update t_firetype set ' + arr.join(',') + ' where ' + arr[0] + '';
+                    db.query(sqlStatement, function selectCb(err, results) {
+                            if (err) {
+                                res.status(200).send({returnState: -1, returnMsg: err.message});
+                                console.log(err.message);
+                                return;
+                            }
+                            res.status(200).send({returnState: 1, data: results});
+                        }
+                    );
+                    break;
+                case 'DELETE':
+                    var value = '',
+                        arr = []
+                    for (var i = 0; i < data.length; i++) {
+                        for (var name in data[i]) {
+                            arr.push(name.split(':')[0] + '="' + data[i][name] + '"');
+                        }
+                    }
+                    sqlStatement = 'delete from t_firetype where  ' + arr[0] + '';
+                    console.log(sqlStatement)
+                    db.query(sqlStatement, function selectCb(err, results) {
+                            if (err) {
+                                res.status(200).send({returnState: -1, returnMsg: err.message});
+                                console.log(err.message);
+                                return;
+                            }
+                            res.status(200).send({returnState: 1, data: results});
+                        }
+                    );
+                    break;
+                    break;
+                default :
+                    break;
+            }
+
+
+        }
     }
 };
 

@@ -1,0 +1,96 @@
+.content .twoInputLine {
+    text-align: center;
+    line-height: 50px;
+    font-size: 18px;
+}
+
+.content .twoInputLine > * {
+    height: 26px;
+    margin: 10px;
+}
+
+.content .twoInputLine > input {
+    height: 22px;
+    font-size: 18px;
+}
+
+.content .twoInputLine button {
+    width: 100px;
+
+}
+
+.table {
+    min-height: 200px;
+    overflow: auto;
+    margin: 30px auto 30px auto;
+    text-align: center;
+
+}
+
+.table table {
+    border: 1px solid #add9c0;
+    padding: 0;
+    width:100%
+}
+
+.table td, .table th {
+    border: 1px solid #add9c0;
+    margin: -2px;
+    min-width: 80px;
+    padding: 5px;
+}
+
+.table .chooseAble tr{
+    cursor: pointer;
+}
+.table .chooseAble tr:hover{
+    background-color: #e7e7e7;
+}
+.table tr:first-child{
+    background-color: inherit;
+    cursor: inherit;
+}
+
+.table tr.choosed{
+    background-color: #97cebf;
+}
+
+.botInput {
+    font-size: 16px;
+}
+
+.botInput > span {
+    width: 50%;
+    display: inline-block;
+    text-align: center;
+}
+
+.botInput > span .title {
+    margin: 8px 15px;
+}
+
+.botInput > span > input {
+    margin: 10px;
+    width: 180px;
+    height: 20px;
+}
+
+.botInput > span > select {
+    margin: 10px;
+    width: 180px;
+    height: 26px;
+}
+
+.botBtns {
+    margin-top: 20px;
+    border-top: 1px solid #E2DFDF;
+    padding: 10px;
+    text-align: center;
+}
+
+.botBtns button {
+    width: 100px;
+    height: 30px;
+    font-size: 16px;
+    margin: auto 20px;
+}

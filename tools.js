@@ -28,7 +28,7 @@ exports.getValFromResults = function (results, valName, getfirstTwo, truth) {
         }
     //console.log(arr.join(','));
     return arr;
-}
+};
 
 exports.getLevel = function (results, valName) {
     var arr = []
@@ -45,4 +45,5 @@ exports.getLevel = function (results, valName) {
         }
     console.log(arr.join(','));
     return arr;
-}
+};
+

@@ -1,6 +1,6 @@
 
 html {
-    background-color: #eee;
+    background-color: #F7F7F7;
 }
 
 body {
@@ -32,8 +32,8 @@ input {
 
 nav {
     width: 100%;
-
     height: 30px;
+    position: relative;
     background-color: #f4f4f4;
     border-bottom: 3px solid white;
 }
@@ -60,6 +60,75 @@ nav button:active {
 
 nav button:hover {
     background-color: #b4b4b4;
+}
+
+nav>div {
+    width: 110px;
+    position: absolute;
+    top: 24px;
+    left: 134px;
+    z-index: 2;
+    display: none;
+}
+nav>div:first-of-type{
+    left: 0;
+}
+nav>div:last-of-type{
+    left: 260px;
+}
+
+nav>div.knowledge {
+    left: 8px;
+}
+
+nav>div a {
+    background-color: #f4f4f4;
+    display: block;
+    text-align: center;
+    width: 108px;
+    height: 20px;
+    border: 1px black solid;
+    border-top: none;
+    color: black;
+    position: relative;
+}
+nav>div a:hover{
+    background-color: #e8e8e8;
+}
+nav>div a:first-child {
+    border: 1px black solid;
+}
+
+nav>div>a:after {
+    content: '';
+    position: absolute;
+    top:5px;
+    right: 0px;
+    z-index: 3;
+    border-color: transparent  transparent transparent black;
+    border-style: solid;
+    border-width: 5px;
+    width: 0;
+    height: 0;
+}
+nav>div>a.btn21:after,nav>div>a.btn22:after, nav>div>a.btn31:after{
+    content: none;
+}
+nav>div>div{
+    display: none;
+    position: absolute;
+    top:21px;
+    left: 109px;
+}
+
+nav>div>div:first-of-type{
+    top:0px;
+}
+nav>div>div:last-of-type{
+    top:42px;
+}
+nav>div>div>a{
+    width: 128px;
 }
 
 .tools {
@@ -118,95 +187,6 @@ nav button:hover {
     background-image: url("../img/exittb.png");
 }
 
-.content {
-    width: 100%;
-    height: 500px;
-    background-color: #f4f4f4;
-    padding-top: 1px;
-}
-
-.content > * {
-    display: inline-block;
-    height: 95%;
-    border: 1px #e0e0e0 double;
-    margin-top: 10px;
-}
-
-.content .information {
-    margin-left: 4px;
-    width: 400px;
-    vertical-align: top;
-}
-
-.content .title {
-    position: relative;
-    top: -10px;
-    left: 10px;
-}
-
-.content .result {
-    width: 600px;
-    vertical-align: top;
-
-}
-
-.content .information .items {
-    width: 100%;
-    margin: 0px 5px 20px 5px;
-
-}
-
-.content .information .item {
-    width: 95%;
-    line-height: 34px;
-    font-size: 16px;
-}
-
-.content .information .item .right {
-    float: right;
-
-}
-
-.content .information .item select {
-    width: 130px;
-    height: 20px;
-    outline: none;
-    background-color: #f4f4f4;
-    margin-right: 10px;
-}
-
-.content .information .item input {
-    width: 126px;
-    height: 16px;
-    margin-right: 10px;
-}
-
-.content .information .buttons {
-    text-align: center;
-    margin-top: -10px;
-}
-
-.content .information button {
-    padding: 2px 6px;
-    margin: 0 3px;
-}
-
-.content .result textarea {
-    width: 90%;
-    height: 45%;
-    margin: auto;
-    display: block;
-    resize: vertical;
-    outline: none;
-    overflow-y: scroll;
-    background-color: #fafafa;
-}
-
-#container {
-    margin: auto;
-    width: 90%;
-    height: 50%;
-}
 
 .loginArea {
     display: none;
