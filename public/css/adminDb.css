@@ -21,16 +21,17 @@
 
 .table {
     min-height: 200px;
+    max-height: 400px;
     overflow: auto;
     margin: 30px auto 30px auto;
     text-align: center;
-
+    border: 1px solid #bbbbbb;
 }
 
 .table table {
     border: 1px solid #add9c0;
     padding: 0;
-    width:100%
+    width: 100%;
 }
 
 .table td, .table th {
@@ -40,18 +41,24 @@
     padding: 5px;
 }
 
-.table .chooseAble tr{
+.table .chooseAble tr {
     cursor: pointer;
 }
-.table .chooseAble tr:hover{
+
+.table .chooseAble tr:hover {
     background-color: #e7e7e7;
 }
-.table tr:first-child{
+
+.table tr:first-child {
     background-color: inherit;
     cursor: inherit;
 }
 
-.table tr.choosed{
+.table table tr.choosed {
+    background-color: #97cebf;
+}
+
+.table table tr.choosed:hover {
     background-color: #97cebf;
 }
 
@@ -61,12 +68,26 @@
 
 .botInput > span {
     width: 50%;
+    box-sizing: border-box;
     display: inline-block;
-    text-align: center;
+    text-align: left;
+
+}
+.botInput>span:nth-child(2n+1){
+    border-right: 1px solid black;
 }
 
 .botInput > span .title {
-    margin: 8px 15px;
+    margin: 8px 35px;
+    display: inline-block;
+    min-width: 150px;
+    max-width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+
+    vertical-align: middle;
 }
 
 .botInput > span > input {

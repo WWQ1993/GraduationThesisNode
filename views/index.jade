@@ -26,7 +26,7 @@ nav
 
     button.system 系统管理
     div.system
-        a.btn31(href='javascript:;',data-function='modiPassword') 更改口令
+        a.btn31(href='javascript:;',data-function='password') 更改口令
         a.btn32(href='javascript:;') 学习管理
         div
             a.btn321(href='javascript:;',data-function='addLearnRule') 添加学习规则
@@ -48,6 +48,8 @@ nav
         button.btn5
         button.btn6
 .content
+script(type='text/html',id='index')
+    img(src='./img/backImg.jpg')
 
 script(type='text/html',id='generateDispatch')
     link(rel='stylesheet', href='css/dispatch.css')
@@ -226,8 +228,6 @@ script(type='text/html',id='addFireType')
     .botBtns
         button.add 添加
         button.back 返回
-
-
 script(type='text/html',id='modiFireType')
     link(rel='stylesheet', href='css/adminDb.css')
     .twoInputLine
@@ -251,9 +251,19 @@ script(type='text/html',id='addFireLevel')
     .twoInputLine
         span 请选择查询类别：
         select
-            option FireTypeId
-            option FireTypeName
-            option ComburentId
+            option FireLevelid
+            option FireLevelName
+
+            option Areaid
+            option VolumeId
+            option CallingTimeId
+            option StageId
+            option FireId
+            option SpreadingId
+            option TrappedpeopleId
+            option InjuredPeolpeId
+            option DeathTollid
+            option Dangerid
         span 请输入关键字：
         input
         button 查询
@@ -267,9 +277,122 @@ script(type='text/html',id='modiFireLevel')
     .twoInputLine
         span 请选择查询类别：
         select
-            option FireTypeId
-            option FireTypeName
-            option ComburentId
+            option FireLevelid
+            option FireLevelName
+
+            option Areaid
+            option VolumeId
+            option CallingTimeId
+            option StageId
+            option FireId
+            option SpreadingId
+            option TrappedpeopleId
+            option InjuredPeolpeId
+            option DeathTollid
+            option Dangerid
+        span 请输入关键字：
+        input
+        button 查询
+    .table
+    .botInput
+    .botBtns
+        button.modi 修改
+        button.delete 删除
+        button.back 返回
+
+script(type='text/html',id='addDispatch')
+    link(rel='stylesheet', href='css/adminDb.css')
+    .twoInputLine
+        span 请选择查询类别：
+        select
+            option DispatchId
+            option TypeId
+            option LevelId
+            option FireFighterNum
+            option Equipment
+        span 请输入关键字：
+        input
+        button 查询
+    .table
+    .botInput
+    .botBtns
+        button.add 添加
+        button.back 返回
+script(type='text/html',id='modiDispatch')
+    link(rel='stylesheet', href='css/adminDb.css')
+    .twoInputLine
+        span 请选择查询类别：
+        select
+            option DispatchId
+            option TypeId
+            option LevelId
+            option FireFighterNum
+            option Equipment
+        span 请输入关键字：
+        input
+        button 查询
+    .table
+    .botInput
+    .botBtns
+        button.modi 修改
+        button.delete 删除
+        button.back 返回
+
+script(type='text/html',id='password')
+    div.password
+        .tip 注：每个操作员只能修改自己的密码
+        .username
+            span.title 登录名：
+            span
+        div
+            span.title 旧密码：
+            input
+        div
+            span.title 新密码：
+            input
+        div
+            span.title 重复新密码：
+            input
+        div
+            button.submit 确认
+            button.reset 清空
+            button.back 返回
+
+
+script(type='text/html',id='addLearnRule')
+    link(rel='stylesheet', href='css/adminDb.css')
+    .twoInputLine
+        span 请选择查询类别：
+        select
+            option leanrId
+            option Condition1
+            option Description1
+            option Condition2
+            option Description2
+            option Conclusion
+            option Frequency
+            option Confidence
+        span 请输入关键字：
+        input
+        button 查询
+    .table
+    .botInput
+    .botBtns
+        button.add 添加
+        button.back 返回
+script(type='text/html',id='modiLearnRule')
+    link(rel='stylesheet', href='css/adminDb.css')
+    .twoInputLine
+        span 请选择查询类别：
+        select
+            option leanrId
+            option Condition1
+            option Description1
+            option Condition2
+            option Description2
+            option Conclusion
+            option Frequency
+            option Confidence
         span 请输入关键字：
         input
         button 查询

@@ -46,8 +46,8 @@ define(function (require, exports, module) {
                 }
 
 
-                for (var j = 0; j < orderArr.length; j++) {
-                    str += '<th>' + [orderArr[j]] + '</th>';
+                for (var k = 0; k < orderArr.length; k++) {
+                    str += '<th>' + [orderArr[k]] + '</th>';
                 }
 
                 for (; i < length; i++) {
@@ -90,7 +90,7 @@ define(function (require, exports, module) {
 
                     $.ajax({
                         url: 'http://localhost:3000/authentication',
-                        data: {username: userName, password: pwd},
+                        data: {method:'login',username: userName, password: pwd},
                         type: 'POST',
                         dataType: 'json',
                         success: function (data) {
@@ -199,15 +199,19 @@ define(function (require, exports, module) {
         page: {
             switchPage: function (pageName) {
                 $('.content').html($('#' + pageName).text());
-
-                controller.page.initPage.commonInit(pageName)
+                if (pageName.indexOf('add') > -1 || pageName.indexOf('modi') > -1) {
+                    controller.page.initPage.commonInit(pageName);
+                }
+                else {
+                    controller.page.initPage[pageName]();
+                }
 
             },
             common: {
-                tableChooseAble:function(){     //设置table可选中
+                tableChooseAble: function () {     //设置table可选中
                     //id input不可输入
-                    $('.content .botInput>span:eq(0)>input').attr('readonly',"readonly");
-                    $('.content .botInput>span:eq(0)>input').css('backgroundColor','#CCC');
+                    $('.content .botInput>span:eq(0)>input').attr('readonly', "readonly");
+                    $('.content .botInput>span:eq(0)>input').css('backgroundColor', '#CCC');
 
                     //tr选中效果
                     $('.table table').addClass('chooseAble');
@@ -217,13 +221,13 @@ define(function (require, exports, module) {
                             $(this).addClass('choosed');
                             $('.choosed td').each(function (i) {
                                 var thisTd = $(this);
-                                if($('.content .botInput>span:eq('+i+')>input').length>0){
-                                    $('.content .botInput>span:eq('+i+')>input').val($(this).text())
+                                if ($('.content .botInput>span:eq(' + i + ')>input').length > 0) {
+                                    $('.content .botInput>span:eq(' + i + ')>input').val($(this).text())
                                 }
-                                else{
-                                    $('.content .botInput>span:eq('+i+')>select option').each(function () {
-                                        if(parseFloat($(this).text()) ===parseFloat(thisTd.text())){
-                                            $(this)[0].selected=true;
+                                else {
+                                    $('.content .botInput>span:eq(' + i + ')>select option').each(function () {
+                                        if (parseFloat($(this).text()) === parseFloat(thisTd.text())) {
+                                            $(this)[0].selected = true;
                                         }
                                     })
                                 }
@@ -234,7 +238,7 @@ define(function (require, exports, module) {
                         });
                     });
                 },
-                filter: function (originArr,tableChooseAble) {  //设置顶部过滤查询功能
+                filter: function (originArr, tableChooseAble) {  //设置顶部过滤查询功能
                     var input = $('.content .twoInputLine input');
 
                     $('.content .twoInputLine button').click(function () {
@@ -243,7 +247,7 @@ define(function (require, exports, module) {
                             arr = [];
                         if (value === '') { //值为空时显示所有
                             $('.table').html(controller.tools.arrToTable(originArr));
-                            if(tableChooseAble){
+                            if (tableChooseAble) {
                                 controller.page.common.tableChooseAble();
                             }
                         }
@@ -255,14 +259,14 @@ define(function (require, exports, module) {
                                 }
                             }
                             $('.table').html(controller.tools.arrToTable(arr));
-                            if(tableChooseAble){
+                            if (tableChooseAble) {
                                 controller.page.common.tableChooseAble();
                             }
                         }
                     })
                 },
-                initBotInput: function (originArr,selectFields) {//设置底部输入框
-                    var str = ''
+                initBotInput: function (originArr, selectFields) {//设置底部输入框
+                    var str = '';
 
                     for (var name in originArr[0]) {
                         if (name in selectFields) {
@@ -278,38 +282,38 @@ define(function (require, exports, module) {
                     }
                     $('.botInput').html(str);
                 },
-                submitBtnsInit: function (pageName,path) {
-                    function listener(btn,type,method){
-                        return  function () {
+                submitBtnsInit: function (pageName, path) {
+                    function listener(btn, type, method) {
+                        return function () {
                             var inputArr = [];
                             $('.content .botInput>span').each(function () {
-                                var attrName = $('.title',$(this)).text();
+                                var attrName = $('.title', $(this)).text();
                                 var value = '';
 
-                                if($('select',$(this)).length>0){
-                                    value = $('select option:selected',$(this)).text();
+                                if ($('select', $(this)).length > 0) {
+                                    value = $('select option:selected', $(this)).text();
                                 }
-                                else{
-                                    value = $('input',$(this)).val();
+                                else {
+                                    value = $('input', $(this)).val();
                                 }
                                 var obj = {};
-                                obj[attrName]=value;
+                                obj[attrName] = value;
                                 inputArr.push(obj);
                             });
 
                             $.ajax({
-                                url: 'http://localhost:3000/'+path,
-                                data: {data: JSON.stringify(inputArr),method:method},
+                                url: 'http://localhost:3000/' + path,
+                                data: {data: JSON.stringify(inputArr), method: method},
                                 type: type,
                                 dataType: 'json',
                                 success: function (data) {
                                     if (data.returnState === -2) {
                                         controller.component.loginFirst();
-                                        btn.one('click',listener(btn,type,method));
+                                        btn.one('click', listener(btn, type, method));
                                     }
                                     else if (data.returnState === -1) {
                                         alert(data.returnMsg);
-                                        btn.one('click',listener(btn,type,method));
+                                        btn.one('click', listener(btn, type, method));
                                     }
                                     else if (data.returnState === 1) {
                                         controller.page.switchPage(pageName);
@@ -317,15 +321,15 @@ define(function (require, exports, module) {
                                 },
                                 error: function () {
                                     alert('请检查网络连接');
-                                    btn.one('click',listener(btn,type,method));
+                                    btn.one('click', listener(btn, type, method));
                                 }
                             });
                         };
                     }
 
-                    $('.content .botBtns .add').one('click', listener($('.content .botBtns .add'),'POST','ADD'));
-                    $('.content .botBtns .modi').one('click', listener($('.content .botBtns .modi'),'POST','UPDATE'));
-                    $('.content .botBtns .delete').one('click', listener($('.content .botBtns .delete'),'POST','DELETE'));
+                    $('.content .botBtns .add').one('click', listener($('.content .botBtns .add'), 'POST', 'ADD'));
+                    $('.content .botBtns .modi').one('click', listener($('.content .botBtns .modi'), 'POST', 'UPDATE'));
+                    $('.content .botBtns .delete').one('click', listener($('.content .botBtns .delete'), 'POST', 'DELETE'));
 
                     $('.content .botBtns .back').click(function () {
                         controller.page.switchPage('index');
@@ -334,6 +338,9 @@ define(function (require, exports, module) {
 
             },
             initPage: {
+                index: function () {
+
+                },
                 generateDispatch: function () {
                     var thisPageComponent = component.page['generateDispatch'] || {};
                     thisPageComponent.inputArea = thisPageComponent.inputArea || $('.content .information .buttons');
@@ -370,16 +377,14 @@ define(function (require, exports, module) {
                     });
 
                 },
+                commonInit: function (pageName) {
+                    var type = pageName.indexOf('add') > -1 ? 'add' : 'modi',
+                        path = '';
+                    path = pageName.split(type)[1].toLowerCase();
 
-                commonInit: function (pageName){
-                    var type=pageName.indexOf('add')>-1?'add':'modi',
-                        path='';
-                     path = pageName.split(type)[1].toLowerCase();
-
-                    console.log(pageName+' '+pageName.indexOf('add')+' '+path);
-                    if(type==='add'){
+                    if (type === 'add') {
                         $.ajax({
-                            url:  'http://localhost:3000/'+path,
+                            url: 'http://localhost:3000/' + path,
                             type: 'GET',
                             dataType: 'json',
                             success: function (data) {
@@ -387,7 +392,7 @@ define(function (require, exports, module) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
-                                    var  selectFields = {
+                                    var selectFields = {
                                         Frequency: ['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
                                         Confidence: ['0.5', '0.6', '0.7', '0.8', '0.9']
                                     }
@@ -396,8 +401,8 @@ define(function (require, exports, module) {
 
 
                                     controller.page.common.filter(data.data);
-                                    controller.page.common.initBotInput(data.data,selectFields);
-                                    controller.page.common.submitBtnsInit(pageName,path);
+                                    controller.page.common.initBotInput(data.data, selectFields);
+                                    controller.page.common.submitBtnsInit(pageName, path);
 
                                 }
                             },
@@ -406,9 +411,9 @@ define(function (require, exports, module) {
                             }
                         })
                     }
-                    else if(type==='modi'){
+                    else if (type === 'modi') {
                         $.ajax({
-                            url:  'http://localhost:3000/'+path,
+                            url: 'http://localhost:3000/' + path,
                             type: 'GET',
                             dataType: 'json',
                             success: function (data) {
@@ -416,16 +421,16 @@ define(function (require, exports, module) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
-                                    var  selectFields = {
+                                    var selectFields = {
                                         Frequency: ['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
                                         Confidence: ['0.5', '0.6', '0.7', '0.8', '0.9']
                                     }
 
                                     $('.table').html(controller.tools.arrToTable(data.data));
 
-                                    controller.page.common.filter(data.data,true);
-                                    controller.page.common.initBotInput(data.data,selectFields);
-                                    controller.page.common.submitBtnsInit(pageName,path);
+                                    controller.page.common.filter(data.data, true);
+                                    controller.page.common.initBotInput(data.data, selectFields);
+                                    controller.page.common.submitBtnsInit(pageName, path);
                                     controller.page.common.tableChooseAble();
 
                                 }
@@ -435,17 +440,85 @@ define(function (require, exports, module) {
                             }
                         })
                     }
-                } ,
-
-
-                generateDispatch: function () {
-
                 },
+
                 autoGenerateDispatch: function () {
 
                 },
-                modiPassword: function () {
+                password: function () {
+                    var username = '',
+                        tip = $('.content .password .tip'),
+                        submit = $('.content .password .submit'),
+                        inputs = $('.content .password input')
+                    tip.text('注：每个操作员只能修改自己的密码');
 
+                    try {
+                        username = JSON.parse(decodeURIComponent(document.cookie).split('=j:')[1]).username;
+                    }
+                    catch (e) {
+                    }
+                    if (!username) {
+                        controller.component.loginFirst();
+                        return;
+                    }
+
+                    $('.content .password .username>span:eq(1)').text(username);
+
+                    $('.content .password .back').click(function () {
+                        controller.page.switchPage('index');
+                    });
+                    $('.content .password .reset').click(function () {
+                        inputs.each(function () {
+                            $(this).val('');
+                        })
+                    });
+                    submit.one('click', function clickFunc() {
+                        var obj = {
+                            method:'modiPwd',
+                            username: $('.content .password .username>span:last-child').text(),
+                            password: inputs.eq(0).val(),
+                            newPwd: inputs.eq(1).val(),
+                            reNewPwd: inputs.eq(2).val(),
+                        }
+                        if(!obj.reNewPwd||!obj.password||!obj.reNewPwd){
+                            tip.text('请填入必填项');
+
+                            submit.one('click', clickFunc);
+                        }
+
+                        else if (obj.reNewPwd !== obj.newPwd) {
+                            tip.text('两次新密码不一致');
+                            submit.one('click', clickFunc);
+                        }
+                        else if(obj.password === obj.newPwd){
+                            tip.text('新旧密码一致');
+                            submit.one('click', clickFunc);
+                        }
+                        else {
+                            tip.text('提交中···');
+                            $.ajax({
+                                url: 'http://localhost:3000/authentication',
+                                data: obj,
+                                type: 'POST',
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.returnState) { //登录成功
+                                        tip.text('修改密码成功');
+                                        setTimeout(function () {
+                                            window.location.reload();
+                                        }, 500);
+                                    } else {
+                                        tip.text('密码错误');
+                                        submit.one('click', clickFunc);
+                                    }
+                                },
+                                error: function () {
+                                    tip.text('请检查网络连接');
+                                    submit.one('click', clickFunc);
+                                }
+                            })
+                        }
+                    });
                 }
 
             }
@@ -475,7 +548,7 @@ define(function (require, exports, module) {
     exports.init = function () {
         controller.component.addEventListener();
         controller.component.popLogin();
-        controller.page.switchPage('addFireLevel');  //默认页
+        controller.page.switchPage('addLearnRule');  //默认页
 
         //controller.map.mapInit();
     };

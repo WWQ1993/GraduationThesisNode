@@ -9,30 +9,71 @@ var crypto = require('crypto');
 
 
 module.exports = {
-    login: function (req, res, next) {
-
+    authentication: function (req, res, next) {
         var username = req.body.username;
         var password = req.body.password;
 
-        db.query(
-            'SELECT * FROM t_operator where name ="' + username + '" and password = "' + password + '"',
-            function selectCb(err, results) {
-                if (err) {
-                    res.status(200).send({returnState: false});
-                    console.log('select明文登录失败', err.message);
-                    return;
+        var login = function (req, res, suc) {
+            db.query(
+                'SELECT * FROM t_operator where name ="' + username + '" and password = "' + password + '"',
+                function selectCb(err, results) {
+                    if (err) {
+                        res.status(200).send({returnState: false, returnMsg: err.message});
+                        console.log('明文登录失败', err.message);
+                        return;
+                    }
+                    if (results.length > 0) {   //登录成功
+                        suc();
+                    }
+                    else {  //登录失败
+                        res.status(200).send({returnState: false});
+                    }
                 }
-                if (results.length > 0) {   //登录成功
+            );
+        };
 
-                    this.setLoginCookie(res, username, password);
+        if (req.body.method === 'login') {
+            login(req, res, function () {
 
-                    res.status(200).send({returnState: true});
-                }
-                else {  //登录失败
-                    res.status(200).send({returnState: false});
-                }
-            }.bind(this)
-        );
+                //设置cookie
+                var md5 = crypto.createHash('md5');
+                var mdPassword = md5.update(password).digest('base64');
+                res.cookie('authentication', {
+                    username: username,
+                    password: mdPassword
+                });
+
+                //设置数据库中账户的密码加密值
+                db.query('update t_operator set identityCard="' + mdPassword + '" where name ="' + username + '"', function (err, result) {
+                    if (err) {
+                        console.log('update md5值失败 ', err.message);
+                    }
+                });
+                res.status(200).send({returnState: true});
+            });
+        }
+        else if (req.body.method === 'modiPwd') {
+            var newPwd = req.body.newPwd;
+
+            login(req, res, function () {
+                db.query(
+                    'update t_operator set password="' + newPwd + '" where name ="' + username + '" and password = "' + password + '"',
+                    function selectCb(err, results) {
+                        if (err) {
+                            res.status(200).send({returnState: false, returnMsg: err.message});
+                            console.log('设置密码失败失败', err.message);
+                            return;
+                        }
+                        else {
+                            res.status(200).send({returnState: true});
+                        }
+                    }
+                );
+                res.status(200).send({returnState: true});
+            });
+        }
+
+
     },
     index: function (req, res, next) { //每次访问主页时触发
 
@@ -150,112 +191,128 @@ module.exports = {
             str += i + ': ' + obj.title + obj.kind + ', ' + obj.truth + '\n';
         }
     },
-    setLoginCookie: function (res, username, password) {  //加密密码后设置cookie
 
-        var md5 = crypto.createHash('md5');
-        var mdPassword = md5.update(password).digest('base64');
-        res.cookie('authentication', {
-            username: username,
-            password: mdPassword
-        });
-
-        //设置数据库中账户的密码加密值
-        db.query('update t_operator set identityCard="' + mdPassword + '" where name ="' + username + '"', function (err, result) {
-            if (err) {
-                console.log('update md5值失败 ', err.message);
+    commonGet: function (req, res, next, table) {
+        db.query(
+            'SELECT * FROM ' + table,
+            function selectCb(err, results) {
+                if (err) {
+                    res.status(200).send({returnState: -1, returnMsg: err.message});
+                    console.log('get firetype fail', err.message);
+                    return;
+                }
+                if (results.length > 0) {   //登录成功
+                    res.status(200).send({returnState: 1, data: results});
+                }
+                else {  //失败
+                    res.status(200).send({returnState: 0});
+                }
             }
-        });
+        );
+
+    },
+    commonPost: function (req, res, next, table) {
+        var method = req.body.method,
+            data = JSON.parse(req.body.data),
+            sqlStatement = ''
+        console.log(data);
+        switch (method) {
+            case 'ADD':
+                var arr1 = [],
+                    arr2 = [];
+                for (var i = 0; i < data.length; i++) {
+                    for (var name in data[i]) {
+                        arr1.push(name.split(':')[0]);
+                        arr2.push("'" + data[i][name] + "'");
+                    }
+                }
+                sqlStatement = 'insert into ' + table + '(' + arr1.join(',') + ') values(' + arr2.join(',') + ')';
+                db.query(sqlStatement, function selectCb(err, results) {
+                        if (err) {
+                            res.status(200).send({returnState: -1, returnMsg: err.message});
+                            console.log(err.message);
+                            return;
+                        }
+                        res.status(200).send({returnState: 1, data: results});
+                    }
+                );
+                break;
+            case 'UPDATE':
+                var value = '',
+                    arr = []
+                for (var i = 0; i < data.length; i++) {
+                    for (var name in data[i]) {
+                        arr.push(name.split(':')[0] + '="' + data[i][name] + '"');
+                    }
+                }
+                sqlStatement = 'update ' + table + ' set ' + arr.join(',') + ' where ' + arr[0] + '';
+                db.query(sqlStatement, function selectCb(err, results) {
+                        if (err) {
+                            res.status(200).send({returnState: -1, returnMsg: err.message});
+                            console.log(err.message);
+                            return;
+                        }
+                        res.status(200).send({returnState: 1, data: results});
+                    }
+                );
+                break;
+            case 'DELETE':
+                var value = '',
+                    arr = []
+                for (var i = 0; i < data.length; i++) {
+                    for (var name in data[i]) {
+                        arr.push(name.split(':')[0] + '="' + data[i][name] + '"');
+                    }
+                }
+                sqlStatement = 'delete from ' + table + ' where  ' + arr[0] + '';
+                console.log(sqlStatement)
+                db.query(sqlStatement, function selectCb(err, results) {
+                        if (err) {
+                            res.status(200).send({returnState: -1, returnMsg: err.message});
+                            console.log(err.message);
+                            return;
+                        }
+                        res.status(200).send({returnState: 1, data: results});
+                    }
+                );
+                break;
+            default :
+                break;
+        }
+
+
     },
     fireType: {
         get: function (req, res, next) {
-            db.query(
-                'SELECT * FROM t_firetype',
-                function selectCb(err, results) {
-                    if (err) {
-                        res.status(200).send({returnState: -1, returnMsg: err.message});
-                        console.log('get firetype fail', err.message);
-                        return;
-                    }
-                    if (results.length > 0) {   //登录成功
-                        res.status(200).send({returnState: 1, data: results});
-                    }
-                    else {  //失败
-                        res.status(200).send({returnState: 0});
-                    }
-                }
-            );
+            this.commonGet(req, res, next, 't_firetype');
         },
         post: function (req, res, next) {
-            var method = req.body.method,
-                data = JSON.parse(req.body.data),
-                sqlStatement = ''
-            console.log(data);
-            switch (method) {
-                case 'ADD':
-                    var arr1 = [],
-                        arr2 = [];
-                    for (var i = 0; i < data.length; i++) {
-                        for (var name in data[i]) {
-                            arr1.push(name.split(':')[0]);
-                            arr2.push("'" + data[i][name] + "'");
-                        }
-                    }
-                    sqlStatement = 'insert into t_firetype(' + arr1.join(',') + ') values(' + arr2.join(',') + ')';
-                    db.query(sqlStatement, function selectCb(err, results) {
-                            if (err) {
-                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                console.log(err.message);
-                                return;
-                            }
-                            res.status(200).send({returnState: 1, data: results});
-                        }
-                    );
-                    break;
-                case 'UPDATE':
-                    var value = '',
-                        arr = []
-                    for (var i = 0; i < data.length; i++) {
-                        for (var name in data[i]) {
-                            arr.push(name.split(':')[0] + '="' + data[i][name] + '"');
-                        }
-                    }
-                    sqlStatement = 'update t_firetype set ' + arr.join(',') + ' where ' + arr[0] + '';
-                    db.query(sqlStatement, function selectCb(err, results) {
-                            if (err) {
-                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                console.log(err.message);
-                                return;
-                            }
-                            res.status(200).send({returnState: 1, data: results});
-                        }
-                    );
-                    break;
-                case 'DELETE':
-                    var value = '',
-                        arr = []
-                    for (var i = 0; i < data.length; i++) {
-                        for (var name in data[i]) {
-                            arr.push(name.split(':')[0] + '="' + data[i][name] + '"');
-                        }
-                    }
-                    sqlStatement = 'delete from t_firetype where  ' + arr[0] + '';
-                    console.log(sqlStatement)
-                    db.query(sqlStatement, function selectCb(err, results) {
-                            if (err) {
-                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                console.log(err.message);
-                                return;
-                            }
-                            res.status(200).send({returnState: 1, data: results});
-                        }
-                    );
-                    break;
-                    break;
-                default :
-                    break;
-            }
+            this.commonPost(req, res, next, 't_firetype');
+        }
+    },
 
-
+    fireLevel: {
+        get: function (req, res, next) {
+            this.commonGet(req, res, next, 't_firelevel');
+        },
+        post: function (req, res, next) {
+            this.commonPost(req, res, next, 't_firelevel');
+        }
+    },
+    dispatch: {
+        get: function (req, res, next) {
+            this.commonGet(req, res, next, 't_dispatch');
+        },
+        post: function (req, res, next) {
+            this.commonPost(req, res, next, 't_dispatch');
+        }
+    },
+    learnRule: {
+        get: function (req, res, next) {
+            this.commonGet(req, res, next, 't_learn');
+        },
+        post: function (req, res, next) {
+            this.commonPost(req, res, next, 't_learn');
         }
     }
 };

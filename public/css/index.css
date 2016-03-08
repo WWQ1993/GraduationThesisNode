@@ -33,9 +33,11 @@ input {
 nav {
     width: 100%;
     height: 30px;
-    position: relative;
     background-color: #f4f4f4;
     border-bottom: 3px solid white;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 nav button {
@@ -136,6 +138,7 @@ nav>div>div>a{
     height: 40px;
     background-color: #f4f4f4;
     border-bottom: 5px solid deepskyblue;
+    margin-top: 33px;
 }
 
 .tools button {
@@ -263,4 +266,55 @@ nav>div>div>a{
 .loginArea .popup .buttons a:active {
     background-color: rgba(179, 179, 179, 0.37);
 }
+.content img{
 
+    width: 100%;
+    height: 500px;
+}
+.content .password{
+    width: 290px;
+
+    margin: 30px auto;
+    border: 10px groove #DEF;
+    padding:15px;
+    font-size: 18px;
+}
+.content .password>div {
+    line-height: 35px;
+
+}
+.content .password input{
+    height: 22px;
+    width: 165px;
+    font-size: 18px;
+
+}
+.content .password .btns{
+    text-align: center;
+}
+.content .password button{
+    width: 55px;
+    line-height: 25px;
+    font-size: 16px;
+    margin: 10px 15px 0px 15px;
+}
+.content .password .tip{
+    color: #ff583b;
+}
+.content>div>div>*{
+    display: inline-block;
+    vertical-align: middle;
+}
+.content>div>div>span {
+    min-width: 120px;
+
+}
+.content .password .username>span:last-child{
+    display: inline-block;
+    border: 1px solid #989898;
+    overflow: hidden;
+     width: 145px;
+    line-height: 24px;
+    padding :0 10px 0 10px;
+
+}
