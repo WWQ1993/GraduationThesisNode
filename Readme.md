@@ -17,5 +17,5 @@
 3. 安装express
     * 控制台中键入命令: `npm install -g express`
 4. 运行项目
-    * 在本项目路径下(myapp/)下执行：`supervisor ./bin/www`
+    * 在本项目路径下(myapp/)下执行：`supervisor index.js`
 
