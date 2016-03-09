@@ -4,6 +4,9 @@
 2. MYSQL5.6
 3. firefight0806.sql
 
+## 运行环境
+1. window 7 及以上
+
 ## 使用方法
 ### 数据库相关
 1. 安装MYSQL5.6
