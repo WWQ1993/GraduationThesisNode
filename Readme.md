@@ -12,10 +12,6 @@
 ### node.js环境相关
 1. 安装node.js
     * 下载[node.js v5.4.0](http://nodejs.org/dist/v5.4.0/node-v5.4.0.tar.gz)并以默认安装node.js
-2. 安装supervisor
-    * 控制台中键入命令: `npm install -g supervisor`
-3. 安装express
-    * 控制台中键入命令: `npm install -g express`
-4. 运行项目
-    * 在本项目路径下(myapp/)下执行：`supervisor index.js`
+2. 安装依赖&执行项目
+    * 在**本项目文件夹下**执行：`npm install && npm start `
 
