@@ -30,14 +30,20 @@ input {
     outline: none;
 }
 
-nav {
+.navOuter{
     width: 100%;
-    height: 30px;
-    background-color: #f4f4f4;
-    border-bottom: 3px solid white;
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 20;
+}
+nav {
+    width: 1020px;
+    height: 30px;
+    background-color: #f4f4f4;
+    border-bottom: 3px solid white;
+    position: relative;
+    margin: auto;
 }
 
 nav button {
@@ -149,7 +155,7 @@ nav>div>div>a{
     background: url("../img/firelevelAddtb.png") no-repeat center;
     width: 38px;
     height: 38px;
-    margin: 0px 2px;
+    margin: 0 2px;
     border: 4px solid #f4f4f4;
     outline: none;
 }

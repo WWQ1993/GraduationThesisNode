@@ -4,6 +4,7 @@
 define(function (require, exports, module) {
     var $ = require('./jquery.js');
 
+    var thisPageName = '';
     var component = {
         _window: $(window),
         loginArea: $('.loginArea'),
@@ -90,7 +91,7 @@ define(function (require, exports, module) {
 
                     $.ajax({
                         url: 'http://localhost:3000/authentication',
-                        data: {method:'login',username: userName, password: pwd},
+                        data: {method: 'login', username: userName, password: pwd},
                         type: 'POST',
                         dataType: 'json',
                         success: function (data) {
@@ -171,7 +172,7 @@ define(function (require, exports, module) {
                 });
                 $('nav>div>div>a,nav>div>a.btn21,nav>div>a.btn22, nav>div>a.btn31').each(function () {
                     $(this).click(function (e) {
-                        controller.page.switchPage($(this).attr('data-function'));
+                        controller.page.switchPage($(this).attr('data-pageName'));
                     });
                 })
 
@@ -198,9 +199,10 @@ define(function (require, exports, module) {
         },
         page: {
             switchPage: function (pageName) {
+                thisPageName = pageName;
                 $('.content').html($('#' + pageName).text());
                 if (pageName.indexOf('add') > -1 || pageName.indexOf('modi') > -1) {
-                    controller.page.initPage.commonInit(pageName);
+                    controller.page.initPage.commonInit();
                 }
                 else {
                     controller.page.initPage[pageName]();
@@ -208,18 +210,28 @@ define(function (require, exports, module) {
 
             },
             common: {
+                addTitle: function () {
+                    var titleText = $('nav>div>div>a[data-pageName=' + thisPageName).text()
+                    $('.content').prepend('<h1>' + titleText + '</h1');
+                },
                 tableChooseAble: function () {     //设置table可选中
-                    //id input不可输入
-                    $('.content .botInput>span:eq(0)>input').attr('readonly', "readonly");
-                    $('.content .botInput>span:eq(0)>input').css('backgroundColor', '#CCC');
+                    var add = thisPageName.indexOf('add') > -1 ? true : false;
 
-                    //tr选中效果
+                    if (!add) {
+                        //id input不可输入
+                        $('.content .botInput>span:eq(0)>input').attr('readonly', "readonly");
+                        $('.content .botInput>span:eq(0)>input').css('backgroundColor', '#CCC');
+                    }
                     $('.table table').addClass('chooseAble');
+                    //tr选中效果
                     $('.table tr:not(.table tr:first-child)').each(function () {
                         $(this).click(function () {
-                            $(this).siblings().removeClass('choosed');
-                            $(this).addClass('choosed');
-                            $('.choosed td').each(function (i) {
+                            if (!add) {
+                                $(this).siblings().removeClass('choosed');
+                                $(this).addClass('choosed');
+                            }
+                            //为下方输入框自动填充选中内容
+                            $('td', $(this)).each(function (i) {
                                 var thisTd = $(this);
                                 if ($('.content .botInput>span:eq(' + i + ')>input').length > 0) {
                                     $('.content .botInput>span:eq(' + i + ')>input').val($(this).text())
@@ -231,10 +243,7 @@ define(function (require, exports, module) {
                                         }
                                     })
                                 }
-
-
                             })
-
                         });
                     });
                 },
@@ -282,7 +291,7 @@ define(function (require, exports, module) {
                     }
                     $('.botInput').html(str);
                 },
-                submitBtnsInit: function (pageName, path) {
+                submitBtnsInit: function (path) {
                     function listener(btn, type, method) {
                         return function () {
                             var inputArr = [];
@@ -316,7 +325,7 @@ define(function (require, exports, module) {
                                         btn.one('click', listener(btn, type, method));
                                     }
                                     else if (data.returnState === 1) {
-                                        controller.page.switchPage(pageName);
+                                        controller.page.switchPage(thisPageName);
                                     }
                                 },
                                 error: function () {
@@ -377,10 +386,10 @@ define(function (require, exports, module) {
                     });
 
                 },
-                commonInit: function (pageName) {
-                    var type = pageName.indexOf('add') > -1 ? 'add' : 'modi',
+                commonInit: function () {
+                    var type = thisPageName.indexOf('add') > -1 ? 'add' : 'modi',
                         path = '';
-                    path = pageName.split(type)[1].toLowerCase();
+                    path = thisPageName.split(type)[1].toLowerCase();
 
                     if (type === 'add') {
                         $.ajax({
@@ -392,17 +401,19 @@ define(function (require, exports, module) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
-                                    var selectFields = {
+
+                                    var selectFields = thisPageName.indexOf('Learn') > -1 ? {} : {
                                         Frequency: ['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
                                         Confidence: ['0.5', '0.6', '0.7', '0.8', '0.9']
                                     }
 
                                     $('.table').html(controller.tools.arrToTable(data.data));
 
-
+                                    controller.page.common.addTitle();
                                     controller.page.common.filter(data.data);
                                     controller.page.common.initBotInput(data.data, selectFields);
-                                    controller.page.common.submitBtnsInit(pageName, path);
+                                    controller.page.common.submitBtnsInit(path);
+                                    controller.page.common.tableChooseAble();
 
                                 }
                             },
@@ -421,16 +432,16 @@ define(function (require, exports, module) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
-                                    var selectFields = {
+                                    var selectFields = thisPageName.indexOf('Learn') > -1 ? {} : {
                                         Frequency: ['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
                                         Confidence: ['0.5', '0.6', '0.7', '0.8', '0.9']
                                     }
 
                                     $('.table').html(controller.tools.arrToTable(data.data));
-
+                                    controller.page.common.addTitle();
                                     controller.page.common.filter(data.data, true);
                                     controller.page.common.initBotInput(data.data, selectFields);
-                                    controller.page.common.submitBtnsInit(pageName, path);
+                                    controller.page.common.submitBtnsInit(path);
                                     controller.page.common.tableChooseAble();
 
                                 }
@@ -474,13 +485,13 @@ define(function (require, exports, module) {
                     });
                     submit.one('click', function clickFunc() {
                         var obj = {
-                            method:'modiPwd',
+                            method: 'modiPwd',
                             username: $('.content .password .username>span:last-child').text(),
                             password: inputs.eq(0).val(),
                             newPwd: inputs.eq(1).val(),
                             reNewPwd: inputs.eq(2).val(),
                         }
-                        if(!obj.reNewPwd||!obj.password||!obj.reNewPwd){
+                        if (!obj.reNewPwd || !obj.password || !obj.reNewPwd) {
                             tip.text('请填入必填项');
 
                             submit.one('click', clickFunc);
@@ -490,7 +501,7 @@ define(function (require, exports, module) {
                             tip.text('两次新密码不一致');
                             submit.one('click', clickFunc);
                         }
-                        else if(obj.password === obj.newPwd){
+                        else if (obj.password === obj.newPwd) {
                             tip.text('新旧密码一致');
                             submit.one('click', clickFunc);
                         }
@@ -549,6 +560,7 @@ define(function (require, exports, module) {
         controller.component.addEventListener();
         controller.component.popLogin();
         controller.page.switchPage('addLearnRule');  //默认页
+        thisPageName = 'addLearnRule';
 
         //controller.map.mapInit();
     };
