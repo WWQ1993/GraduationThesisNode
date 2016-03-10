@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/img/close.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/img/loading.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/img/pop-mid.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/adminDb.css" afterPath="$PROJECT_DIR$/public/css/adminDb.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/index.css" afterPath="$PROJECT_DIR$/public/css/index.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.jade" afterPath="$PROJECT_DIR$/views/index.jade" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/index.js" afterPath="$PROJECT_DIR$/public/js/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requestHandlers.js" afterPath="$PROJECT_DIR$/requestHandlers.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/router.js" afterPath="$PROJECT_DIR$/routes/router.js" />
+    <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="to complete popMsg">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="myapp.iws" />
@@ -56,10 +47,9 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5451128">
-              <caret line="100" column="30" selection-start-line="100" selection-start-column="30" selection-end-line="100" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.518797">
+              <caret line="94" column="17" selection-start-line="94" selection-start-column="17" selection-end-line="94" selection-end-column="17" />
               <folding>
-                <element signature="e#1347#2333#0" expanded="false" />
                 <element signature="e#9267#9473#0" expanded="false" />
                 <element signature="e#9509#10032#0" expanded="false" />
                 <element signature="e#10864#12622#0" expanded="false" />
@@ -524,7 +514,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457528998926</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="to complete popMsg">
+      <created>1457618085776</created>
+      <option name="number" value="00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1457618085776</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -595,7 +591,8 @@
     <MESSAGE value="Generally complete2" />
     <MESSAGE value="Generally complete3" />
     <MESSAGE value="back" />
-    <option name="LAST_COMMIT_MESSAGE" value="back" />
+    <MESSAGE value="to complete popMsg" />
+    <option name="LAST_COMMIT_MESSAGE" value="to complete popMsg" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -653,7 +650,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="115" column="45" selection-start-line="115" selection-start-column="45" selection-end-line="115" selection-end-column="45" />
           <folding>
-            <element signature="e#1347#2333#0" expanded="false" />
             <element signature="e#9267#9473#0" expanded="false" />
             <element signature="e#9509#10032#0" expanded="false" />
             <element signature="e#10864#12622#0" expanded="false" />
@@ -745,7 +741,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
           <folding>
-            <element signature="e#1347#2333#0" expanded="false" />
             <element signature="e#9267#9473#0" expanded="false" />
             <element signature="e#9509#10032#0" expanded="false" />
             <element signature="e#10864#12622#0" expanded="false" />
@@ -793,7 +788,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="30" column="7" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
           <folding>
-            <element signature="e#1347#2333#0" expanded="false" />
             <element signature="e#9267#9473#0" expanded="false" />
             <element signature="e#9509#10032#0" expanded="false" />
             <element signature="e#10864#12622#0" expanded="false" />
@@ -849,7 +843,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1347#2333#0" expanded="false" />
             <element signature="e#9267#9473#0" expanded="false" />
             <element signature="e#9509#10032#0" expanded="false" />
             <element signature="e#10864#12622#0" expanded="false" />
@@ -1101,10 +1094,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5451128">
-          <caret line="100" column="30" selection-start-line="100" selection-start-column="30" selection-end-line="100" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.518797">
+          <caret line="94" column="17" selection-start-line="94" selection-start-column="17" selection-end-line="94" selection-end-column="17" />
           <folding>
-            <element signature="e#1347#2333#0" expanded="false" />
             <element signature="e#9267#9473#0" expanded="false" />
             <element signature="e#9509#10032#0" expanded="false" />
             <element signature="e#10864#12622#0" expanded="false" />
