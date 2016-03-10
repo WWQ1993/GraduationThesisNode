@@ -20,7 +20,7 @@
 }
 
 .table {
-    min-height: 200px;
+
     max-height: 400px;
     overflow: auto;
     margin: 10px auto 30px auto;
