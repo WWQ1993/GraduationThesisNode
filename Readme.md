@@ -19,4 +19,4 @@
     * 在**本项目文件夹下**执行：`npm install && npm start `
 
 ### 运行本项目
-* 浏览器输入URL：http://localhost:3000/
+* 通过浏览器访问：http://localhost:3000/
