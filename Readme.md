@@ -18,3 +18,5 @@
 2. 安装依赖&执行项目
     * 在**本项目文件夹下**执行：`npm install && npm start `
 
+### 运行本项目
+* 浏览器输入URL：http://localhost:3000/
