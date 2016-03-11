@@ -67,46 +67,73 @@ define(function (require, exports, module) {
 
                 return str + '</table>';
             },
+            loadImg: function (url,callback) {
+                var img = new Image();
+                img.src = url;
+                $(img).load(function () {
+                    callback();
+                });
+            }
         },
 
         component: {
             popMsg: function (type, text) {
 
-                var centerShow = function (text) {
-                    component.popMsg.main.css({
+                var centerShow = function (background, text, loading) {
+                    var main = component.popMsg.main.clone(true);
+                    $('body').append(main);
+                    $('.text', main).text(text);
+
+                    main.css({
                         top: (component._window.height() - component.popMsg.main.height()) / 2,
                         left: (component._window.width() - component.popMsg.main.width()) / 2,
                     });
-                    component.popMsg.close.hide();
-                    component.popMsg.main.show();
+                    $('.icon', main).css('background', background);
+                    $('.closeBtn', main).hide();
+                    if (!loading) {
+                        main.slideDown(function () {
+                            setTimeout(function () {
+                                main.slideUp(function () {
+                                    main.remove();
+                                });
+                            }, 500)
+                        });
+                    }
+                    else if (loading) {
+                        main.show();
+                        return {
+                            closeLoading: function () {
+                                main.remove();
+                            }
+                        }
+                    }
                 };
 
-                var topShow = function (background,text) {
-                    if(component.popMsg.main.css('display')!=='none'){
-                        component.popMsg.main.hide();
-                    }
-                    component.popMsg.main.css({
+                var topShow = function (background, text) {
+                    var main = component.popMsg.main.clone(true);
+                    $('body').append(main);
+                    $('.text', main).text(text).attr('title', text).css('font-size', '14px');
+                    main.css({
                         top: -0,
                         left: 377,
                     });
-                    component.popMsg.icon.css('background',background);
-                    component.popMsg.close.show();
-                    component.popMsg.main.slideDown();
+                    $('.icon', main).css('background', background);
+
+                    main.slideDown();
                 }
 
-                console.log(component.popMsg.close.length);
                 switch (type) {
                     case 'success':
-                        centerShow(text);
+                        centerShow('url("../img/pop-mid.png") no-repeat center -17px', '操作成功');
                         break;
                     case 'fail':
-                        topShow('url("../img/pop-mid.png") no-repeat center center',text);
+                        topShow('url("../img/pop-mid.png") no-repeat center 9px', '操作失败' + text);
                         break;
                     case 'loading':
-                        centerShow(text);
+                        return centerShow('url("../img/loading.gif") no-repeat center center', '请求中，请稍等', true);
                         break;
                     case 'error':
-                        topShow('url("../img/pop-mid.png") no-repeat center center',text);
+                        topShow('url("../img/pop-mid.png") no-repeat center 9px', '请检查网络连接');
                         break;
                 }
             },
@@ -119,7 +146,9 @@ define(function (require, exports, module) {
             addEventListener: function () {
 
                 component.popMsg.close.bind('click', function () {
-                    component.popMsg.main.slideUp();
+                    $(this).parent().slideUp(function () {
+                        $(this).remove();
+                    })
                 });
 
                 component._window.bind('resize', function () {
@@ -140,13 +169,14 @@ define(function (require, exports, module) {
 
                     component.popup.tip.hide();
 
-                    $.ajax({
+                    $.ajax({    //登录框点击登录
                         url: 'http://localhost:3000/authentication',
                         data: {method: 'login', username: userName, password: pwd},
                         type: 'POST',
                         dataType: 'json',
                         success: function (data) {
                             if (data.returnState) { //登录成功
+                                controller.component.popMsg('success');
                                 component.popup.tip.hide();
                                 component.loginArea.hide();
                                 component.buttons.login.hide();
@@ -262,7 +292,7 @@ define(function (require, exports, module) {
             },
             common: {
                 addTitle: function () {
-                    console.log('nav>div>div>a[data-pageName=' + thisPageName + ']')
+
 
                     var titleText = $('nav>div a[data-pageName=' + thisPageName + ']').text()
                     $('.content').prepend('<h1>' + titleText + '</h1');
@@ -363,26 +393,31 @@ define(function (require, exports, module) {
                                 inputArr.push(obj);
                             });
 
-                            $.ajax({
+                            var pop = controller.component.popMsg('loading');
+
+                            $.ajax({    //提交修改表格
                                 url: 'http://localhost:3000/' + path,
                                 data: {data: JSON.stringify(inputArr), method: method},
                                 type: type,
                                 dataType: 'json',
                                 success: function (data) {
+                                    pop.closeLoading();
                                     if (data.returnState === -2) {
                                         controller.component.loginFirst();
                                         btn.one('click', listener(btn, type, method));
                                     }
                                     else if (data.returnState === -1) {
-                                        alert(data.returnMsg);
+                                        controller.component.popMsg('fail', data.returnMsg);
                                         btn.one('click', listener(btn, type, method));
                                     }
                                     else if (data.returnState === 1) {
+                                        controller.component.popMsg('success');
                                         controller.page.switchPage(thisPageName);
                                     }
                                 },
                                 error: function () {
-                                    alert('请检查网络连接');
+                                    controller.component.popMsg('error');
+                                    pop.closeLoading();
                                     btn.one('click', listener(btn, type, method));
                                 }
                             });
@@ -419,21 +454,26 @@ define(function (require, exports, module) {
                             str += i + ': ' + obj.title + obj.kind + ', ' + obj.truth + '\n';
                         }
                         component.page['generateDispatch'].resultText.text(str + 'computing...\n');
-                        $.ajax({
+                        var pop = controller.component.popMsg('loading');
+
+                        $.ajax({    //提交以决策
                             url: 'http://localhost:3000/generatedispatch',
                             data: {data: JSON.stringify(input)},
                             type: 'POST',
                             dataType: 'json',
                             success: function (data) {
+                                pop.closeLoading();
                                 if (data.returnState === -2) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
+
                                     component.page['generateDispatch'].resultText.text(str + '\n 结果如下： \n' + data.returnMsg + '\n');
                                 }
                             },
                             error: function () {
-                                alert('请检查网络连接');
+                                controller.component.popMsg('error');
+                                pop.closeLoading();
                             }
                         });
                     });
@@ -444,16 +484,22 @@ define(function (require, exports, module) {
                         path = '';
                     path = thisPageName.split(type)[1].toLowerCase();
 
+                    var pop = controller.component.popMsg('loading');
+
                     if (type === 'add') {
-                        $.ajax({
+                        $.ajax({    //获取初始add页面功能
                             url: 'http://localhost:3000/' + path,
                             type: 'GET',
                             dataType: 'json',
                             success: function (data) {
+
+                                pop.closeLoading();
+
                                 if (data.returnState === -2) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
+
 
                                     var selectFields = thisPageName.indexOf('Learn') > -1 ? {} : {
                                         Frequency: ['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
@@ -471,20 +517,26 @@ define(function (require, exports, module) {
                                 }
                             },
                             error: function () {
-                                alert('请检查网络连接')
+                                controller.component.popMsg('error');
+                                pop.closeLoading();
+
                             }
                         })
                     }
                     else if (type === 'modi') {
-                        $.ajax({
+
+                        $.ajax({    //获取初始modi页面功能
                             url: 'http://localhost:3000/' + path,
                             type: 'GET',
                             dataType: 'json',
                             success: function (data) {
+                                pop.closeLoading();
+
                                 if (data.returnState === -2) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
+
                                     var selectFields = thisPageName.indexOf('Learn') > -1 ? {} : {
                                         Frequency: ['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
                                         Confidence: ['0.5', '0.6', '0.7', '0.8', '0.9']
@@ -500,23 +552,28 @@ define(function (require, exports, module) {
                                 }
                             },
                             error: function () {
-                                alert('请检查网络连接')
+                                pop.closeLoading();
+
+                                controller.component.popMsg('error');
                             }
                         })
                     }
                 },
 
                 autoGenerateDispatch: function () {
-                    $.ajax({
+                    var pop = controller.component.popMsg('loading');
+
+                    $.ajax({    //获取自动生成决策页面功能
                         url: 'http://localhost:3000/autoGenerateDispatch',
                         type: 'GET',
                         dataType: 'json',
                         success: function (data) {
+                            pop.closeLoading();
                             if (data.returnState === -2) {
                                 controller.component.loginFirst();
                             }
                             else if (data.returnState === 1) {
-                                console.log(thisPageName)
+
                                 var learnResult = data['learnResult'],
                                     similarityResult = data['similarityResult'];
 
@@ -531,7 +588,9 @@ define(function (require, exports, module) {
                             }
                         },
                         error: function () {
-                            alert('请检查网络连接')
+                            pop.closeLoading();
+                            controller.component.popMsg('error');
+
                         }
                     })
                 },
@@ -586,13 +645,17 @@ define(function (require, exports, module) {
                         }
                         else {
                             tip.text('提交中···');
-                            $.ajax({
+                            var pop = controller.component.popMsg('loading');
+
+                            $.ajax({    //提交修改密码
                                 url: 'http://localhost:3000/authentication',
                                 data: obj,
                                 type: 'POST',
                                 dataType: 'json',
                                 success: function (data) {
+                                    pop.closeLoading();
                                     if (data.returnState) { //登录成功
+                                        controller.component.popMsg('success');
                                         tip.text('修改密码成功');
                                         setTimeout(function () {
                                             window.location.reload();
@@ -603,6 +666,8 @@ define(function (require, exports, module) {
                                     }
                                 },
                                 error: function () {
+                                    pop.closeLoading();
+
                                     tip.text('请检查网络连接');
                                     submit.one('click', clickFunc);
                                 }
@@ -640,13 +705,24 @@ define(function (require, exports, module) {
         controller.component.popLogin();
         controller.page.switchPage('index');  //默认页
         thisPageName = 'index';
-
+        controller.tools.loadImg('../img/pop-mid.png', function () {
+            console.log('loaded');
+        });
+        controller.tools.loadImg('../img/loading.gif', function () {
+            console.log('loaded');
+        });
         //controller.map.mapInit();
 
-        setTimeout(function () {
 
-            controller.component.popMsg('fail', 'jiazaizhong');
-        }, 1000)
+        //setTimeout(function () {
+        //  var pop =   controller.component.popMsg('loading', new Date().getSeconds());
+        //    console.log(pop)
+        //    setTimeout(function () {
+        //        pop.closeLoading();
+        //    },2000)
+        //
+        //}, 1000)
+
 
     };
 })

@@ -4,7 +4,7 @@ var router = express.Router();
 
 var handlers = require('../requestHandlers');
 router.get('/',handlers.autoLogin);
-router.get('/',handlers.index.bind(handlers));
+
 router.post('/authentication',handlers.authentication.bind(handlers));
 
 router.all('/generatedispatch',handlers.autoLogin);

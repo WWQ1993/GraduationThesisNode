@@ -390,6 +390,9 @@ nav > div > div > a {
     font-size: 23px;
     color: white;
     vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .popArea .icon {
