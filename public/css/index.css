@@ -378,15 +378,14 @@ nav > div > div > a {
     opacity: 0.6;
     z-index: 999;
     border-radius: 10px;
-    text-align: center;
-
 }
 
 .popArea .text {
     display: inline-block;
     line-height: 60px;
-    max-width: 195px;
-    margin: auto;
+     width: 195px;
+    text-align: center;
+
     font-size: 23px;
     color: white;
     vertical-align: middle;
@@ -403,7 +402,7 @@ nav > div > div > a {
     height: 32px;
     vertical-align: middle;
 
-    margin-right: 16px;
+    margin-left: 16px;
 }
 
 .popArea .closeBtn {

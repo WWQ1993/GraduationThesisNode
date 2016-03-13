@@ -115,7 +115,7 @@ define(function (require, exports, module) {
                     $('.text', main).text(text).attr('title', text).css('font-size', '14px');
                     main.css({
                         top: -0,
-                        left: 377,
+                        left: (component._window.width() - component.popMsg.main.width()) / 2,
                     });
                     $('.icon', main).css('background', background);
 
@@ -127,7 +127,7 @@ define(function (require, exports, module) {
                         centerShow('url("../img/pop-mid.png") no-repeat center -17px', '操作成功');
                         break;
                     case 'fail':
-                        topShow('url("../img/pop-mid.png") no-repeat center 9px', '操作失败' + text);
+                        topShow('url("../img/pop-mid.png") no-repeat center 9px', '操作失败：' + text);
                         break;
                     case 'loading':
                         return centerShow('url("../img/loading.gif") no-repeat center center', '请求中，请稍等', true);
