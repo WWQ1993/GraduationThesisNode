@@ -2,7 +2,7 @@
 ## 所需文件
 1. [node.js v5.4.0](http://nodejs.org/dist/v5.4.0/node-v5.4.0.tar.gz)
 2. MYSQL5.6
-3. firefight0806.sql
+3. [firefight0806.sql](https://github.com/WWQ1993/GraduationThesisNode/blob/master/doc/firefight0806.sql)
 
 ## 运行环境
 1. window 7 及以上
