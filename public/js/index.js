@@ -77,7 +77,7 @@ define(function (require, exports, module) {
         },
 
         component: {
-            popMsg: function (type, text) {
+            popMsg: function (type, text) { //设置某类型提示弹出框，显示传入文字
 
                 var centerShow = function (background, text, loading) {
                     var main = component.popMsg.main.clone(true);
@@ -145,7 +145,7 @@ define(function (require, exports, module) {
             },
             addEventListener: function () {
 
-                component.popMsg.close.bind('click', function () {
+                component.popMsg.close.bind('click', function () {  //弹出消息框右上角按钮点击事件
                     $(this).parent().slideUp(function () {
                         $(this).remove();
                     })
@@ -291,9 +291,7 @@ define(function (require, exports, module) {
 
             },
             common: {
-                addTitle: function () {
-
-
+                addTitle: function () { //添加窗口标题
                     var titleText = $('nav>div a[data-pageName=' + thisPageName + ']').text()
                     $('.content').prepend('<h1>' + titleText + '</h1');
                 },
@@ -374,8 +372,8 @@ define(function (require, exports, module) {
                     }
                     $('.botInput').html(str);
                 },
-                submitBtnsInit: function (path) {
-                    function listener(btn, type, method) {
+                submitBtnsInit: function (path) {   //设置底部按钮功能
+                    function listener(btn, type, method) {  //根据传入不同参数，请求提交不同请求数据给服务器
                         return function () {
                             var inputArr = [];
                             $('.content .botInput>span').each(function () {
@@ -590,7 +588,6 @@ define(function (require, exports, module) {
                         error: function () {
                             pop.closeLoading();
                             controller.component.popMsg('error');
-
                         }
                     })
                 },
