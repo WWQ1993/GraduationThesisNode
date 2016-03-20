@@ -306,7 +306,7 @@ nav > div > div > a {
     background-color: rgba(179, 179, 179, 0.37);
 }
 
-.content img {
+.content img.bg {
 
     width: 100%;
     height: 500px;

@@ -50,7 +50,7 @@ head
         button.btn6
 .content
 script(type='text/html',id='index')
-    img(src='./img/backImg.jpg')
+    img.bg(src='./img/backImg.jpg')
 
 script(type='text/html',id='generateDispatch')
     link(rel='stylesheet', href='css/dispatch.css')
@@ -61,7 +61,7 @@ script(type='text/html',id='generateDispatch')
             .item
                 span.tag 发生地点：
                 span.right
-                    input
+                    input(value='天津大学北洋园校区')
                     select
                         option 肯定(1.0,0.9)
                         option 大概(0.8,0.7)

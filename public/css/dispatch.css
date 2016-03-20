@@ -74,10 +74,11 @@
 }
 
 .content .result textarea {
+    display: block;
+    display: none;
     width: 90%;
     height: 45%;
     margin: auto;
-    display: block;
     resize: vertical;
     outline: none;
     overflow-y: scroll;
@@ -87,5 +88,5 @@
 #container {
     margin: auto;
     width: 90%;
-    height: 50%;
+    height: 90%;
 }

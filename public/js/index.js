@@ -437,6 +437,8 @@ define(function (require, exports, module) {
 
                 },
                 generateDispatch: function () {
+                    controller.map.mapInit();
+
                     var thisPageComponent = component.page['generateDispatch'] || {};
                     thisPageComponent.inputArea = thisPageComponent.inputArea || $('.content .information .buttons');
                     thisPageComponent.resultText = thisPageComponent['resultText'] || $('.content .result textarea');
@@ -444,6 +446,7 @@ define(function (require, exports, module) {
 
                     //点击确认键
                     component.page['generateDispatch'].inputArea.eq(0).click(function () {
+                        controller.map.getRoad($('.content .information .item input').eq(0).val());
                         var str = '',
                             i = 0,
                             input = controller.component.getInput();
@@ -677,20 +680,36 @@ define(function (require, exports, module) {
         },
 
         map: {
+            map:null,
             mapInit: function () {
                 //基本地图加载
-                var map = new AMap.Map('container');
+                controller.map.map = new AMap.Map('container');
 
-                //步行导航
+
+            },
+            getRoad: function (pos) {
+                //controller.map.map.plugin(["AMap.Driving"], function() {
+                //    var DrivingOption = {
+                //        policy: AMap.DrivingPolicy.LEAST_TIME
+                //    };
+                //    MDrive = new AMap.Driving(DrivingOption); //构造驾车导航类
+                //    AMap.event.addListener(MDrive, "complete", function () {
+                //
+                //    }); //返回导航查询结果
+                //    MDrive.search('天津大学', '南开大学'); //根据起终点坐标规划驾车路线
+                //});
+                controller.map.map.clearMap();
                 AMap.service(["AMap.Driving"], function () {
                     var driving = new AMap.Driving({
-                        map: map
+                        map: controller.map.map
                         //panel: "panel"
                     }); //构造路线导航类
                     // 根据起终点坐标规划步行路线
+
+
                     driving.search([
-                        {keyword: '北京市地震局(公交站)'},
-                        {keyword: '亦庄文化园(地铁站)'}
+                        {keyword: '津南区津沽路津南消防支队'},
+                        {keyword: pos}
                     ]);
                 });
             }
@@ -700,26 +719,13 @@ define(function (require, exports, module) {
     exports.init = function () {
         controller.component.addEventListener();
         controller.component.popLogin();
-        controller.page.switchPage('index');  //默认页
-        thisPageName = 'index';
+        controller.page.switchPage('generateDispatch');  //默认页
+        thisPageName = 'generateDispatch';
         controller.tools.loadImg('../img/pop-mid.png', function () {
             console.log('loaded');
         });
         controller.tools.loadImg('../img/loading.gif', function () {
             console.log('loaded');
         });
-        //controller.map.mapInit();
-
-
-        //setTimeout(function () {
-        //  var pop =   controller.component.popMsg('loading', new Date().getSeconds());
-        //    console.log(pop)
-        //    setTimeout(function () {
-        //        pop.closeLoading();
-        //    },2000)
-        //
-        //}, 1000)
-
-
     };
 })
