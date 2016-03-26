@@ -105,14 +105,16 @@ nav > div:first-of-type {
     left: 0;
 }
 
-nav > div:last-of-type {
+nav > div.system {
     left: 260px;
 }
 
 nav > div.knowledge {
     left: 8px;
 }
-
+nav > div.learn {
+    left: 386px;
+}
 nav > div a {
     background-color: #f4f4f4;
     display: block;
@@ -146,7 +148,7 @@ nav > div > a:after {
     height: 0;
 }
 
-nav > div > a.btn21:after, nav > div > a.btn22:after, nav > div > a.btn31:after {
+nav > div > a.btn21:after, nav > div > a.btn22:after, nav > div > a.btn31:after,nav > div > a.btn321:after,nav > div > a.btn322:after {
     content: none;
 }
 

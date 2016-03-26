@@ -67,7 +67,7 @@ define(function (require, exports, module) {
 
                 return str + '</table>';
             },
-            loadImg: function (url,callback) {
+            loadImg: function (url, callback) {
                 var img = new Image();
                 img.src = url;
                 $(img).load(function () {
@@ -134,6 +134,9 @@ define(function (require, exports, module) {
                         break;
                     case 'error':
                         topShow('url("../img/pop-mid.png") no-repeat center 9px', '请检查网络连接');
+                        break;
+                    case 'loadingOther':
+                        return centerShow('url("../img/loading.gif") no-repeat center center', text, true);
                         break;
                 }
             },
@@ -240,7 +243,7 @@ define(function (require, exports, module) {
                     });
                 });
                 //含有二级选项的一级选项点击事件
-                $('nav>div>a:not(.btn21,.btn22,.btn31)').each(function () {
+                $('nav>div>a:not(.btn21,.btn22,.btn31,.btn321,.btn322)').each(function () {
                     $(this).click(function (e) {
                         e.stopPropagation();
                     });
@@ -251,7 +254,7 @@ define(function (require, exports, module) {
                         $(this).nextAll('div:eq(0)').show();
                     })
                 });
-                $('nav>div>div>a,nav>div>a.btn21,nav>div>a.btn22, nav>div>a.btn31').each(function () {
+                $('nav>div>div>a,nav>div>a.btn21,nav>div>a.btn22, nav>div>a.btn31, nav>div>a.btn321, nav>div>a.btn322').each(function () {
                     $(this).click(function (e) {
                         controller.page.switchPage($(this).attr('data-pageName'));
                     });
@@ -438,14 +441,22 @@ define(function (require, exports, module) {
                 },
                 generateDispatch: function () {
                     controller.map.mapInit();
-
+                    controller.map.getPos();
                     var thisPageComponent = component.page['generateDispatch'] || {};
-                    thisPageComponent.inputArea = thisPageComponent.inputArea || $('.content .information .buttons');
+                    thisPageComponent.inputArea = thisPageComponent.inputArea || $('.content .information .buttons button');
                     thisPageComponent.resultText = thisPageComponent['resultText'] || $('.content .result textarea');
                     component.page['generateDispatch'] = thisPageComponent;
 
                     //点击确认键
                     component.page['generateDispatch'].inputArea.eq(0).click(function () {
+
+                        if (!static.pos) {
+                            var pop = controller.component.popMsg('loadingOther', '定位中，请稍等');
+                            setTimeout(function () {
+                                pop.closeLoading();
+                            }, 1000)
+                            return;
+                        }
                         controller.map.getRoad($('.content .information .item input').eq(0).val());
                         var str = '',
                             i = 0,
@@ -680,41 +691,88 @@ define(function (require, exports, module) {
         },
 
         map: {
-            map:null,
+            map: null,
             mapInit: function () {
                 //基本地图加载
                 controller.map.map = new AMap.Map('container');
+            },
+            getPos: function () {
+                var map = controller.map.map, geolocation;
+                //加载地图，调用浏览器定位服务
 
+                map.plugin('AMap.Geolocation', function () {
+                    geolocation = new AMap.Geolocation({
+                        enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                        timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+                        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                        zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                        buttonPosition: 'RB'
+                    });
+                    map.addControl(geolocation);
+                    geolocation.getCurrentPosition();
+                    AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+                    AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+                });
+                //解析定位结果
+                function onComplete(data) {
+                    var str = ['定位成功'];
+                    str.push('经度：' + data.position.getLng());
+                    str.push('纬度：' + data.position.getLat());
+                    str.push('精度：' + data.accuracy + ' 米');
+                    str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+                    static.position=data.position;
 
+                    static.pos = {
+                        lng: data.position.getLng(),
+                        lat: data.position.getLat()
+                    }
+                }
+
+                //解析定位错误信息
+                function onError(data) {
+                    console.log('定位失败');
+                }
             },
             getRoad: function (pos) {
-                //controller.map.map.plugin(["AMap.Driving"], function() {
-                //    var DrivingOption = {
-                //        policy: AMap.DrivingPolicy.LEAST_TIME
-                //    };
-                //    MDrive = new AMap.Driving(DrivingOption); //构造驾车导航类
-                //    AMap.event.addListener(MDrive, "complete", function () {
-                //
-                //    }); //返回导航查询结果
-                //    MDrive.search('天津大学', '南开大学'); //根据起终点坐标规划驾车路线
-                //});
+                var posLatLng = null;
                 controller.map.map.clearMap();
-                AMap.service(["AMap.Driving"], function () {
-                    var driving = new AMap.Driving({
-                        map: controller.map.map
-                        //panel: "panel"
-                    }); //构造路线导航类
-                    // 根据起终点坐标规划步行路线
+                AMap.service('AMap.Geocoder', function () {//回调函数
+                    var geocoder = null;
+                    //实例化Geocoder
+                    geocoder = new AMap.Geocoder({
+                        city: "022"
+                    });
+                    geocoder.getLocation(pos, function (status, result) {
+                        if (status === 'complete' && result.info === 'OK') {
+                            console.log(result.geocodes.location);
+                            //posLatLng.lat = result.geocodes[0].location.lat;
+                            //posLatLng.lng = result.geocodes[0].location.lng;
+                            //console.log(posLatLng.lat + '  ' + posLatLng.lng);
+                            AMap.service(["AMap.Driving"], function () {
+                                var driving = new AMap.Driving({
+                                    map: controller.map.map
+                                    //panel: "panel"
+                                }); //构造路线导航类
+                                // 根据起终点坐标规划步行路线
 
+                                console.log('dds  ' + static.pos.lng + '  ' + static.pos.lat)
 
-                    driving.search([
-                        {keyword: '津南区津沽路津南消防支队'},
-                        {keyword: pos}
-                    ]);
+                                //driving.search(new AMap.LngLat(116.379028, 39.865042), new AMap.LngLat(116.427281, 39.903719));
+                                driving.search(
+                                    static.position,result.geocodes[0].location
+                                );
+                            });
+                        } else {
+                            //获取经纬度失败
+                        }
+                    });
                 });
+
+
             }
         }
-    }
+    };
+    var static = {};
 
     exports.init = function () {
         controller.component.addEventListener();
