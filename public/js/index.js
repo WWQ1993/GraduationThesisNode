@@ -720,7 +720,7 @@ define(function (require, exports, module) {
                     str.push('纬度：' + data.position.getLat());
                     str.push('精度：' + data.accuracy + ' 米');
                     str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
-                    static.position=data.position;
+                    static.position = data.position;
 
                     static.pos = {
                         lng: data.position.getLng(),
@@ -745,22 +745,13 @@ define(function (require, exports, module) {
                     geocoder.getLocation(pos, function (status, result) {
                         if (status === 'complete' && result.info === 'OK') {
                             console.log(result.geocodes.location);
-                            //posLatLng.lat = result.geocodes[0].location.lat;
-                            //posLatLng.lng = result.geocodes[0].location.lng;
-                            //console.log(posLatLng.lat + '  ' + posLatLng.lng);
                             AMap.service(["AMap.Driving"], function () {
                                 var driving = new AMap.Driving({
                                     map: controller.map.map
                                     //panel: "panel"
                                 }); //构造路线导航类
                                 // 根据起终点坐标规划步行路线
-
-                                console.log('dds  ' + static.pos.lng + '  ' + static.pos.lat)
-
-                                //driving.search(new AMap.LngLat(116.379028, 39.865042), new AMap.LngLat(116.427281, 39.903719));
-                                driving.search(
-                                    static.position,result.geocodes[0].location
-                                );
+                                driving.search(static.position, result.geocodes[0].location);
                             });
                         } else {
                             //获取经纬度失败
