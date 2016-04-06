@@ -58,17 +58,19 @@ script(type='text/html',id='generateDispatch')
         .title 火灾信息
         .items
             .item
-                span.tag 发生地点：
+                span.tag(data-id='t_pos') 发生地点：
                 span.right
                     input(value='天津大学北洋园校区')
                     select
+
                         option 肯定(1.0,0.9)
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 火灾类别：
+                span.tag(data-id='t_firelevel') 火灾类别：
                 span.right
                     select
+                        option
                         option 一般性建筑火灾
                         option 高层建筑火灾
                         option 地下空间火灾
@@ -83,9 +85,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 火灾面积：
+                span.tag(data-id='t_area') 火灾面积：
                 span.right
                     select
+                        option
                         option 大于1000平米
                         option 少于1000平米
                         option 少于600平米
@@ -96,9 +99,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 火灾容积：
+                span.tag(data-id='t_volume') 火灾容积：
                 span.right
                     select
+                        option
                         option 大于10000立方米
                         option 少于10000立方米
                         option 少于5000立方米
@@ -109,9 +113,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 呼叫次数：
+                span.tag(data-id='t_callingtime') 呼叫次数：
                 span.right
                     select
+                        option
                         option 大于5次
                         option 大于3次且小于5次
                         option 少于3次
@@ -120,9 +125,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 所处阶段：
+                span.tag(data-id='t_stage') 所处阶段：
                 span.right
                     select
+                        option
                         option 初期
                         option 发展期
                     select
@@ -130,9 +136,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 火灾火势：
+                span.tag(data-id='t_fire') 火灾火势：
                 span.right
                     select
+                        option
                         option 较小
                         option 小
                         option 大
@@ -143,9 +150,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 蔓延状态：
+                span.tag(data-id='t_spreading') 蔓延状态：
                 span.right
                     select
+                        option
                         option 迅猛
                         option 迅速
                         option 快
@@ -155,9 +163,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 被困人数：
+                span.tag(data-id='t_trappedpeople') 被困人数：
                 span.right
                     select
+                        option
                         option 大于15
                         option 大于10
                         option 小于10
@@ -168,9 +177,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 受伤人数：
+                span.tag(data-id='t_injuredpeople') 受伤人数：
                 span.right
                     select
+                        option
                         option 20人以上
                         option 10人以上
                         option 小于10
@@ -181,9 +191,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 死亡人数：
+                span.tag(data-id='t_deathtoll') 死亡人数：
                 span.right
                     select
+                        option
                         option 大于10人
                         option 大于3人以上
                         option 小于3人
@@ -193,9 +204,10 @@ script(type='text/html',id='generateDispatch')
                         option 大概(0.8,0.7)
                         option 可能(0.6,0.5)
             .item
-                span.tag 突变险情：
+                span.tag(data-id='t_danger') 突变险情：
                 span.right
                     select
+                        option
                         option 无
                         option 爆炸
                     select

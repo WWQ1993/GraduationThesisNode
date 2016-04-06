@@ -1,14 +1,15 @@
 var express = require('express');
 var router = express.Router();
+var handlers = require('../handler/requestHandlers');
 
 
-var handlers = require('../requestHandlers');
 router.get('/',handlers.autoLogin);
 
 router.post('/authentication',handlers.authentication.bind(handlers));
 
 router.all('/generatedispatch',handlers.autoLogin);
 router.post('/generatedispatch',handlers.decision);
+router.all('/getoptions',handlers.getoptions);
 
 router.all('/fireType',handlers.autoLogin);
 router.get('/fireType',handlers.fireType.get.bind(handlers));

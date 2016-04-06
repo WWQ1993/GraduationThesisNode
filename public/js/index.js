@@ -274,14 +274,36 @@ define(function (require, exports, module) {
                     var options = $("option:selected", $(this));
                     input.push({
                         title: $('.tag', $(this)).text(),
-                        kind: options.eq(1).text() ? options.eq(0).text() : $('input', $(this)).val(),
-                        truth: options.eq(1).text() || options.eq(0).text()
+                        detail: options.eq(1).text() ? options.eq(0).text() : $('input', $(this)).val(),
+                        truth: options.eq(1).text() || options.eq(0).text(),
+                        id: $('.tag', $(this)).attr('data-id')
                     });
                 });
                 return input;
             }
         },
         page: {
+            getOptions: function () {
+                $.ajax({
+                    url: 'http://localhost:3000/getoptions',
+                    data: {},
+                    type: "GET",
+                    dataType: 'json',
+                    success: function (data) {
+                        var result = data['result'];
+                        for (var name in result) {
+                            var str = '<option></option>';
+                            for (var i = 0, j = result[name].length; i < j; i++) {
+                                str += '<option>' + result[name][i] + '</option>';
+                            }
+                            $('span[data-id="' + name + '"]').siblings('.right').find('select:eq(0)').html(str)
+                        }
+                    },
+                    error: function () {
+                        controller.component.popMsg('error');
+                    }
+                })
+            },
             switchPage: function (pageName) {
                 thisPageName = pageName;
                 $('.content').html($('#' + pageName).text());
@@ -440,6 +462,9 @@ define(function (require, exports, module) {
 
                 },
                 generateDispatch: function () {
+
+                    controller.page.getOptions();
+
                     controller.map.mapInit();
                     controller.map.getPos();
                     var thisPageComponent = component.page['generateDispatch'] || {};
@@ -450,13 +475,14 @@ define(function (require, exports, module) {
                     //点击确认键
                     component.page['generateDispatch'].inputArea.eq(0).click(function () {
 
-                        if (!static.pos) {
-                            var pop = controller.component.popMsg('loadingOther', '定位中，请稍等');
-                            setTimeout(function () {
-                                pop.closeLoading();
-                            }, 1000)
-                            return;
-                        }
+                        //if (!static.pos) {    //取消注释
+                        //    var pop = controller.component.popMsg('loadingOther', '定位中，请稍等');
+                        //    setTimeout(function () {
+                        //        pop.closeLoading();
+                        //    }, 1500)
+                        //    return;
+                        //}
+
                         controller.map.getRoad($('.content .information .item input').eq(0).val());
                         var str = '',
                             i = 0,
@@ -744,7 +770,6 @@ define(function (require, exports, module) {
                     });
                     geocoder.getLocation(pos, function (status, result) {
                         if (status === 'complete' && result.info === 'OK') {
-                            console.log(result.geocodes.location);
                             AMap.service(["AMap.Driving"], function () {
                                 var driving = new AMap.Driving({
                                     map: controller.map.map
