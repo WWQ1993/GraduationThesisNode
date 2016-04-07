@@ -371,160 +371,150 @@ module.exports = {
 
         db.query('delete from mconclusion;')    //清空mconclusion
 
-        for (; i < inputArr.length; i++) {
-            var obj = inputArr[i],
-                title = obj.title.split('：')[0],
-                detail = obj.detail,
-                truth = obj.truth,
-                id = obj.id;
-            obj.truth1 = truth.split('(')[1].split(',')[0];
-            obj.truth0 = truth.split(')')[0].split(',')[1];
+        function outer() {
+            console.log('outer')
+
+            if (i < inputArr.length) {
+                var obj = inputArr[i],
+                    title = obj.title.split('：')[0],
+                    detail = obj.detail,
+                    truth = obj.truth,
+                    id = obj.id;
+                obj.truth1 = truth.split('(')[1].split(',')[0];
+                obj.truth0 = truth.split(')')[0].split(',')[1];
 
 
-            if (Array.isArray(dbConfig.detail[id]) && detail) {
-                var dbStr = "select FireLevelid,FireLevelName from t_firelevel where " + dbConfig.detail[id][0] +
-                    " IN (select " + dbConfig.detail[id][0] + "  from " + id + " where " +
-                    dbConfig.detail[id][1] + "='" + detail + "')";
-                var objbind = {
-                    input: obj,
-                    selectCb: function (err, results) {
-                        if (err) {
-                            res.status(200).send({returnState: -1, returnMsg: err.message});
-                            console.log(err.message);
-                            breakLoop = true;
-                            return
-                        }
-
-                        if (results.length > 0) { //查询成功
-                            for (var i = 0; i < results.length; i++) {
-                                console.log(results[i]);
-                                var fireLevelId = results[i]['FireLevelid'];
-                                var fireLevelName = results[i]['FireLevelName'],
-                                    f = this.input.truth1,
-                                    c = this.input.truth0;
-                                //设置详细显示
-                                tipStr = '（$事件*[' + this.input.detail + ']→' + this.input.title + '=> $事件→([' +
-                                    fireLevelName.split('火灾')[0] + '] &火灾)  (' +
-                                    f + ',' + (0.9 * c) + ')\n';
-
-                                console.log(tipStr)
-
-                                // 插进中间结论表---------
-                                var sql = "select * from mConclusion where conclusion = " + fireLevelId;
-
-                                db.query(sql, function (err, results) {
-                                    if (err) {
-                                        res.status(200).send({returnState: -1, returnMsg: err.message});
-                                        console.log(err.message);
-                                        breakLoop = true;
-                                        return
-                                    }
-                                    console.log(fireLevelId+' '+results.length )
-
-                                    if (results.length > 0) { //查询成功
-                                        var f1 = results[0]['f'],
-                                            c1 = results[0]['c'];
-
-                                        f = f * 1.0;
-                                        c = ( c * 0.9 * 1.0 * f);
-
-
-                                        console.log("f=" + f + " c=" + c + "   f1:" + f1 + " c1=" + c1);
-
-                                        f = (f * c * (1 - c1) + f1 * c1 * (1 - c)) / (c * (1 -
-                                            c1) + c1 * (1 - c));
-                                        c = (c * (1 - c1) + c1 * (1 - c)) / (c * (1 - c1) + c1 * (1 -
-                                            c) + (1 - c) * (1 - c1));
-
-                                        db.query("update mConclusion" + " set f=" + f +
-                                            ",c=" + c + " where conclusion = " + fireLevelId, function (err, results) {
-                                            if (err) {
-                                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                                console.log(err.message);
-                                                breakLoop = true;
-                                                return
-                                            }
-                                        });
-                                    } else {
-                                        db.query("insert into mConclusion(conclusion) values(" +
-                                            fireLevelId + ")", function (err, results) {
-                                            if (err) {
-                                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                                console.log(err.message);
-                                                breakLoop = true;
-                                                return
-                                            }
-                                        });
-
-                                        f = f * 1.0;
-                                        c = ( c * 0.9 * 1.0 * f);
-
-                                        db.query("update mConclusion" + " set f=" + f + ",c=" +
-                                            c + " where conclusion = " + fireLevelId, function (err, results) {
-                                            if (err) {
-                                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                                console.log(err.message);
-                                                breakLoop = true;
-                                                return
-                                            }
-                                        });
-                                    }
-
-                                });
+                if (Array.isArray(dbConfig.detail[id]) && detail) {
+                    var dbStr = "select FireLevelid,FireLevelName from t_firelevel where " + dbConfig.detail[id][0] +
+                        " IN (select " + dbConfig.detail[id][0] + "  from " + id + " where " +
+                        dbConfig.detail[id][1] + "='" + detail + "')";
+                    i++;
+                    var objbind = {
+                        input: obj,
+                        selectCb: function (err, results) {
+                            if (err) {
+                                res.status(200).send({returnState: -1, returnMsg: err.message});
+                                console.log(err.message);
+                                return
                             }
-                        }
-                        else {
-                            res.status(200).send({returnState: 0, returnMsg: id + '无法识别'});
-                            breakLoop = true;
+
+                            if (results.length > 0) { //查询成功
+
+                                var j =0;
+                                function inner(){
+
+                                    if( j < results.length)  {
+                                        console.log('inner')
+                                        var fireLevelId = results[j]['FireLevelid'];
+                                        var fireLevelName = results[j]['FireLevelName'],
+                                            f = objbind.input.truth1,
+                                            c = objbind.input.truth0;
+
+                                        j++;
+
+                                        //设置详细显示
+                                        tipStr += '（$事件*[' + objbind.input.detail + ']→' + objbind.input.title + '=> $事件→([' +
+                                            fireLevelName.split('火灾')[0] + '] &火灾)  (' +
+                                            f + ',' + (0.9 * c) + ')\n';
+
+
+                                        // 插进中间结论表---------
+                                        var sql = "select * from mConclusion where conclusion = " + fireLevelId;
+
+                                        db.query(sql, function (err, results) {
+                                            if (err) {
+                                                res.status(200).send({returnState: -1, returnMsg: err.message});
+                                                console.log(err.message);
+                                                return
+                                            }
+
+                                            if (results.length > 0) { //查询成功
+                                                var f1 = results[0]['f'],
+                                                    c1 = results[0]['c'];
+
+                                                f = f * 1.0;
+                                                c = ( c * 0.9 * 1.0 * f);
+
+
+                                                console.log("f=" + f + " c=" + c + "   f1:" + f1 + " c1=" + c1);
+
+                                                f = (f * c * (1 - c1) + f1 * c1 * (1 - c)) / (c * (1 -
+                                                    c1) + c1 * (1 - c));
+                                                c = (c * (1 - c1) + c1 * (1 - c)) / (c * (1 - c1) + c1 * (1 -
+                                                    c) + (1 - c) * (1 - c1));
+
+                                                db.query("update mConclusion" + " set f=" + f +
+                                                    ",c=" + c + " where conclusion = " + fireLevelId, function (err, results) {
+                                                    if (err) {
+                                                        res.status(200).send({returnState: -1, returnMsg: err.message});
+                                                        console.log(err.message);
+                                                        return
+                                                    }
+                                                    inner();
+                                                    return;
+
+                                                });
+                                            }
+                                            else {
+                                                console.log('insert')
+                                                db.query("insert into mConclusion(conclusion) values(" +
+                                                    fireLevelId + ")", function (err, results) {
+                                                    if (err) {
+                                                        res.status(200).send({returnState: -1, returnMsg: err.message});
+                                                        console.log(err.message);
+                                                        return
+                                                    }
+
+                                                    f = f * 1.0;
+                                                    c = ( c * 0.9 * 1.0 * f);
+
+                                                    db.query("update mConclusion" + " set f=" + f + ",c=" +
+                                                        c + " where conclusion = " + fireLevelId, function (err, results) {
+                                                        if (err) {
+                                                            res.status(200).send({returnState: -1, returnMsg: err.message});
+                                                            console.log(err.message);
+                                                            return
+                                                        }
+                                                        inner();
+                                                        return;
+
+                                                    });
+                                                });
+
+
+                                            }
+
+                                        });
+                                    }
+                                    else{
+                                        console.log('from here')
+                                        outer();
+                                    }
+
+                                }
+                                inner();
+                            }
+
+
                         }
                     }
+                    db.syncQuery(dbStr, objbind.selectCb.bind(objbind));
+
+
                 }
-
-                db.query(dbStr, objbind.selectCb.bind(objbind));
-
+                else {
+                    i++;
+                    outer();
+                    console.log('end')
+                }
             }
-        }
+
+        };
+
+        outer();
+
+        console.log(tipStr+'  111')
+
     }
 };
 
-
-//if (id==='t_pos') {  //确定事件类型
-//
-//    db.query('SELECT * FROM t_comburent where ComburentName ="' + detail + '"',
-//        function selectCb(err, results) {
-//            if (err) {
-//                res.status(200).send({returnState: -1, returnMsg: err.message});
-//                console.log(err.message);
-//                breakLoop = true;
-//                return
-//            }
-//            if (results.length > 0) { //查询成功
-//                var ComburentId = tools.getValFromResults(results, 'ComburentId', true)[0];
-//
-//                db.query('SELECT * FROM t_firetype where FireTypeId ="' + ComburentId + '"',
-//                    function selectCb(err, results) {
-//                        if (err) {
-//                            res.status(200).send({returnState: -1, returnMsg: err.message});
-//                            console.log(err.message);
-//                            breakLoop = true;
-//                            return
-//                        }
-//                        if (results.length > 0) { //查询成功
-//                            var fireType = tools.getValFromResults(results, 'FireTypeName', false, true)[0];
-//                            var msg = (fireType.id + (fireType.truth0 * truth0) + ' ' + (fireType.truth1 * truth1))
-//                            res.status(200).send({returnState: 1, returnMsg: msg});
-//
-//                        }
-//                        else {
-//                            res.status(200).send({returnState: 0, returnMsg: '"发生地点"无法识别'});
-//                            breakLoop = true;
-//                        }
-//                    });
-//
-//            }
-//            else {
-//                res.status(200).send({returnState: 0, returnMsg: '"发生地点"无法识别'});
-//                breakLoop = true;
-//            }
-//        });
-//}
