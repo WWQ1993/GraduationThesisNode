@@ -505,8 +505,8 @@ define(function (require, exports, module) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
+                                    console.log(data['dispatch']+'\n'+data['tipStr']);
 
-                                    component.page['generateDispatch'].resultText.text(str + '\n 结果如下： \n' + data.returnMsg + '\n');
                                 }
                             },
                             error: function () {
