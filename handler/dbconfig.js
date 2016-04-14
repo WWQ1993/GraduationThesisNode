@@ -15,6 +15,7 @@ module.exports={
         t_trappedpeople:['TrappedPeopleId','TrappedPeopleName'],
         t_volume:['VolumeId','VolumeName'],
         t_firetype:['FireTypeName','FireTypeName']
-    }
+    },
+    learnAndSimiLater:['t_stage','t_spreading','t_deathtoll']
 
 }

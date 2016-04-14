@@ -296,7 +296,7 @@ define(function (require, exports, module) {
                         title: $('.tag', $(this)).text(),
                         detail: options.eq(1).text() ? options.eq(0).text() : $('input', $(this)).val(),
                         truth: options.eq(1).text() || options.eq(0).text(),
-                        id: $('.tag', $(this)).attr('data-id')
+                        name: $('.tag', $(this)).attr('data-id')
                     });
                 });
                 return input;
