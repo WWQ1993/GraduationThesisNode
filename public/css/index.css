@@ -1,22 +1,41 @@
 
 html {
-    background-color: #F7F7F7;
+    background: white;
 }
 
 body {
     font: 14px/20px Microsoft YaHei, Helvetica, Tahoma;
-    font-size: 14px;
     width: 1020px;
     margin: auto;
-    border: 1px solid #e0e0e0;
     border-top: none;
-
+    background-color: #F7F7F7;
 }
 
 * {
+    font-family: Microsoft YaHei, Helvetica, Tahoma;
     margin: 0;
     padding: 0;
 }
+
+select,input{
+    outline: none;
+    border: 1px solid #4cb0f9;
+}
+select:hover,option:hover{
+    cursor: pointer;
+}
+select{
+    padding-left: 10px;
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+
+    /*在选择框的最右侧中间显示小箭头图片*/
+    background: url("../img/arrow.png") no-repeat scroll right center transparent;
+    background-size: 11px 9px;
+
+    /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+    padding-right: 14px;}
 
 a {
     text-decoration: none;
@@ -24,10 +43,6 @@ a {
 
 button {
     cursor: pointer;
-}
-
-input {
-    outline: none;
 }
 
 .navOuter {
@@ -42,7 +57,6 @@ nav {
     width: 1020px;
     height: 30px;
     background-color: #f4f4f4;
-    border-bottom: 3px solid white;
     position: relative;
     margin: auto;
 }
@@ -69,34 +83,33 @@ nav {
 }
 
 nav button {
-    background: url("../img/buttonBg.png") no-repeat center;
-    float: left;
-    height: 20px;
-    width: 110px;
-    font-size: .6rem;
-    margin: 5px .5rem;
+    height: 100%;
+    width: 20%;
+    font-size: 17px;
     border: 0;
     outline: none;
+    padding: 2px 6px;
+    background-color: rgb(116, 197, 255);
+    border-color: #4cb0f9;
+    color: #FFF;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
 }
 
 nav button.logout, nav button.login {
     float: right;
 }
 
-nav button:active {
-    cursor: default;
-    border: black solid 1px;
-}
-
 nav button:hover {
-    background-color: #b4b4b4;
+    outline: none;
+    background-color: #489be1;
 }
 
 nav > div {
-    width: 110px;
+    width: 20%;
     position: absolute;
-    top: 24px;
-    left: 134px;
+    left: 20%;
     z-index: 2;
     display: none;
 }
@@ -106,57 +119,54 @@ nav > div:first-of-type {
 }
 
 nav > div.system {
-    left: 260px;
+    left: 40%;;
 }
 
-nav > div.knowledge {
-    left: 8px;
-}
 nav > div.learn {
-    left: 386px;
+    left: 60%;
 }
+
 nav > div a {
-    background-color: #f4f4f4;
+    font-size: 16px;
     display: block;
     text-align: center;
-    width: 108px;
-    height: 20px;
-    border: 1px black solid;
-    border-top: none;
-    color: black;
+    width: 100%;
+    line-height: 30px;
+    color: white;
     position: relative;
+    background-color: rgb(138, 206, 255);
 }
 
 nav > div a:hover {
-    background-color: #e8e8e8;
+    background-color: rgb(129, 193, 238);
 }
 
-nav > div a:first-child {
-    border: 1px black solid;
-}
+/*nav > div a:first-child {*/
+/*border-top: 1px #a5a5a5 solid;*/
+/*}*/
 
 nav > div > a:after {
     content: '';
     position: absolute;
-    top: 5px;
-    right: 0px;
+    top: 9px;
+    right: 6px;
     z-index: 3;
-    border-color: transparent transparent transparent black;
+    border-color: transparent transparent transparent #5494C1;
     border-style: solid;
-    border-width: 5px;
+    border-width: 6px;
     width: 0;
     height: 0;
 }
 
-nav > div > a.btn21:after, nav > div > a.btn22:after, nav > div > a.btn31:after,nav > div > a.btn321:after,nav > div > a.btn322:after {
+nav > div > a.btn21:after, nav > div > a.btn22:after, nav > div > a.btn31:after, nav > div > a.btn321:after, nav > div > a.btn322:after {
     content: none;
 }
 
 nav > div > div {
     display: none;
     position: absolute;
-    top: 21px;
-    left: 109px;
+    top: 30px;
+    left: 100%;;
 }
 
 nav > div > div:first-of-type {
@@ -164,7 +174,7 @@ nav > div > div:first-of-type {
 }
 
 nav > div > div:last-of-type {
-    top: 42px;
+    top: 60px;
 }
 
 nav > div.system > div:last-of-type {
@@ -172,7 +182,7 @@ nav > div.system > div:last-of-type {
 }
 
 nav > div > div > a {
-    width: 128px;
+    width: 205px;
 }
 
 .tools {
@@ -180,7 +190,7 @@ nav > div > div > a {
     height: 40px;
     background-color: #f4f4f4;
     border-bottom: 5px solid deepskyblue;
-    margin-top: 33px;
+    margin-top: 34px;
 }
 
 .tools button {
@@ -194,11 +204,11 @@ nav > div > div > a {
 }
 
 .tools button:hover {
-    border: 4px solid #e2e2e2;
+    border: 4px solid #86d2ff;
 }
 
 .tools button:active {
-    border: 4px solid #d9d9d9;
+    border: 4px solid #7cc2ec;
     cursor: default;
 }
 
@@ -245,14 +255,14 @@ nav > div > div > a {
 .loginArea .popup {
     width: 280px;
     position: fixed;
-    background-color: rgb(239, 239, 239);
-    border: 5px solid rgb(209, 209, 209);
+    background-color: white;
+    border: 5px solid rgb(138, 206, 255);
 }
 
 .loginArea .popup .bar {
     width: 100%;
     height: 20px;
-    background-color: rgb(209, 209, 209);
+    background-color: rgb(138, 206, 255);
 }
 
 .loginArea .popup .bar a {
@@ -297,28 +307,33 @@ nav > div > div > a {
 .loginArea .popup .buttons a {
     display: inline-block;
     margin: auto 5px;
-    color: black;
-    background-color: rgb(209, 209, 209);
     line-height: 25px;
     font-size: 12px;
     width: 60px;
+    background-color: #4cb0f9;
+    border-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 4px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
 }
 
 .loginArea .popup .buttons a:active {
-    background-color: rgba(179, 179, 179, 0.37);
+    background-color: #428ece;
 }
 
 .content img.bg {
 
     width: 100%;
-    height: 500px;
+    height: 585px;
 }
 
 .content .password {
     width: 290px;
 
     margin: 30px auto;
-    border: 10px groove #DEF;
+    border: 10px outset #4CB0F9;
     padding: 15px;
     font-size: 18px;
 }
@@ -340,10 +355,21 @@ nav > div > div > a {
 }
 
 .content .password button {
-    width: 55px;
-    line-height: 25px;
+    width: 84px;
+    line-height: 30px;
     font-size: 16px;
-    margin: 10px 15px 0px 15px;
+    margin: 16px 6px;
+    background-color: #4cb0f9;
+    border-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 4px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
+}
+
+.content .password button:hover {
+    background-color: #428ece;
 }
 
 .content .password .tip {
@@ -377,15 +403,14 @@ nav > div > div > a {
     left: 0;
     display: none;
     background: #5079BB;
-    opacity: 0.6;
-    z-index: 999;
+     z-index: 999;
     border-radius: 10px;
 }
 
 .popArea .text {
     display: inline-block;
     line-height: 60px;
-     width: 195px;
+    width: 195px;
     text-align: center;
 
     font-size: 23px;
@@ -418,6 +443,7 @@ nav > div > div > a {
     left: 263px;
     top: 2px;
 }
-.popArea .closeBtn:active{
+
+.popArea .closeBtn:active {
     cursor: inherit;
 }

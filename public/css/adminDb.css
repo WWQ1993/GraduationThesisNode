@@ -16,16 +16,26 @@
 
 .content .twoInputLine button {
     width: 100px;
-
+    vertical-align: top;
+    background-color: #4cb0f9;
+    border-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 4px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
 }
-
+.content .twoInputLine button:hover{
+    text-decoration: none;
+    background-color: #428ece;
+    outline: none;
+}
 .table {
-
     max-height: 400px;
     overflow: auto;
     margin: 10px auto 30px auto;
     text-align: center;
-    border: 1px solid #bbbbbb;
+    /*border: 1px solid #bbbbbb;*/
 }
 
 .table table {
@@ -37,7 +47,7 @@
 .table td, .table th {
     border: 1px solid #add9c0;
     margin: -2px;
-    min-width: 80px;
+    min-width: 60px;
     padding: 5px;
 }
 
@@ -71,10 +81,10 @@
     box-sizing: border-box;
     display: inline-block;
     text-align: left;
-
+    margin-top: -2px;
 }
 .botInput>span:nth-child(2n+1){
-    border-right: 1px solid black;
+    border-right: 1px solid #4cb0f9;
 }
 
 .botInput > span .title {
@@ -85,8 +95,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-
+    font-size: 15px;
+    font-weight: 600;
     vertical-align: middle;
 }
 
@@ -114,6 +124,18 @@
     height: 30px;
     font-size: 16px;
     margin: auto 20px;
+    background-color: #4cb0f9;
+    border-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 4px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
+}
+.botBtns button:hover{
+    text-decoration: none;
+    background-color: #428ece;
+    outline: none;
 }
 .content h1{
     margin: 18px auto;

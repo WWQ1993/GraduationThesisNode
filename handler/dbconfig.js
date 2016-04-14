@@ -13,7 +13,8 @@ module.exports={
         t_spreading:['SpreadingId','SpreadingName'],
         t_stage:['StageId','StageName'],
         t_trappedpeople:['TrappedPeopleId','TrappedPeopleName'],
-        t_volume:['VolumeId','VolumeName']
+        t_volume:['VolumeId','VolumeName'],
+        t_firetype:['FireTypeName','FireTypeName']
     }
 
 }

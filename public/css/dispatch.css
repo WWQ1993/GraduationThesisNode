@@ -9,7 +9,6 @@
 .content > * {
     display: inline-block;
     height: 95%;
-    border: 1px #e0e0e0 double;
     margin-top: 10px;
 }
 
@@ -17,6 +16,7 @@
     margin-left: 4px;
     width: 400px;
     vertical-align: top;
+    border-right: 1px #4cb0f9 solid;
 }
 
 .content .title {
@@ -24,6 +24,8 @@
     top: -10px;
     left: 10px;
     z-index: 5;
+    font-size: 16px;
+    line-height: 32px;
 }
 
 .content .result {
@@ -34,14 +36,14 @@
 
 .content .information .items {
     width: 100%;
-    margin: 0px 5px 20px 5px;
+    margin: 0 5px 20px 5px;
 
 }
 
 .content .information .item {
     width: 95%;
     line-height: 34px;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .content .information .item .right {
@@ -51,7 +53,7 @@
 
 .content .information .item select {
     width: 130px;
-    height: 20px;
+    height: 21px;
     outline: none;
     background-color: #f4f4f4;
     margin-right: 10px;
@@ -70,23 +72,70 @@
 
 .content .information button {
     padding: 2px 6px;
-    margin: 0 3px;
+    margin: 0 10px;
+    width: 80px;
+    height: 28px;
+    background-color: #4cb0f9;
+    border-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 4px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
 }
 
-.content .result textarea {
-    display: block;
-    display: none;
-    width: 90%;
-    height: 45%;
-    margin: auto;
-    resize: vertical;
+.content .information button:hover {
+    text-decoration: none;
+    background-color: #428ece;
     outline: none;
-    overflow-y: scroll;
-    background-color: #fafafa;
+}
+
+
+.content .result .bar {
+    cursor: move;
+    margin-top: -3px;
+    width: 100%;
+    height: 20px;
+    background-color:rgb(138, 206, 255);
+}
+
+.content .result .bar:active {
+    cursor: move;
+}
+.content .result .bar a {
+    display: block;
+    float: right;
+    width: 20px;
+    line-height: 20px;
+    font-size: 25px;
+    margin-top: -3px;
+    text-align: center;
+    color: black;
+}
+
+.content .result .bar a:active {
+    color: white;
 }
 
 #container {
     margin: auto;
     width: 90%;
     height: 90%;
+}
+.content .result .resultPopDispatch,.content .result .resultPopExplain{
+    display: none;
+    position: fixed;
+    background-color:white;
+    border: 5px solid rgb(138, 206, 255);
+    width: 300px;
+    z-index: 2000;
+    overflow-y: auto;
+}
+.content .result .resultPopExplain{
+    width: 600px;
+    min-height: 300px;
+}
+
+.content .result .text{
+    background: white;
 }

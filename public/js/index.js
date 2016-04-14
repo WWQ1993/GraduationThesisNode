@@ -3,7 +3,7 @@
  */
 define(function (require, exports, module) {
     var $ = require('./jquery.js');
-
+    var tableTitle = require('./config.js')['tableTitle'];
     var thisPageName = '';
     var component = {
         _window: $(window),
@@ -54,7 +54,7 @@ define(function (require, exports, module) {
 
 
                 for (var k = 0; k < orderArr.length; k++) {
-                    str += '<th>' + [orderArr[k]] + '</th>';
+                    str += '<th>' + tableTitle[thisPageName][orderArr[k]] + '</th>';
                 }
 
                 for (; i < length; i++) {
@@ -120,6 +120,10 @@ define(function (require, exports, module) {
                     $('.icon', main).css('background', background);
 
                     main.slideDown();
+
+                    setTimeout(function () {
+                        main.slideUp(1000);
+                    }, 5000)
                 }
 
                 switch (type) {
@@ -158,7 +162,23 @@ define(function (require, exports, module) {
                     component.popup.main.css({
                         top: (component._window.height() - component.popup.main.height()) / 2,
                         left: (component._window.width() - component.popup.main.width()) / 2,
-                    })
+                    });
+                });
+                component._window.bind('resize_resultPopDispatch', function () {
+
+                    $('.resultPopDispatch').css({
+                        top: (component._window.height() - $('.resultPopDispatch').height()) / 2,
+                        left: (component._window.width() - $('.resultPopDispatch').width()) / 2,
+                    });
+
+
+                });
+                component._window.bind('resize_resultPopExplain', function () {
+
+                    $('.resultPopExplain').css({
+                        top: (component._window.height() - $('.resultPopExplain').height()) / 2,
+                        left: (component._window.width() - $('.resultPopExplain').width()) / 2,
+                    });
 
                 });
 
@@ -283,7 +303,7 @@ define(function (require, exports, module) {
             }
         },
         page: {
-            getOptions: function () {
+            getOptions: function () {   //生成派遣方案页面动态获取数据库选项数据
                 $.ajax({
                     url: 'http://localhost:3000/getoptions',
                     data: {},
@@ -326,7 +346,7 @@ define(function (require, exports, module) {
                     if (!add) {
                         //id input不可输入
                         $('.content .botInput>span:eq(0)>input').attr('readonly', "readonly");
-                        $('.content .botInput>span:eq(0)>input').css('backgroundColor', '#CCC');
+                        $('.content .botInput>span:eq(0)>input').css({'backgroundColor': '#CCC', 'color': '#F6F6F6','cursor' : 'no-drop'});
                     }
                     $('.table table').addClass('chooseAble');
                     //tr选中效果
@@ -354,10 +374,20 @@ define(function (require, exports, module) {
                     });
                 },
                 filter: function (originArr, tableChooseAble) {  //设置顶部过滤查询功能
+                    !function initSelect() {
+                        var str = '';
+                        for (var name in originArr[0]) {
+                            str += '<option data-name="' + name + '">' + tableTitle[thisPageName][name] + '</option>';
+                        }
+
+                        $('.content .twoInputLine select').html(str)
+                    }();
+
+
                     var input = $('.content .twoInputLine input');
 
                     $('.content .twoInputLine button').click(function () {
-                        var condition = $('.content .twoInputLine option:selected').text(), //查询条件
+                        var condition = $('.content .twoInputLine option:selected').attr('data-name'), //查询条件
                             value = input.val(),    //查询值
                             arr = [];
                         if (value === '') { //值为空时显示所有
@@ -389,10 +419,10 @@ define(function (require, exports, module) {
                             for (var i = 0; i < selectFields[name].length; i++) {
                                 str2 += '<option>' + selectFields[name][i] + '</option>';
                             }
-                            str += '<span><span class="title">' + name + ':</span><select>' + str2 + '</select></span>';
+                            str += '<span><span class="title" data-name="' + name + '">' + tableTitle[thisPageName][name] + ':</span><select>' + str2 + '</select></span>';
                         }
                         else {
-                            str += '<span><span class="title">' + name + ':</span><input type="text"  ></span>';
+                            str += '<span><span class="title" data-name="' + name + '">' + tableTitle[thisPageName][name] + ':</span><input type="text"  ></span>';
                         }
                     }
                     $('.botInput').html(str);
@@ -402,7 +432,7 @@ define(function (require, exports, module) {
                         return function () {
                             var inputArr = [];
                             $('.content .botInput>span').each(function () {
-                                var attrName = $('.title', $(this)).text();
+                                var attrName = $('.title', $(this)).attr('data-name');
                                 var value = '';
 
                                 if ($('select', $(this)).length > 0) {
@@ -467,6 +497,50 @@ define(function (require, exports, module) {
 
                     controller.map.mapInit();
                     controller.map.getPos();
+
+                    var resultPopDispatch = $('.result .resultPopDispatch');
+                    resultPopDispatch.find('.bar a').click(function (e) {
+                        resultPopDispatch.hide();
+                        e.stopPropagation();
+                    });
+
+                    var resultPopExplain = $('.result .resultPopExplain');
+                    resultPopExplain.find('.bar a').click(function (e) {
+                        resultPopExplain.hide();
+                        e.stopPropagation();
+                    });
+
+                    $('.content .result .bar').mousedown(function (e) {
+                        var pageX = e.pageX,
+                            pageY = e.pageY,
+                            that = $(this);
+
+                        $(window).bind('mousemove.resultPop', function (e) {
+                            that.parent().animate({
+                                top: '+=' + (e.pageY - pageY),
+                                left: '+=' + (e.pageX - pageX)
+
+                            }, 0)
+                            pageX = e.pageX;
+                            pageY = e.pageY;
+                        });
+                    });
+                    $('.content .result .bar').mouseup(function () {
+                        $(window).unbind('mousemove.resultPop')
+                    })
+
+                    $('.content .buttons .explain').click(function () {
+                        if (resultPopExplain.find('.text').text()) {
+                            $(window).trigger('resize_resultPopExplain');
+                            resultPopExplain.show();
+                        }
+                        else {
+                            controller.component.popMsg('fail', '请先提交派遣信息');
+
+                        }
+                    })
+
+
                     var thisPageComponent = component.page['generateDispatch'] || {};
                     thisPageComponent.inputArea = thisPageComponent.inputArea || $('.content .information .buttons button');
                     thisPageComponent.resultText = thisPageComponent['resultText'] || $('.content .result textarea');
@@ -474,6 +548,25 @@ define(function (require, exports, module) {
 
                     //点击确认键
                     component.page['generateDispatch'].inputArea.eq(0).click(function () {
+                        var item = $('.information .items .item');
+                        console.log(item.eq(1).find('select:eq(0) option:selected').text());
+                        if (!item.eq(0).find('input').val()) {
+                            controller.component.popMsg('fail', '请输入火灾发生地点');
+                            return;
+                        }
+                        if (!item.eq(1).find('select:eq(0) option:selected').text()) {
+                            controller.component.popMsg('fail', '请选择火灾类别');
+                            return;
+                        }
+                        for (var ind = 2; ind < item.length; ind++) {
+                            if (item.eq(ind).find('select:eq(0) option:selected').text()) {
+                                break;
+                            }
+                        }
+                        if (ind === item.length) {
+                            controller.component.popMsg('fail', '请选择火灾详情');
+                            return;
+                        }
 
                         //if (!static.pos) {    //取消注释
                         //    var pop = controller.component.popMsg('loadingOther', '定位中，请稍等');
@@ -505,7 +598,11 @@ define(function (require, exports, module) {
                                     controller.component.loginFirst();
                                 }
                                 else if (data.returnState === 1) {
-                                    console.log(data['dispatch']+'\n'+data['tipStr']);
+                                    resultPopDispatch.show();
+                                    resultPopDispatch.find('.text').html(data['dispatch']);
+                                    resultPopExplain.find('.text').html(data['tipStr']);
+                                    $(window).trigger('resize_resultPopDispatch');
+                                    console.log(data['dispatch'] + '\n\n' + data['tipStr']);
 
                                 }
                             },
@@ -720,46 +817,17 @@ define(function (require, exports, module) {
             map: null,
             mapInit: function () {
                 //基本地图加载
-                controller.map.map = new AMap.Map('container');
+                controller.map.map = new AMap.Map('container', {
+                    zoom: 10,
+                    center: [117.39, 39.1]
+                });
             },
             getPos: function () {
-                var map = controller.map.map, geolocation;
-                //加载地图，调用浏览器定位服务
 
-                map.plugin('AMap.Geolocation', function () {
-                    geolocation = new AMap.Geolocation({
-                        enableHighAccuracy: true,//是否使用高精度定位，默认:true
-                        timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-                        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-                        zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                        buttonPosition: 'RB'
-                    });
-                    map.addControl(geolocation);
-                    geolocation.getCurrentPosition();
-                    AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-                    AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-                });
-                //解析定位结果
-                function onComplete(data) {
-                    var str = ['定位成功'];
-                    str.push('经度：' + data.position.getLng());
-                    str.push('纬度：' + data.position.getLat());
-                    str.push('精度：' + data.accuracy + ' 米');
-                    str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
-                    static.position = data.position;
-
-                    static.pos = {
-                        lng: data.position.getLng(),
-                        lat: data.position.getLat()
-                    }
-                }
-
-                //解析定位错误信息
-                function onError(data) {
-                    console.log('定位失败');
-                }
             },
             getRoad: function (pos) {
+                //controller.map.map.clearMap();
+
                 var posLatLng = null;
                 controller.map.map.clearMap();
                 AMap.service('AMap.Geocoder', function () {//回调函数
@@ -771,15 +839,40 @@ define(function (require, exports, module) {
                     geocoder.getLocation(pos, function (status, result) {
                         if (status === 'complete' && result.info === 'OK') {
                             AMap.service(["AMap.Driving"], function () {
-                                var driving = new AMap.Driving({
-                                    map: controller.map.map
-                                    //panel: "panel"
-                                }); //构造路线导航类
-                                // 根据起终点坐标规划步行路线
-                                driving.search(static.position, result.geocodes[0].location);
+
+                                var inputPos = result.geocodes[0].location;
+
+                                AMap.service(["AMap.PlaceSearch"], function () {
+                                    var placeSearch = new AMap.PlaceSearch({ //构造地点查询类
+                                        pageSize: 3,
+                                        type: '消防',
+                                        pageIndex: 1,
+                                        city: "022", //城市
+                                        map: controller.map.map
+                                    });
+
+                                    placeSearch.searchNearBy('', inputPos, 50000, function (status, result) {
+                                        console.log(result)
+                                        var arr = result.poiList.pois;
+                                        for (var ind = 0, indj = arr.length; ind < indj; ind++) {
+                                            var posLatLng = null;
+                                            AMap.service('AMap.Geocoder', function () {//回调函数
+                                                AMap.service(["AMap.Driving"], function () {
+                                                    var driving = new AMap.Driving({
+                                                        map: controller.map.map
+                                                    });
+                                                    driving.search(arr[ind].location, inputPos);
+                                                });
+
+
+                                            });
+
+                                        }
+                                    });
+                                });
                             });
                         } else {
-                            //获取经纬度失败
+                            controller.component.popMsg('fail', '发生地点无法识别');
                         }
                     });
                 });
