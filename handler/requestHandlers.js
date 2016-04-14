@@ -8,7 +8,7 @@ var tools = require('./tools');
 var app = express();
 var crypto = require('crypto');
 var async = require('async');
-
+var EventProxy = require('eventproxy');
 
 module.exports = {
     authentication: function (req, res, next) {
@@ -366,26 +366,6 @@ module.exports = {
     },
     decision: function (req, res, next) {
 
-        //async.eachSeries([
-        //    function (a) {
-        //        setTimeout(function () {
-        //            console.log('OK1');
-        //         }, 1000);
-        //    },
-        //    function () {
-        //        setTimeout(function () {
-        //            console.log('OK2');
-        //        }, 1000);
-        //    },
-        //    function () {
-        //        setTimeout(function () {
-        //            console.log('OK3');
-        //        }, 1000);
-        //    }
-        //], function (err, kk, jj) {
-        //    console.log('OK322');
-        //})
-
         var inputArr = JSON.parse(req.body.data),
             str = '',
             i = 0,
@@ -395,12 +375,36 @@ module.exports = {
             midCounter2 = 0,
             inputArrLength = inputArr.length;
 
+
+        var ep =  EventProxy.create('clearConclusion', 'tempLearn','tempSimilarity', function () {
+            console.log('done')
+        });
+
+
         db.query('call clearConclusion()', function (err) {   //清空之前记录
             if (err) {
                 console.log(err.message);
                 return
             }
-            for (; i < inputArrLength; i++) {
+            ep.emit('clearConclusion');
+        })
+        db.query('insert into tempLearn select * from t_learn', function (err) {   //清空之前记录
+            if (err) {
+                console.log(err.message);
+                return
+            }
+            ep.emit('tempLearn');
+        })
+        db.query('insert into tempSimilarity select * from t_similarity', function (err) {   //清空之前记录
+            if (err) {
+                console.log(err.message);
+                return
+            }
+            ep.emit('tempSimilarity');
+        })
+
+
+        for (; i < inputArrLength; i++) {
                 var obj = inputArr[i],
                     title = obj.title.split('：')[0],
                     detail = obj.detail,
@@ -635,7 +639,7 @@ module.exports = {
                     })
                 };
             }
-        })
+
 
 
     }
