@@ -365,11 +365,12 @@ module.exports = {
 
     },
     decision: function (req, res, next) {
-
+        console.log('start-------------------------------------------------')
         var inputArr = JSON.parse(req.body.data),
             str = '',
             i = 0,
             tipStr = '',
+            dispatchStr = '',
             midResult = [],
             midCounter = 0,
             midCounter2 = 0,
@@ -377,190 +378,503 @@ module.exports = {
 
 
         async.series([
-            function (cb) {
-                db.query('call clearConclusion()', function (err) {   //清空之前记录
-                    if (err) {
-                        console.log(err.message);
-                        return
-                    }
-                    cb();
-                })
-            },
-            function (cb) {
-                db.query('insert into tempLearn select * from t_learn', function (err) {   //清空之前记录
-                    if (err) {
-                        console.log(err.message);
-                        return
-                    }
-                    cb();
-                })
-            },
-            function (cb) {
-                db.query('insert into tempSimilarity select * from t_similarity', function (err) {   //清空之前记录
-                    if (err) {
-                        console.log(err.message);
-                        return
-                    }
-                    cb();
-                })
-            }
-        ], function () {
-            console.log('清除之前记录完毕')
-
-            var inputDetailArr = [];
-
-            for (; i < inputArrLength; i++) {
-
-                var func = function (cb) {
-                    var i = arguments.callee.i;
-                    var obj = inputArr[i],
-                        title = obj.title.split('：')[0],
-                        detail = obj.detail,
-                        truth = obj.truth,
-                        name = obj.name;
-                    obj.truth1 = truth.split('(')[1].split(',')[0];
-                    obj.truth0 = truth.split(')')[0].split(',')[1];
-
-
-                    if ('t_firetype' !== name && detail && Array.isArray(dbConfig.detail[name])) {
-
-                        db.query("select " + dbConfig.detail[name][0] + "  from " + name + " where " +
-                            dbConfig.detail[name][1] + "='" + detail + "'", function (err, results) {
-                            if (err) {
-                                res.status(200).send({returnState: -1, returnMsg: err.message});
-                                console.log(err.message);
-                                return
-                            }
-                            var eachIdArr = [];
-                            for (var j = 0; j < results.length; j++) {  //由detail搜出的每条id有：
-                                var id = results[j][dbConfig.detail[name][0]];
-
-                                var eachIdfunc = function (eachIdCb) {
-                                    id = arguments.callee.id;
-
-                                    async.series([
-                                        function (callback) {   //插入t_input
-                                            db.query('insert into t_input(input,f,c,description) values(' + id + ',' + obj.truth1 + ',' + obj.truth0 + ',"' + detail + '")', function (err, results) {
-                                                if (err) {
-                                                    res.status(200).send({returnState: -1, returnMsg: err.message});
-                                                    console.log(err.message + '   this');
-                                                    return
-                                                }
-                                                callback();
-
-                                            });
-                                        },
-                                        function (callback) {   //根据id在firelevel表中获取火灾等级
-                                            db.query('select FireLevelid,FireLevelName from t_firelevel where ' + dbConfig.detail[name][0] +
-                                                ' = ' + id + ';', function (err, results) {
-                                                if (err) {
-                                                    res.status(200).send({returnState: -1, returnMsg: err.message});
-                                                    console.log(err.message);
-                                                    return;
-                                                }
-                                                var fireLevelId = results[0]['FireLevelid'],
-                                                    fireLevelName = results[0]['FireLevelName']
-                                                fireLevelIdOuter = fireLevelId;
-
-                                                console.log(name + ': ' + fireLevelName);
-                                                tipStr += '（$事件*[' + detail + ']→' + title + '=> $事件→([' +
-                                                    fireLevelName.split('火灾')[0] + '] &火灾)  (' + obj.truth1 + ',' + (0.9 * obj.truth0 ) + ')</br>';
-
-                                                var m_conclusion = function () {
-                                                    db.query('select * from mConclusion where conclusion = ' + fireLevelId, function (err, results) {
-                                                        if (err) {
-                                                            res.status(200).send({
-                                                                returnState: -1,
-                                                                returnMsg: err.message
-                                                            });
-                                                            console.log(err.message);
-                                                            return;
-                                                        }
-                                                        console.log('mConclusion result length: ' + results.length);
-                                                        if (results.length > 0) {
-                                                            var f1 = 1.0 * obj.truth1,
-                                                                c1 = (obj.truth0 * 0.9 * 1.0 * obj.truth1),
-                                                                f2 = results[0]['f'],
-                                                                c2 = results[0]['c'],
-                                                                f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1)),
-                                                                c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
-                                                            db.query("update mConclusion" +
-                                                                " set f=" + f3 + ",c=" + c3 + " where conclusion = " + fireLevelId, function () {
-                                                                callback();
-
-                                                            });
-                                                        }
-                                                        else {
-
-                                                            var f3 = 1.0 * obj.truth1,
-                                                                c3 = (obj.truth0 * 0.9 * 1.0 * obj.truth1);
-                                                            db.query('insert into mConclusion(conclusion,f,c) values(' + fireLevelId + ',' + f3 + ',' + c3 + ')', function () {
-                                                                callback();
-                                                            });
-
-                                                        }
-                                                    })
-
-                                                }
-
-                                                if (dbConfig.learnAndSimiLater.indexOf(name) < 0) {
-                                                    learnAndSimi(fireLevelId, id, detail, function () {
-                                                        console.log('learnAndSimiBefore')
-                                                        m_conclusion();
-                                                    })
-                                                }
-                                                else {
-
-                                                    console.log('learnAndSimiLater')
-                                                    m_conclusion();
-                                                    learnAndSimi(fireLevelId, id, detail, function () {
-                                                        callback();
-                                                    })
-                                                }
-                                            })
-
-                                        },
-                                    ], function (err, values) {
-                                        console.log('done an item')
-                                        eachIdCb();
-
-                                    });
-                                };
-                                eachIdfunc.id = id;
-
-                                eachIdArr[eachIdArr.length] = eachIdfunc;
-
-                            }
-
-                            async.series(eachIdArr, function (err, values) {   //遍历每一项火情输入
-                                console.log('done a detail')
-                                cb();
-                            })
-                        });
-                    }
-                    else {
+                function (cb) {
+                    db.query('call clearConclusion()', function (err) {   //清空之前记录
+                        if (err) {
+                            console.log(err.message);
+                            return
+                        }
                         cb();
+                    })
+                },
+                function (cb) {
+                    db.query('insert into tempLearn select * from t_learn', function (err) {   //清空之前记录
+                        if (err) {
+                            console.log(err.message);
+                            return
+                        }
+                        cb();
+                    })
+                },
+                function (cb) {
+                    db.query('insert into tempSimilarity select * from t_similarity', function (err) {   //清空之前记录
+                        if (err) {
+                            console.log(err.message);
+                            return
+                        }
+                        cb();
+                    })
+                }
+            ],
+            function () {
+                console.log('清除之前记录完毕')
+
+                var inputDetailArr = [];
+
+                for (; i < inputArrLength; i++) {
+
+                    var func = function (inputArrLengthcb) {
+                        var i = arguments.callee.i;
+                        var obj = inputArr[i],
+                            title = obj.title.split('：')[0],
+                            detail = obj.detail,
+                            truth = obj.truth,
+                            name = obj.name;
+                        obj.truth1 = truth.split('(')[1].split(',')[0];
+                        obj.truth0 = truth.split(')')[0].split(',')[1];
+
+
+                        if ('t_firetype' !== name && detail && Array.isArray(dbConfig.detail[name])) {
+
+                            db.query("select " + dbConfig.detail[name][0] + "  from " + name + " where " +
+                                dbConfig.detail[name][1] + "='" + detail + "'", function (err, results) {
+                                if (err) {
+                                    res.status(200).send({returnState: -1, returnMsg: err.message});
+                                    console.log(err.message);
+                                    return
+                                }
+                                var eachIdArr = [];
+                                for (var j = 0; j < results.length; j++) {  //由detail搜出的每条id有：
+                                    var id = results[j][dbConfig.detail[name][0]];
+
+                                    var eachIdfunc = function (eachIdCb) {
+                                        var id = arguments.callee.id;
+
+                                        async.series([
+                                            function (callback) {   //插入t_input
+                                                db.query('insert into t_input(input,f,c,description) values(' + id + ',' + obj.truth1 + ',' + obj.truth0 + ',"' + detail + '")', function (err, results) {
+                                                    if (err) {
+                                                        res.status(200).send({returnState: -1, returnMsg: err.message});
+                                                        console.log(err.message + '   this');
+                                                        return
+                                                    }
+                                                    callback();
+
+                                                });
+                                            },
+                                            function (callback) {   //根据id在firelevel表中获取火灾等级
+                                                db.query('select FireLevelid,FireLevelName from t_firelevel where ' + dbConfig.detail[name][0] +
+                                                    ' = ' + id + ';', function (err, results) {
+                                                    if (err) {
+                                                        res.status(200).send({returnState: -1, returnMsg: err.message});
+                                                        console.log(err.message);
+                                                        return;
+                                                    }
+                                                    var fireLevelId = results[0]['FireLevelid'],
+                                                        fireLevelName = results[0]['FireLevelName']
+
+                                                    console.log(name + ': ' + fireLevelName);
+                                                    tipStr += '（$事件*[' + detail + ']→' + title + '=> $事件→([' +
+                                                        fireLevelName.split('火灾')[0] + '] &火灾)  (' + obj.truth1 + ',' + (0.9 * obj.truth0 ) + ')</br>';
+
+                                                    var m_conclusion = function (ccb) {
+                                                        db.query('select * from mConclusion where conclusion = ' + fireLevelId, function (err, results) {
+                                                            if (err) {
+                                                                res.status(200).send({
+                                                                    returnState: -1,
+                                                                    returnMsg: err.message
+                                                                });
+                                                                console.log(err.message);
+                                                                return;
+                                                            }
+                                                            console.log('mConclusion result length: ' + results.length);
+                                                            if (results.length > 0) {
+                                                                var f1 = 1.0 * obj.truth1,
+                                                                    c1 = (obj.truth0 * 0.9 * 1.0 * obj.truth1),
+                                                                    f2 = results[0]['f'],
+                                                                    c2 = results[0]['c'],
+                                                                    f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1)),
+                                                                    c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+                                                                db.query("update mConclusion" +
+                                                                    " set f=" + f3 + ",c=" + c3 + " where conclusion = " + fireLevelId, function () {
+                                                                    ccb();
+
+                                                                });
+                                                            }
+                                                            else {
+
+                                                                var f3 = 1.0 * obj.truth1,
+                                                                    c3 = (obj.truth0 * 0.9 * 1.0 * obj.truth1);
+                                                                db.query('insert into mConclusion(conclusion,f,c) values(' + fireLevelId + ',' + f3 + ',' + c3 + ')', function () {
+                                                                    ccb();
+                                                                });
+
+                                                            }
+                                                        })
+
+                                                    }
+
+                                                    if (dbConfig.learnAndSimiLater.indexOf(name) < 0) {
+                                                        learnAndSimi(fireLevelId, id, detail, function () {
+                                                            console.log('learnAndSimiBefore')
+                                                            m_conclusion(callback);
+                                                        })
+                                                    }
+                                                    else {
+
+                                                        console.log('learnAndSimiLater')
+                                                        m_conclusion(function () {
+                                                            learnAndSimi(fireLevelId, id, detail, function () {
+                                                                callback();
+                                                            })
+                                                        });
+
+                                                    }
+                                                })
+
+                                            },
+                                        ], function (err, values) {
+                                            console.log('done an item')
+                                            eachIdCb();
+
+                                        });
+                                    };
+                                    eachIdfunc.id = id;
+
+                                    eachIdArr[eachIdArr.length] = eachIdfunc;
+
+                                }
+
+                                async.series(eachIdArr, function (err, values) {   //遍历每一项火情输入
+                                    console.log('done a detail')
+                                    inputArrLengthcb();
+                                })
+                            });
+                        }
+                        else {
+                            console.log('done a detail')
+                            inputArrLengthcb();
+                        }
                     }
+
+                    func.i = i;
+                    inputDetailArr[inputDetailArr.length] = func;
                 }
 
-                func.i = i;
-                inputDetailArr[inputDetailArr.length] = func;
-            }
+
+                async.series(inputDetailArr, function (err, values) {
+                    console.log('遍历所有火情输入完毕');
+                    var f = 0,
+                        c = 0,
+                        f1 = 0,
+                        c1 = 0,
+                        fireTypeId = 0,
+                        typeId = 0,
+                        LevelId = 0;
+
+                    async.series([
+                        function getType(cb) {
+                            var fireTypeInput = inputArr[1]['detail'],
+                                truth = inputArr[1].truth,
+                                f = truth.split('(')[1].split(',')[0],
+                                c = truth.split(')')[0].split(',')[1];
+
+                            db.query("select FireTypeId  from t_firetype where FireTypeName='" + fireTypeInput + "'", function (err, results) {
+                                if (err) {
+                                    console.log(err.message);
+                                    return
+                                }
+
+                                fireTypeId = results[0]['FireTypeId'];
+                                typeId = fireTypeId;
+
+                                tipStr += "\r\n" + "{" + inputArr[0]['detail'] + "}" + "*" + "[" + fireTypeInput + "]" + "→火灾类别" + "=> {" + inputArr[0]['detail'] + "}→"
+                                    + "(" + fireTypeInput + ")（" + (1.0 * f) + "," + (0.9 * c) + "）"
+
+                                f = (f * 1.0);
+                                c = (c * 0.9 * 1.0 * f);
+                                f1 = f;
+                                c1 = c;
+
+                                console.log("f=" + f + " c=" + c + '  typeId:  ' + fireTypeId);
+                                cb();
+                            })
+                        },
+                        function getConclusionFromMconclusion(cb) {
+                            db.query("select * from mconclusion", function (err, results) {
+                                if (err) {
+                                    console.log(err.message);
+                                    return
+                                }
+                                var funcArr = [];
+                                for (var ind = 0; ind < results.length; ind++) {
+
+                                    var func = function (cab) {
+                                        var ind = arguments.callee.ind;
+                                        var f = results[ind]['f'],
+                                            c = results[ind]['c'],
+                                            mconclu = results[ind]['conclusion'];
+
+                                        function commonFunc(levelSql, levelGet, callback) {
+                                            db.query("select * from tempSimilarity where " + levelSql + "=" + mconclu, function (err, res) {
+                                                if (err) {
+                                                    console.log(err.message);
+                                                    return
+                                                }
+                                                var funcTempArr = [];
+                                                for (var indTemp = 0; indTemp < res.length; indTemp++) {//1382
+
+                                                    var funcTemp = function (cabTemp) {
+                                                        var indTemp = arguments.callee.indTemp,
+                                                            levelDetail = res[indTemp][levelGet],
+                                                            tf = res[indTemp]['Frequency'],
+                                                            tc = res[indTemp]['Confidence']
+
+                                                        if (tc > 0.5) {
+                                                            f = f * tf;//根据已有中间结论和 中间结论推理规则 计算新的f值
+                                                            c = c * tc * f * tf;
+
+                                                            //插进中间结论表---------
+                                                            var newId = levelDetail;
+                                                            db.query("select * from mConclusion where conclusion = " + newId, function (err, resu) {
+                                                                if (err) {
+                                                                    console.log(err.message);
+                                                                    return
+                                                                }
+                                                                if (resu.length > 0) {
+                                                                    var f1 = f,
+                                                                        c1 = c,
+                                                                        f2 = resu[0]["f"],
+                                                                        c2 = resu[0]["c"],
+                                                                        f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1)),
+                                                                        c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+
+                                                                    db.query("update mConclusion" +
+                                                                        " set f=" + f3 + ",c=" + c3 + " where conclusion = " + newId, function (err) {
+                                                                        if (err) {
+                                                                            console.log(err.message);
+                                                                            return
+                                                                        }
+                                                                        cabTemp();
+                                                                    });
 
 
-            async.series(inputDetailArr, function (err, values) {   //遍历每一项火情输入
-                console.log('遍历每一项火情输入完毕');
+                                                                } else {
+                                                                    db.query("insert into mConclusion(conclusion) values(" + newId + ")", function (err) {
+                                                                        if (err) {
+                                                                            console.log(err.message);
+                                                                            return
+                                                                        }
+                                                                        var f3 = f,
+                                                                            c3 = c;
+                                                                        db.query("update mConclusion" +
+                                                                            " set f=" + f3 + ",c=" + c3 + " where conclusion = " + newId, function (err) {
+                                                                            if (err) {
+                                                                                console.log(err.message);
+                                                                                return
+                                                                            }
+                                                                            cabTemp();
+                                                                        });
+                                                                    });
+                                                                }
+                                                            });
 
-                //res.status(200).send({
-                //    returnState: -1
-                //});
+                                                        } else {
+                                                            cabTemp();
+                                                        }
+
+                                                    }
+                                                    funcTemp.indTemp = indTemp;
+                                                    funcTempArr[funcTempArr.length] = funcTemp;
+                                                }
+                                                async.series(funcTempArr, function () {
+                                                    callback();
+                                                });
+                                            });
+
+                                        };
+
+                                        async.series([
+                                                function (callback) {
+                                                    //1380
+                                                    commonFunc("Level1", "Level2", callback)
+                                                },
+                                                function (callback) {
+                                                    //1426
+                                                    commonFunc("Level2", "Level1", callback)
+                                                }
+                                            ],
+                                            function () {
+                                                cab();
+                                            })
 
 
-            })
-        });
+                                    }
+                                    func.ind = ind;
+                                    funcArr[funcArr.length] = func;
 
-        var learnAndSimi = function (fireLevelId, id, detail, cb) {
+                                }
+                                async.series(funcArr, function () {
+                                    cb();
+                                });
+
+                            });
+                        },
+                        function getLevel(cb) { //1262
+                            async.series([
+                                    function (cab) {//调用存储过程    1265
+                                        db.query("call findMax()", function (err, results) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            cab();
+                                        });
+                                    },
+                                    function (cab) {    //1270
+                                        db.query("select * from t_conclusion", function (err, results) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            var funcArr = [];
+                                            for (var ind = 0; ind < results.length; ind++) {
+                                                var func = function (calb) {
+                                                    var ind = arguments.callee.ind,
+                                                        f2 = results[ind]['f'],
+                                                        c2 = results[ind]['c'],
+                                                        fireLevelDes = '';
+                                                    LevelId = results[ind]['conclusion'];
+                                                    switch (parseInt(LevelId)) {
+                                                        case 11:
+                                                            fireLevelDes = "一级";
+                                                            break;
+                                                        case 12:
+                                                            fireLevelDes = "二级";
+                                                            break;
+                                                        case 13:
+                                                            fireLevelDes = "三级";
+                                                            break;
+                                                        case 14:
+                                                            fireLevelDes = "四级";
+                                                            break;
+                                                        case 15:
+                                                            fireLevelDes = "五级";
+                                                            break;
+                                                        default:
+                                                            fireLevelDes = "";
+                                                    }
+                                                    console.log(("最终级别Dao：LevelId=" + LevelId));
+                                                    //交集运算
+                                                    f = f1 * f2;
+                                                    c = c1 * c2;
+
+                                                    db.query("select * from t_dispatch " +
+                                                        "where TypeId = " + typeId + " AND LevelId = " + LevelId + ";", function (err, results) {
+                                                            if (err) {
+                                                                console.log(err.message);
+                                                                return;
+                                                            }
+                                                            if (results.length > 0) {
+                                                                var conclu = results[0]["DispatchId"],
+                                                                    FireFighterNum = results[0]["FireFighterNum"],
+                                                                    Equipment = results[0]["Equipment"];
+                                                                tipStr += '\n' + "{" + inputArr[0]['detail'] + "}DAO" +
+                                                                    "→[火灾类别 " + inputArr[1]['detail'] + "]+[火灾级别 " + fireLevelDes + "] =>" + "{" + inputArr[0]['detail'] + "}" + "→(出动人数:" + FireFighterNum + ")+(设备数目:" + Equipment + ")（" + (1.0 * f) + "," + (0.9 * c) + "）";
+
+                                                                dispatchStr += "出动人数:" + FireFighterNum + "\n设备数目:" + Equipment +
+                                                                    '\n' + "（Frequency=" + (1.0 * f) + ",Confidence=" + (0.9 * c) + "）";
+                                                                console.log(dispatchStr);
+
+                                                                db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {
+                                                                    if (err) {
+                                                                        console.log(err.message);
+                                                                        return;
+                                                                    }
+                                                                    calb();
+                                                                });
+
+                                                            }
+                                                            else {
+                                                                console.log('未找到派遣方案')
+                                                                calb();
+                                                            }
+                                                        }
+                                                    )
+
+                                                };
+                                                func.ind = ind;
+                                                funcArr[funcArr.length] = func;
+                                            }
+                                            async.series(funcArr, function () {
+                                                cab();
+                                            })
+                                        });
+
+                                    },
+                                    function (cab) {//1346
+                                        db.query("select * from t_learn where Condition1 in(select input from t_input) AND Condition2 in(select input from t_input)", function (err, results) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            var funcArr = [];
+                                            for (var ind = 0; ind < results.length; ind++) {
+                                                var func = function (calb) {
+                                                    var ind = arguments.callee.ind,
+                                                        des1 = results[ind]["Description1"],
+                                                        des2 = results[ind]["Description2"];
+
+                                                    f = results[ind]["Frequency"];
+                                                    c = results[ind]["Confidence"];
+
+                                                    tipStr += '\n' + "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
+                                                    calb();
+                                                };
+                                                func.ind = ind;
+                                                funcArr[funcArr.length] = func;
+                                            }
+                                            async.series(funcArr, function () {
+                                                cab();
+                                            })
+                                        });
+
+                                    },
+                                    function (cab) {//1355
+                                        db.query("select * from t_similarity where Level1 in (select conclusion from t_input) AND Level2 in(select conclusion from t_input)", function (err, results) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            var funcArr = [];
+                                            for (var ind = 0; ind < results.length; ind++) {
+                                                var func = function (calb) {
+                                                    var ind = arguments.callee.ind,
+                                                        des1 = results[ind]["Description1"],
+                                                        des2 = results[ind]["Description2"];
+
+                                                    f = results[ind]["Frequency"];
+                                                    c = results[ind]["Confidence"];
+
+                                                    tipStr += '\n' + "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
+                                                    calb();
+                                                };
+                                                func.ind = ind;
+                                                funcArr[funcArr.length] = func;
+                                            }
+                                            async.series(funcArr, function () {
+                                                cab();
+                                            })
+                                        });
+                                    }
+                                ],
+                                function () {
+                                    cb();
+                                })
+                        }
+
+                    ], function () {
+                        console.log('all done\n'+tipStr+'\n\n'+dispatchStr);
+
+                        res.status(200).send({returnState: 1, dispatch: dispatchStr, tipStr: tipStr});
+                    })
+                })
+            });
+
+
+        function learnAndSimi(fireLevelId, id, detail, cback) {
             console.log('--learnAndSimi input:  ' + fireLevelId + ' ' + id + ' ' + detail);
+
             var f1 = 0,
                 f2 = 0,
                 c1 = 0,
@@ -594,10 +908,12 @@ module.exports = {
                         f1 = results[0]['f'];
                         c1 = results[0]['c'];
                         console.log("f1:" + f1 + "c1:" + c1);
+
                         cab();
                     });
                 },
                 function (cab) {
+
                     db.query("select * from tempLearn where Condition1 = " + id + " or Condition2 = " + id, function (err, results) {
                         if (err) {
                             res.status(200).send({
@@ -680,10 +996,14 @@ module.exports = {
                                         }
                                     });
                                 }
+                                else {
+                                    resultFuncCb();
+                                }
                             };
                             resultFunc.ind = ind;
                             resultArrFunc[resultArrFunc.length] = resultFunc;
                         }
+
                         async.series(resultArrFunc, function () {
                             cab();
                         })
@@ -756,6 +1076,7 @@ module.exports = {
                             console.log(err.message);
                             return;
                         }
+                        var resultArrFunc = [];
 
                         for (var ind = 0; ind < results.length; ind++) {
                             var resultFunc = function (resultFuncCb) {
@@ -841,10 +1162,9 @@ module.exports = {
                     });
                 }
             ], function () {
-                cb();
+                console.log('learnandSimi完毕')
+                cback();
             })
-
-
         }
 
 
