@@ -405,7 +405,7 @@ module.exports = {
                 })
             }
         ], function () {
-            console.log('done clear before')
+            console.log('清除之前记录完毕')
 
             var inputDetailArr = [];
 
@@ -466,24 +466,57 @@ module.exports = {
                                                 tipStr += '（$事件*[' + detail + ']→' + title + '=> $事件→([' +
                                                     fireLevelName.split('火灾')[0] + '] &火灾)  (' + obj.truth1 + ',' + (0.9 * obj.truth0 ) + ')</br>';
 
+                                                var m_conclusion = function () {
+                                                    db.query('select * from mConclusion where conclusion = ' + fireLevelId, function (err, results) {
+                                                        if (err) {
+                                                            res.status(200).send({
+                                                                returnState: -1,
+                                                                returnMsg: err.message
+                                                            });
+                                                            console.log(err.message);
+                                                            return;
+                                                        }
+                                                        console.log('mConclusion result length: ' + results.length);
+                                                        if (results.length > 0) {
+                                                            var f1 = 1.0 * obj.truth1,
+                                                                c1 = (obj.truth0 * 0.9 * 1.0 * obj.truth1),
+                                                                f2 = results[0]['f'],
+                                                                c2 = results[0]['c'],
+                                                                f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1)),
+                                                                c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+                                                            db.query("update mConclusion" +
+                                                                " set f=" + f3 + ",c=" + c3 + " where conclusion = " + fireLevelId, function () {
+                                                                callback();
+
+                                                            });
+                                                        }
+                                                        else {
+
+                                                            var f3 = 1.0 * obj.truth1,
+                                                                c3 = (obj.truth0 * 0.9 * 1.0 * obj.truth1);
+                                                            db.query('insert into mConclusion(conclusion,f,c) values(' + fireLevelId + ',' + f3 + ',' + c3 + ')', function () {
+                                                                callback();
+                                                            });
+
+                                                        }
+                                                    })
+
+                                                }
+
                                                 if (dbConfig.learnAndSimiLater.indexOf(name) < 0) {
                                                     learnAndSimi(fireLevelId, id, detail, function () {
-                                                        //todo
                                                         console.log('learnAndSimiBefore')
-
-                                                        callback();
-
+                                                        m_conclusion();
                                                     })
                                                 }
                                                 else {
-                                                    //todo
+
                                                     console.log('learnAndSimiLater')
+                                                    m_conclusion();
                                                     learnAndSimi(fireLevelId, id, detail, function () {
                                                         callback();
                                                     })
                                                 }
-
-
                                             })
 
                                         },
@@ -516,13 +549,302 @@ module.exports = {
 
 
             async.series(inputDetailArr, function (err, values) {   //遍历每一项火情输入
-                console.log('done  ');
+                console.log('遍历每一项火情输入完毕');
+
+                //res.status(200).send({
+                //    returnState: -1
+                //});
+
+
             })
         });
 
         var learnAndSimi = function (fireLevelId, id, detail, cb) {
-            console.log('  000000' + fireLevelId + ' ' + id + ' ' + detail)
-            cb();
+            console.log('--learnAndSimi input:  ' + fireLevelId + ' ' + id + ' ' + detail);
+            var f1 = 0,
+                f2 = 0,
+                c1 = 0,
+                c2 = 0;
+            async.series([
+                function (cab) {
+                    console.log("###update t_input" + " set conclusion=" + fireLevelId + " where input = " + id);
+                    db.query("update t_input" +
+                        " set conclusion = " + fireLevelId + " where input = " + id, function (err, results) {
+                        if (err) {
+                            res.status(200).send({
+                                returnState: -1,
+                                returnMsg: err.message
+                            });
+                            console.log(err.message);
+                            return;
+                        }
+                        cab();
+                    });
+                },
+                function (cab) {
+                    db.query("select * from t_input where conclusion =" + fireLevelId + " AND input = " + id, function (err, results) {
+                        if (err) {
+                            res.status(200).send({
+                                returnState: -1,
+                                returnMsg: err.message
+                            });
+                            console.log(err.message);
+                            return;
+                        }
+                        f1 = results[0]['f'];
+                        c1 = results[0]['c'];
+                        console.log("f1:" + f1 + "c1:" + c1);
+                        cab();
+                    });
+                },
+                function (cab) {
+                    db.query("select * from tempLearn where Condition1 = " + id + " or Condition2 = " + id, function (err, results) {
+                        if (err) {
+                            res.status(200).send({
+                                returnState: -1,
+                                returnMsg: err.message
+                            });
+                            console.log(err.message);
+                            return;
+                        }
+                        var resultArrFunc = [];
+
+                        for (var ind = 0; ind < results.length; ind++) {
+                            var resultFunc = function (resultFuncCb) {
+                                var ind = arguments.callee.ind,
+                                    f = results[ind]['f'],
+                                    c = results[ind]['c'],
+                                    othierCdt = results[ind]["Condition2"],
+                                    conclusion = results[ind]["Condition"]
+                                if (c > 0.5) {
+                                    f = f1 * f;//f值更新为输入的f值和规则的f值的运算结果
+                                    c = c1 * c * f1 * f;
+                                    db.query("select * from mConclusion where conclusion = " + conclusion, function (err, results) {
+                                        if (err) {
+                                            res.status(200).send({
+                                                returnState: -1,
+                                                returnMsg: err.message
+                                            });
+                                            console.log(err.message);
+                                            return;
+                                        }
+                                        if (results.length > 0) {
+                                            f1 = f;
+                                            c1 = c;
+
+                                            f2 = results[0]("f");
+                                            c2 = results[0]("c");
+
+                                            var f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1));
+                                            var c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+                                            db.query("update mConclusion" + " set f=" + f3 + ",c=" + c3 + " where conclusion = " + conclusion, function (err, results) {
+                                                if (err) {
+                                                    res.status(200).send({
+                                                        returnState: -1,
+                                                        returnMsg: err.message
+                                                    });
+                                                    console.log(err.message);
+                                                    return;
+                                                }
+                                                resultFuncCb();
+                                            });
+                                        }
+                                        else {
+                                            db.query("insert into mConclusion(conclusion) values(" + conclusion + ")", function (err, results) {
+                                                if (err) {
+                                                    res.status(200).send({
+                                                        returnState: -1,
+                                                        returnMsg: err.message
+                                                    });
+                                                    console.log(err.message);
+                                                    return;
+                                                }
+
+                                                var f3 = f;
+                                                var c3 = c;
+                                                db.query("update mConclusion" +
+                                                    " set f=" + f3 + ",c=" + c3 + " where conclusion = " + conclusion, function (err, results) {
+                                                    if (err) {
+                                                        res.status(200).send({
+                                                            returnState: -1,
+                                                            returnMsg: err.message
+                                                        });
+                                                        console.log(err.message);
+                                                        return;
+                                                    }
+                                                    resultFuncCb();
+
+                                                });
+
+                                            });
+                                        }
+                                    });
+                                }
+                            };
+                            resultFunc.ind = ind;
+                            resultArrFunc[resultArrFunc.length] = resultFunc;
+                        }
+                        async.series(resultArrFunc, function () {
+                            cab();
+                        })
+
+                    });
+
+                },
+                function (cab) {
+
+                    db.query("select * from t_input where conclusion = " + fireLevelId + " AND description <> '" + detail + "'", function (err, results) {
+                        if (err) {
+                            console.log(err.message);
+                            return;
+                        }
+                        var f3 = 0,
+                            c3 = 0,
+                            resultArrFunc = [];
+
+                        for (var ind = 0; ind < results.length; ind++) {
+                            var resultFunc = function (resultFuncCb) {
+                                var ind = arguments.callee.ind;
+                                f2 = results[ind]['f'];
+                                c2 = results[ind]['c'];
+                                f3 = f2;
+                                c3 = (f1 * c1 * c2) / (f1 * c1 * c2 + 1);
+
+                                db.query("select * from t_learn where (Condition1 = " + results[ind]["input"] + " and Condition2 = " + id + ") or (Condition1 = " + id + " and Condition2 = " + results[ind]["input"] + ")", function (err, res) {
+                                    if (err) {
+                                        console.log(err.message);
+                                        return;
+                                    }
+                                    if (res.length > 0) {
+                                        f1 = f3;
+                                        c1 = c3;
+                                        f2 = res[0]["Frequency"];
+                                        c2 = res[0]["Confidence"];
+                                        f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1));
+                                        c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+                                        db.query("update t_learn set Frequency = " + f3 + ",Confidence = " + c3 + " where Condition1 = " + res[0]["Condition1"] + " and  Condition2 = " + res[0]["Condition2"], function (err) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            resultFuncCb();
+                                        });
+                                    }
+                                    else {
+                                        db.query("insert into t_learn(Condition1,Description1,Condition2,Description2,Conclusion,Frequency,Confidence) " +
+                                            "values(" + results[ind]["input"] + ",'" + results[ind]["description"] + "'," + id + ",'" + detail + "'," + fireLevelId + "," + f3 + "," + c3 + ")", function (err) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            resultFuncCb();
+                                        });
+                                    }
+                                });
+                            }
+                            resultFunc.ind = ind;
+                            resultArrFunc[resultArrFunc.length] = resultFunc;
+                        }
+                        async.series(resultArrFunc, function () {
+                            cab();
+                        })
+                    })
+                },
+                function (cab) {    //1574
+                    db.query("select * from t_input where conclusion <> " + fireLevelId + " AND description = '" + detail + "'", function (err, results) {
+                        if (err) {
+                            console.log(err.message);
+                            return;
+                        }
+
+                        for (var ind = 0; ind < results.length; ind++) {
+                            var resultFunc = function (resultFuncCb) {
+                                var ind = arguments.callee.ind,
+                                    f2 = results[ind]['f'],
+                                    c2 = results[ind]['c'],
+                                    des1 = "",
+                                    des2 = "",
+                                    f3 = (f1 * f2) / (f1 + f2 - f1 * f2),
+                                    c3 = ((f1 + f2 - f1 * f2) * c1 * c2) / ((f1 + f2 - f1 * f2) * c1 * c2 + 1);
+
+                                async.series([
+                                    function (cb) {//1585
+                                        db.query("select FireLevelName from t_firelevel where FireLevelid = " +
+                                            results[ind]["conclusion"], function (err, results) {
+
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            des1 = results[results.length - 1]["FireLevelName"];
+                                            cb();
+                                        });
+                                    },
+                                    function (cb) {//1590
+                                        db.query("select FireLevelName from t_firelevel where FireLevelid = " +
+                                            fireLevelId, function (err, results) {
+
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            des2 = results[results.length - 1]["FireLevelName"];
+                                            cb();
+                                        });
+                                    },
+                                    function (cb) {//1596
+                                        db.query("select * from t_similarity where (Level1 = " + results[ind]["conclusion"] + " and Level2 = " + fireLevelId + ") or (Level1 = " + fireLevelId + " and Level2 = " + results[ind]["conclusion"] + ")", function (err, res) {
+                                            if (err) {
+                                                console.log(err.message);
+                                                return;
+                                            }
+                                            if (res.length > 0) {
+                                                f1 = f3;
+                                                c1 = c3;
+                                                f2 = res[0]["Frequency"];
+                                                c2 = res[0]["Confidence"];
+                                                f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1));
+                                                c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+                                                db.query("update t_similarity set Frequency = " + f3 + ",Confidence = " + c3 + " where Level1 = " + res[0]["Level1"] + " and  Level2 = " + res[0]["Level2"], function (err) {
+                                                    if (err) {
+                                                        console.log(err.message);
+                                                        return;
+                                                    }
+                                                    cb();
+                                                });
+
+                                            }
+                                            else {
+                                                db.query("insert into t_similarity(Level1,Description1,Level2,Description2,Frequency,Confidence) values(" + results[ind]["conclusion"] + ",'" + des1 + "'," + fireLevelId + ",'" + des2 + "'," + f3 + "," + c3 + ")", function (err) {
+                                                    if (err) {
+                                                        console.log(err.message);
+                                                        return;
+                                                    }
+                                                    cb();
+                                                });
+                                            }
+                                        });
+                                    }
+                                ], function () {
+                                    resultFuncCb();
+                                })
+
+
+                            }
+                            resultFunc.ind = ind;
+                            resultArrFunc[resultArrFunc.length] = resultFunc;
+                        }
+                        async.series(resultArrFunc, function () {
+                            cab();
+                        })
+
+                    });
+                }
+            ], function () {
+                cb();
+            })
+
+
         }
 
 

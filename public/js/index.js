@@ -547,7 +547,7 @@ define(function (require, exports, module) {
                     component.page['generateDispatch'] = thisPageComponent;
 
                     //点击确认键
-                    component.page['generateDispatch'].inputArea.eq(0).click(function () {
+                    $('.content .information .buttons button').eq(0).click(function () {
                         var item = $('.information .items .item');
                         console.log(item.eq(1).find('select:eq(0) option:selected').text());
                         if (!item.eq(0).find('input').val()) {

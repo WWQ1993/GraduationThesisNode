@@ -18,4 +18,4 @@ module.exports={
     },
     learnAndSimiLater:['t_stage','t_spreading','t_deathtoll']
 
-}
+};
