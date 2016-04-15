@@ -7,6 +7,7 @@
 .content .twoInputLine > * {
     height: 26px;
     margin: 10px;
+    width: 200px;
 }
 
 .content .twoInputLine > input {
@@ -16,7 +17,7 @@
 
 .content .twoInputLine button {
     width: 100px;
-    vertical-align: top;
+    vertical-align: middle;
     background-color: #4cb0f9;
     border-color: #4cb0f9;
     color: #FFF;
@@ -101,15 +102,17 @@
 }
 
 .botInput > span > input {
+    padding-left: 20px;
     margin: 10px;
     width: 180px;
-    height: 20px;
+    height: 22px;
 }
 
 .botInput > span > select {
+    width: 202px;
     margin: 10px;
-    width: 180px;
     height: 26px;
+    padding-left: 20px;
 }
 
 .botBtns {

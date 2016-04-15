@@ -133,9 +133,17 @@
 }
 .content .result .resultPopExplain{
     width: 600px;
+
     min-height: 300px;
 }
 
 .content .result .text{
     background: white;
+    width: 100%;
+    word-wrap: break-word;
+    max-height: 500px;
+    background: white;
+    width: 100%;
+    word-wrap: break-word;
+    overflow: auto;
 }

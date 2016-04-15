@@ -17,25 +17,28 @@ body {
     padding: 0;
 }
 
-select,input{
+select, input {
     outline: none;
     border: 1px solid #4cb0f9;
 }
-select:hover,option:hover{
+
+select:hover, option:hover {
     cursor: pointer;
 }
-select{
+
+select {
     padding-left: 10px;
-    appearance:none;
-    -moz-appearance:none;
-    -webkit-appearance:none;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
 
     /*在选择框的最右侧中间显示小箭头图片*/
     background: url("../img/arrow.png") no-repeat scroll right center transparent;
     background-size: 11px 9px;
 
     /*为下拉小箭头留出一点位置，避免被文字覆盖*/
-    padding-right: 14px;}
+    padding-right: 14px;
+}
 
 a {
     text-decoration: none;
@@ -345,9 +348,8 @@ nav > div > div > a {
 
 .content .password input {
     height: 22px;
-    width: 165px;
-    font-size: 18px;
-
+    width: 155px;
+    padding-left: 10px;
 }
 
 .content .password .btns {
@@ -403,7 +405,7 @@ nav > div > div > a {
     left: 0;
     display: none;
     background: #5079BB;
-     z-index: 999;
+    z-index: 999;
     border-radius: 10px;
 }
 
