@@ -515,6 +515,9 @@ define(function (require, exports, module) {
                             pageY = e.pageY,
                             that = $(this);
 
+                        $(window).one('mouseup',function () {
+                            $(window).unbind('mousemove.resultPop')
+                        });
                         $(window).bind('mousemove.resultPop', function (e) {
                             that.parent().animate({
                                 top: '+=' + (e.pageY - pageY),
@@ -524,10 +527,9 @@ define(function (require, exports, module) {
                             pageX = e.pageX;
                             pageY = e.pageY;
                         });
+
                     });
-                    $('.content .result .bar').mouseup(function () {
-                        $(window).unbind('mousemove.resultPop')
-                    })
+
 
                     $('.content .buttons .explain').click(function () {
                         if (resultPopExplain.find('.text').text()) {

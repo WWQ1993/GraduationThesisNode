@@ -4,7 +4,6 @@
 var express = require('express');
 var db = require('./db');
 var dbConfig = require('./dbconfig');
-var tools = require('./tools');
 var app = express();
 var crypto = require('crypto');
 var async = require('async');
@@ -479,14 +478,14 @@ module.exports = {
                                                             }
                                                             console.log('mConclusion result length: ' + results.length);
                                                             if (results.length > 0) {
-                                                                var f1 = 1.0 * obj.truth1,
-                                                                    c1 = (obj.truth0 * 0.9 * 1.0 * obj.truth1),
-                                                                    f2 = results[0]['f'],
-                                                                    c2 = results[0]['c'],
-                                                                    f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1)),
-                                                                    c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
+                                                                var f = 1.0 * obj.truth1,
+                                                                    c = (obj.truth0 * 0.9 * 1.0 * obj.truth1),
+                                                                    f1 = results[0]['f'],
+                                                                    c1 = results[0]['c'];
+                                                                f = (f * c * (1 - c1) + f1 * c1 * (1 - c)) / (c * (1 - c1) + c1 * (1 - c));
+                                                                c = (c * (1 - c1) + c1 * (1 - c)) / (c * (1 - c1) + c1 * (1 - c) + (1 - c) * (1 - c1));
                                                                 db.query("update mConclusion" +
-                                                                    " set f=" + f3 + ",c=" + c3 + " where conclusion = " + fireLevelId, function () {
+                                                                    " set f=" + f + ",c=" + c + " where conclusion = " + fireLevelId, function () {
                                                                     ccb();
 
                                                                 });
@@ -578,7 +577,7 @@ module.exports = {
                                 fireTypeId = results[0]['FireTypeId'];
                                 typeId = fireTypeId;
 
-                                tipStr +=  "{" + inputArr[0]['detail'] + "}" + "*" + "[" + fireTypeInput + "]" + "→火灾类别" + "=> {" + inputArr[0]['detail'] + "}→"
+                                tipStr += "{" + inputArr[0]['detail'] + "}" + "*" + "[" + fireTypeInput + "]" + "→火灾类别" + "=> {" + inputArr[0]['detail'] + "}→"
                                     + "(" + fireTypeInput + ")（" + (1.0 * f) + "," + (0.9 * c) + "）</br>"
 
                                 f = (f * 1.0);
@@ -650,21 +649,15 @@ module.exports = {
 
 
                                                                 } else {
-                                                                    db.query("insert into mConclusion(conclusion) values(" + newId + ")", function (err) {
+                                                                    var f3 = f,
+                                                                        c3 = c;
+                                                                    db.query("insert into mConclusion(conclusion,f,c) values(" + newId + ", " + f3 + "," + c3 + ")", function (err) {
                                                                         if (err) {
                                                                             console.log(err.message);
                                                                             return
                                                                         }
-                                                                        var f3 = f,
-                                                                            c3 = c;
-                                                                        db.query("update mConclusion" +
-                                                                            " set f=" + f3 + ",c=" + c3 + " where conclusion = " + newId, function (err) {
-                                                                            if (err) {
-                                                                                console.log(err.message);
-                                                                                return
-                                                                            }
-                                                                            cabTemp();
-                                                                        });
+                                                                        cabTemp();
+
                                                                     });
                                                                 }
                                                             });
@@ -713,6 +706,7 @@ module.exports = {
                         function getLevel(cb) { //1262
                             async.series([
                                     function (cab) {//调用存储过程    1265
+                                        console.log('findmaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
                                         db.query("call findMax()", function (err, results) {
                                             if (err) {
                                                 console.log(err.message);
@@ -769,11 +763,11 @@ module.exports = {
                                                                 var conclu = results[0]["DispatchId"],
                                                                     FireFighterNum = results[0]["FireFighterNum"],
                                                                     Equipment = results[0]["Equipment"];
-                                                                tipStr +=   "{" + inputArr[0]['detail'] + "}DAO" +
+                                                                tipStr += "{" + inputArr[0]['detail'] + "}DAO" +
                                                                     "→[火灾类别 " + inputArr[1]['detail'] + "]+[火灾级别 " + fireLevelDes + "] =>" + "{" + inputArr[0]['detail'] + "}" + "→(出动人数:" + FireFighterNum + ")+(设备数目:" + Equipment + ")（" + (1.0 * f) + "," + (0.9 * c) + "）</br>";
 
                                                                 dispatchStr += "出动人数:" + FireFighterNum + "\n设备数目:" + Equipment +
-                                                                    '\n' + "（Frequency=" + (1.0 * f) + ",Confidence=" + (0.9 * c) + "）";
+                                                                    '\n' + "（Frequency=" + (1.0 * f) + ",Confidence=" + (0.9 * c) + "）</br>";
                                                                 console.log(dispatchStr);
 
                                                                 db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {
@@ -786,8 +780,8 @@ module.exports = {
 
                                                             }
                                                             else {
-                                                                console.log('未找到派遣方案')
-                                                                dispatchStr='未找到派遣方案 火灾类别： '+typeId+'  火灾级别: '+LevelId;
+                                                                console.log('未找到派遣方案\n\n' + LevelId)
+                                                                dispatchStr = '未找到派遣方案————火灾类别： ' + typeId + '  火灾级别: ' + LevelId;
                                                                 calb();
                                                             }
                                                         }
@@ -819,7 +813,7 @@ module.exports = {
                                                     f = results[ind]["Frequency"];
                                                     c = results[ind]["Confidence"];
 
-                                                    tipStr +=  "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
+                                                    tipStr += "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
                                                     calb();
                                                 };
                                                 func.ind = ind;
@@ -847,7 +841,7 @@ module.exports = {
                                                     f = results[ind]["Frequency"];
                                                     c = results[ind]["Confidence"];
 
-                                                    tipStr +=   "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
+                                                    tipStr += "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
                                                     calb();
                                                 };
                                                 func.ind = ind;
@@ -865,7 +859,7 @@ module.exports = {
                         }
 
                     ], function () {
-                        console.log('all done\n'+tipStr+'\n\n'+dispatchStr);
+                        console.log('all done\n' + tipStr + '\n\n' + dispatchStr);
 
                         res.status(200).send({returnState: 1, dispatch: dispatchStr, tipStr: tipStr});
                     })
@@ -967,7 +961,9 @@ module.exports = {
                                             });
                                         }
                                         else {
-                                            db.query("insert into mConclusion(conclusion) values(" + conclusion + ")", function (err, results) {
+                                            var f3 = f;
+                                            var c3 = c;
+                                            db.query("insert into mConclusion(conclusion,f,c) values(" + conclusion + "," + f3 + "," + c3 + ")", function (err, results) {
                                                 if (err) {
                                                     res.status(200).send({
                                                         returnState: -1,
@@ -976,23 +972,7 @@ module.exports = {
                                                     console.log(err.message);
                                                     return;
                                                 }
-
-                                                var f3 = f;
-                                                var c3 = c;
-                                                db.query("update mConclusion" +
-                                                    " set f=" + f3 + ",c=" + c3 + " where conclusion = " + conclusion, function (err, results) {
-                                                    if (err) {
-                                                        res.status(200).send({
-                                                            returnState: -1,
-                                                            returnMsg: err.message
-                                                        });
-                                                        console.log(err.message);
-                                                        return;
-                                                    }
-                                                    resultFuncCb();
-
-                                                });
-
+                                                resultFuncCb();
                                             });
                                         }
                                     });
