@@ -8,6 +8,9 @@ var app = express();
 var crypto = require('crypto');
 var async = require('async');
 var EventProxy = require('eventproxy');
+var bot = require('nodemw');
+
+var static={};
 
 module.exports = {
     authentication: function (req, res, next) {
@@ -308,6 +311,136 @@ module.exports = {
                     }
                 }
             );
+        }
+    },
+    exportToWiki: {
+        post: function (req, res, next) {
+            function createClient(callback){
+                if(!static.client){
+                    var bot = require('nodemw'),
+                        client = new bot({
+                            server: 'localhost',    // host name of MediaWiki-powered site
+                            path: '/mediawiki',                    // path to api.php script
+                            debug: true                   // is more verbose when set to true
+                        });
+
+                    client.logIn('wwq','a13883940243', function () {
+                        static.client=client;
+                        callback();
+                    })
+                }
+                else{
+                    callback();
+                }
+            }
+
+            createClient(function () {
+                var type = req.body['type'];
+                switch (type) {
+                    case 'add':
+                        if (req.body['num'] === 'one') {
+                            var tableName = req.body['tableName'],
+                                title = req.body['title'];
+                            addOne(req, res, next, tableName, title, function () {
+                                getAll(req, res, next);
+                            });
+                        }
+                        else {
+                            var data = JSON.parse(req.body['data']),
+                                tableNameArr = data['tableName'],
+                                titleArr = data['title'];
+                            addAll(req, res, next, tableNameArr, titleArr);
+                        }
+                        break;
+                    case 'get':
+                        getAll(req, res, next);
+                        break;
+                    case 'delete':
+                        deletePage(req, res, next);
+                }
+            })
+
+
+
+            function addOne(req, res, next, tableName, title, cb) {
+
+
+                db.query('select * from ' + tableName, function (err, arr) {
+                    if (err) {
+                        console.log(err.message);
+                        return
+                    }
+                    var str = '<table style="text-align:center;">',
+                        length = arr.length,
+                        i = 0,
+                        orderArr = [];
+
+                    for (var name in arr[0]) {
+                        orderArr.push(name);
+                    }
+
+                    for (var k = 0; k < orderArr.length; k++) {
+                        str += '<th>' + orderArr[k] + '</th>';
+                    }
+
+                    for (; i < length; i++) {
+                        str += '<tr>';
+                        for (var j = 0; j < orderArr.length; j++) {
+                            str += '<td>' + arr[i][orderArr[j]] + '</td>';
+                        }
+                        str += '</tr>';
+                    }
+
+                    str += '</table>';
+
+                    static.client.edit(title, str, '', '', function (err) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(arguments[1].contentmodel);
+                            console.log('succeed edit');
+                            cb();
+                        }
+                    })
+                })
+            };
+            function addAll(req, res, next, tableNameArr, titleArr) {
+                var sum = 0;
+
+                function callback(sum) {
+                    if (sum === titleArr.length) {
+                        getAll(req, res, next);
+                    }
+                }
+
+                for (var i = 0; i < titleArr.length; i++) {
+                    addOne(req, res, next, tableNameArr[i], titleArr[i], function () {
+                        sum++;
+                        callback(sum);
+                    })
+                }
+
+            }
+
+            function getAll(req, res, next) {
+                static.client.getAllPages(function () {
+                    res.status(200).send({returnState: true, data: arguments});
+                })
+            }
+
+            function deletePage(req, res, next) {
+                static.client.whoami(function () {
+                     console.log(arguments);
+                 })
+
+
+                 var title=req.body['title'];
+                 console.log(title)
+                static.client.delete(title, 'user_delete', function () {
+                    getAll(req, res, next);
+                });
+            }
+
         }
     },
     getoptions: function (req, res, next) {     //将数据库各火灾详细选项传给前端
