@@ -10,7 +10,7 @@ var async = require('async');
 var EventProxy = require('eventproxy');
 var bot = require('nodemw');
 
-var static={};
+var static = {};
 
 module.exports = {
     authentication: function (req, res, next) {
@@ -315,8 +315,8 @@ module.exports = {
     },
     exportToWiki: {
         post: function (req, res, next) {
-            function createClient(callback){
-                if(!static.client){
+            function createClient(callback) {
+                if (!static.client) {
                     var bot = require('nodemw'),
                         client = new bot({
                             server: 'localhost',    // host name of MediaWiki-powered site
@@ -324,12 +324,12 @@ module.exports = {
                             debug: true                   // is more verbose when set to true
                         });
 
-                    client.logIn('wwq','a13883940243', function () {
-                        static.client=client;
+                    client.logIn('wwq', 'a13883940243', function () {
+                        static.client = client;
                         callback();
                     })
                 }
-                else{
+                else {
                     callback();
                 }
             }
@@ -359,7 +359,6 @@ module.exports = {
                         deletePage(req, res, next);
                 }
             })
-
 
 
             function addOne(req, res, next, tableName, title, cb) {
@@ -430,12 +429,12 @@ module.exports = {
 
             function deletePage(req, res, next) {
                 static.client.whoami(function () {
-                     console.log(arguments);
-                 })
+                    console.log(arguments);
+                })
 
 
-                 var title=req.body['title'];
-                 console.log(title)
+                var title = req.body['title'];
+                console.log(title)
                 static.client.delete(title, 'user_delete', function () {
                     getAll(req, res, next);
                 });
@@ -596,9 +595,8 @@ module.exports = {
                                                         fireLevelName = results[0]['FireLevelName']
 
                                                     console.log(name + ': ' + fireLevelName);
-                                                    tipStr += '（$事件*[' + detail + ']→' + title + '=> $事件→([' +
-                                                        fireLevelName.split('火灾')[0] + '] &火灾)  (' + obj.truth1 + ',' + (0.9 * obj.truth0 ) + ')</br>';
-
+                                                    tipStr += "{" + inputArr[0]['detail'] + "}" + "*" + "[" + detail + "]" + "→" + title + "Dao" + "=> {" + inputArr[0]['detail'] + "}→"
+                                                        + "(" + fireLevelName.split('火灾')[0] + ")（" + Number(obj.truth1).toFixed(2) + "," + (0.9 * obj.truth0 ).toFixed(2) + "）</br>";
                                                     var m_conclusion = function (ccb) {
                                                         db.query('select * from mConclusion where conclusion = ' + fireLevelId, function (err, results) {
                                                             if (err) {
@@ -899,8 +897,8 @@ module.exports = {
                                                                 tipStr += "{" + inputArr[0]['detail'] + "}DAO" +
                                                                     "→[火灾类别 " + inputArr[1]['detail'] + "]+[火灾级别 " + fireLevelDes + "] =>" + "{" + inputArr[0]['detail'] + "}" + "→(出动人数:" + FireFighterNum + ")+(设备数目:" + Equipment + ")（" + (1.0 * f) + "," + (0.9 * c) + "）</br>";
 
-                                                                dispatchStr += "出动人数:" + FireFighterNum + "\n设备数目:" + Equipment +
-                                                                    '\n' + "（Frequency=" + (1.0 * f) + ",Confidence=" + (0.9 * c) + "）</br>";
+                                                                dispatchStr += "出动人数：" + FireFighterNum.replace(/-/g, '') + "</br>设备数目：" + Equipment.replace(/∩/g, '、') +
+                                                                    '</br>' + "事件频率为：" + (1.0 * f).toFixed(2) + "， 确信度为：" + (0.9 * c).toFixed(2) + "</br>";
                                                                 console.log(dispatchStr);
 
                                                                 db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {

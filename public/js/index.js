@@ -195,7 +195,7 @@ define(function (require, exports, module) {
                         component.popup.tip.hide();
 
                         $.ajax({    //登录框点击登录
-                            url: 'http://localhost:3000/authentication',
+                            url: config.domain+'authentication',
                             data: {method: 'login', username: userName, password: pwd},
                             type: 'POST',
                             dataType: 'json',
@@ -307,7 +307,7 @@ define(function (require, exports, module) {
             page: {
                 getOptions: function () {   //生成派遣方案页面动态获取数据库选项数据
                     $.ajax({
-                        url: 'http://localhost:3000/getoptions',
+                        url: config.domain+'getoptions',
                         data: {},
                         type: "GET",
                         dataType: 'json',
@@ -368,7 +368,7 @@ define(function (require, exports, module) {
                                     var title = $(this).parent().siblings('.tableName').text();
                                     var pop = controller.component.popMsg('loading');
                                     $.ajax({
-                                        url: 'http://localhost:3000/exporttowiki',
+                                        url: config.domain+'exporttowiki',
                                         data: {type: 'delete',title:title},
                                         type: 'POST',
                                         dataType: 'json',
@@ -393,7 +393,7 @@ define(function (require, exports, module) {
                         var pop = controller.component.popMsg('loading');
 
                         $.ajax({
-                            url: 'http://localhost:3000/exporttowiki',
+                            url: config.domain+'exporttowiki',
                             data: {type: 'get'},
                             type: 'POST',
                             dataType: 'json',
@@ -422,6 +422,9 @@ define(function (require, exports, module) {
 
                         leftTableArea.html(tableStrLeft);
 
+                        $('#exportToWikiPad .back').click(function () {
+                            controller.page.switchPage('index');
+                        });
 
                         $('.exportEach').each(function () {
                             $(this).click(function () {
@@ -430,7 +433,7 @@ define(function (require, exports, module) {
                                         $(this).parent().siblings('.title').find('input').attr('placeholder');
                                 var pop = controller.component.popMsg('loading');
                                 $.ajax({
-                                    url: 'http://localhost:3000/exporttowiki',
+                                    url: config.domain+'exporttowiki',
                                     data: {type: 'add', num: 'one', tableName: tableName, title: title},
                                     type: 'POST',
                                     dataType: 'json',
@@ -464,7 +467,7 @@ define(function (require, exports, module) {
                             var pop = controller.component.popMsg('loading');
 
                             $.ajax({
-                                url: 'http://localhost:3000/exporttowiki',
+                                url: config.domain+'exporttowiki',
                                 data: {
                                     type: 'add',
                                     num: 'all',
@@ -593,7 +596,7 @@ define(function (require, exports, module) {
                             var pop = controller.component.popMsg('loading');
 
                             $.ajax({    //提交以决策
-                                url: 'http://localhost:3000/generatedispatch',
+                                url: config.domain+'generatedispatch',
                                 data: {data: JSON.stringify(input)},
                                 type: 'POST',
                                 dataType: 'json',
@@ -630,7 +633,7 @@ define(function (require, exports, module) {
 
                         if (type === 'add') {
                             $.ajax({    //获取初始add页面功能
-                                url: 'http://localhost:3000/' + path,
+                                url: config.domain+'' + path,
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function (data) {
@@ -668,7 +671,7 @@ define(function (require, exports, module) {
                         else if (type === 'modi') {
 
                             $.ajax({    //获取初始modi页面功能
-                                url: 'http://localhost:3000/' + path,
+                                url: config.domain+'' + path,
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function (data) {
@@ -819,7 +822,7 @@ define(function (require, exports, module) {
                                     var pop = controller.component.popMsg('loading');
 
                                     $.ajax({    //提交修改表格
-                                        url: 'http://localhost:3000/' + path,
+                                        url: config.domain+'' + path,
                                         data: {data: JSON.stringify(inputArr), method: method},
                                         type: type,
                                         dataType: 'json',
@@ -862,7 +865,7 @@ define(function (require, exports, module) {
                         var pop = controller.component.popMsg('loading');
 
                         $.ajax({    //获取自动生成决策页面功能
-                            url: 'http://localhost:3000/autoGenerateDispatch',
+                            url: config.domain+'autoGenerateDispatch',
                             type: 'GET',
                             dataType: 'json',
                             success: function (data) {
@@ -945,7 +948,7 @@ define(function (require, exports, module) {
                                 var pop = controller.component.popMsg('loading');
 
                                 $.ajax({    //提交修改密码
-                                    url: 'http://localhost:3000/authentication',
+                                    url: config.domain+'authentication',
                                     data: obj,
                                     type: 'POST',
                                     dataType: 'json',
@@ -1049,8 +1052,8 @@ define(function (require, exports, module) {
     exports.init = function () {
         controller.component.addEventListener();
         controller.component.popLogin();
-        controller.page.switchPage('exportToWiki');  //默认页
-        thisPageName = 'exportToWiki';
+        controller.page.switchPage('index');  //默认页
+        thisPageName = 'index';
         controller.tools.loadImg('../img/pop-mid.png', function () {
             console.log('loaded');
         });

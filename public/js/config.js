@@ -64,7 +64,8 @@ define(function (require, exports, module) {
             t_firetype:'火灾类别',
             t_dispatch:'派遣方案',
             t_learn:'学习规则'
-        }
+        },
+        domain:'http://localhost:3000/'
     }
 
 });

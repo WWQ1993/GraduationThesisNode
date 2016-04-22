@@ -533,3 +533,18 @@ nav > div > div > a {
     border: none;
     display: inline-block;
 }
+#exportToWikiPad .back{
+    vertical-align: middle;
+    line-height: 32px;
+    width: 115px;
+    background-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 2px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    margin: auto;
+    display: block;
+    margin: 24px auto;
+}
