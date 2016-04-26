@@ -195,7 +195,7 @@ define(function (require, exports, module) {
                         component.popup.tip.hide();
 
                         $.ajax({    //登录框点击登录
-                            url: config.domain+'authentication',
+                            url: config.domain + 'authentication',
                             data: {method: 'login', username: userName, password: pwd},
                             type: 'POST',
                             dataType: 'json',
@@ -307,7 +307,7 @@ define(function (require, exports, module) {
             page: {
                 getOptions: function () {   //生成派遣方案页面动态获取数据库选项数据
                     $.ajax({
-                        url: config.domain+'getoptions',
+                        url: config.domain + 'getoptions',
                         data: {},
                         type: "GET",
                         dataType: 'json',
@@ -342,6 +342,140 @@ define(function (require, exports, module) {
                     index: function () {
 
                     },
+                    textDispatch: function () {
+                        $('.content .textDispatchBtns .back').click(function () {
+                            controller.page.switchPage('index');
+                        });
+                        $('.content .textDispatchBtns .reset').click(function () {
+                            controller.component.popMsg('success');
+                            controller.page.switchPage('textDispatch');
+                        });
+                        
+                        var textArea = $('.textDispatch'),
+                            arr = config.textDispatch,
+                            i = 0,
+                            str = '',
+                            inputArr = [];
+
+                        function showTipText(i) {
+
+                            if (i === arr.length) {
+
+                                if(inputArr.length<3){
+                                    controller.component.popMsg('fail','必须输入一项火灾详情，请重新输入！');
+                                    return;
+                                }
+                                var pop = controller.component.popMsg('loading');
+                                $.ajax({    //提交以决策
+                                    url: config.domain + 'generatedispatch',
+                                    data: {data: JSON.stringify(inputArr)},
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        pop.closeLoading();
+                                        if (data.returnState === -2) {
+                                            controller.component.loginFirst();
+                                        }
+                                        else if (data.returnState === 1) {
+
+                                            var dispatch = data.dispatch.replace(/<\/br>/g, '\n'),
+                                                tipStr = data.tipStr.replace(/<\/br>/g, '\n');
+                                            str += '\n决策方案如下：\n' + dispatch + '\n解释如下：\n' + tipStr;
+                                            textArea.val(str);
+                                            textArea[0].scrollTop = textArea[0].scrollHeight;
+                                        }
+                                    },
+                                    erorr: function () {
+                                        controller.component.popMsg('error');
+                                        pop.closeLoading();
+                                    }
+                                });
+                                $(window).unbind('keydown.textDispatch');
+                                return;
+                            }
+                            str += '\n' + arr[i].text + '\n' ;
+                            textArea.val(str);
+                            textArea[0].scrollTop = textArea[0].scrollHeight;
+                        };
+                        showTipText(i);
+
+                        $(window).bind('keydown.textDispatch', function (e) {
+                            if (e.keyCode === 13) {
+                                e.preventDefault();
+                                var newTotalText = textArea.val();
+                                var newText = newTotalText.split(str)[1]
+
+                                if (!newText) {
+                                    if (arr[i].name !== 't_firetype') {
+                                        newTotalText += '已忽略该问题\n';
+                                        textArea.val(newTotalText)
+                                        str = newTotalText;
+                                        showTipText(++i);
+                                    }
+                                    else {
+                                        newTotalText += '此项必填\n';
+                                        textArea.val(newTotalText)
+                                        str = newTotalText;
+                                        showTipText(i);
+                                    }
+
+                                }
+                                else {
+
+                                    if (newText.indexOf(arr[i].title) > -1 && newText.indexOf('[') > -1 && newText.indexOf(']') > -1 && newText.indexOf('{') > -1 && newText.indexOf('}') > -1) {
+                                        var truths = newText.split(arr[i].title)[1].replace('\n', ''),
+                                            detail = newText.split('[')[1].split(']')[0],
+                                            pos = newText.split('{')[1].split('}')[0];
+
+                                        inputArr[0] = {
+                                            "title": "发生地点：",
+                                            "detail": pos,
+                                            "truth": "肯定(1.0,0.9)",
+                                            "name": "t_pos"
+                                        }
+                                        inputArr.push({
+                                            "title": arr[i].title + "：",
+                                            "detail": detail,
+                                            "truth": truths,
+                                            "name": arr[i].name
+                                        })
+                                        var pop = controller.component.popMsg('loading');
+
+                                        $.ajax({
+                                            url: config.domain + 'textDispatch',
+                                            data: {
+                                                title: arr[i].title,
+                                                detail: detail,
+                                                truth: truths,
+                                                name: arr[i].name,
+                                                pos: pos
+                                            },
+                                            type: "POST",
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                pop.closeLoading();
+                                                newTotalText += '\n' + data.data;
+                                                textArea.val(newTotalText)
+                                                str = newTotalText;
+                                                showTipText(++i);
+                                            },
+                                            error: function () {
+                                                controller.component.popMsg('error');
+                                                pop.closeLoading();
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        newTotalText += '\n输入有误\n';
+                                        textArea.val(newTotalText)
+                                        str = newTotalText;
+                                        showTipText(i);
+                                    }
+                                }
+                            }
+                        })
+
+                    },
                     exportToWiki: function () {
                         var tables = config['exportToWiki'],
                             leftTableArea = $('#exportToWikiPad .leftPad .tableArea center'),
@@ -368,8 +502,8 @@ define(function (require, exports, module) {
                                     var title = $(this).parent().siblings('.tableName').text();
                                     var pop = controller.component.popMsg('loading');
                                     $.ajax({
-                                        url: config.domain+'exporttowiki',
-                                        data: {type: 'delete',title:title},
+                                        url: config.domain + 'exporttowiki',
+                                        data: {type: 'delete', title: title},
                                         type: 'POST',
                                         dataType: 'json',
                                         success: function (e) {
@@ -390,10 +524,11 @@ define(function (require, exports, module) {
 
                             });
                         }
+
                         var pop = controller.component.popMsg('loading');
 
                         $.ajax({
-                            url: config.domain+'exporttowiki',
+                            url: config.domain + 'exporttowiki',
                             data: {type: 'get'},
                             type: 'POST',
                             dataType: 'json',
@@ -433,7 +568,7 @@ define(function (require, exports, module) {
                                         $(this).parent().siblings('.title').find('input').attr('placeholder');
                                 var pop = controller.component.popMsg('loading');
                                 $.ajax({
-                                    url: config.domain+'exporttowiki',
+                                    url: config.domain + 'exporttowiki',
                                     data: {type: 'add', num: 'one', tableName: tableName, title: title},
                                     type: 'POST',
                                     dataType: 'json',
@@ -467,7 +602,7 @@ define(function (require, exports, module) {
                             var pop = controller.component.popMsg('loading');
 
                             $.ajax({
-                                url: config.domain+'exporttowiki',
+                                url: config.domain + 'exporttowiki',
                                 data: {
                                     type: 'add',
                                     num: 'all',
@@ -493,8 +628,6 @@ define(function (require, exports, module) {
 
                     },
                     generateDispatch: function () {
-
-                        //$('.content').append('<link rel="stylesheet" href="css/dispatch.css"  style="height: 0;"/>');
 
                         controller.page.getOptions();
 
@@ -596,7 +729,7 @@ define(function (require, exports, module) {
                             var pop = controller.component.popMsg('loading');
 
                             $.ajax({    //提交以决策
-                                url: config.domain+'generatedispatch',
+                                url: config.domain + 'generatedispatch',
                                 data: {data: JSON.stringify(input)},
                                 type: 'POST',
                                 dataType: 'json',
@@ -633,7 +766,7 @@ define(function (require, exports, module) {
 
                         if (type === 'add') {
                             $.ajax({    //获取初始add页面功能
-                                url: config.domain+'' + path,
+                                url: config.domain + '' + path,
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function (data) {
@@ -671,7 +804,7 @@ define(function (require, exports, module) {
                         else if (type === 'modi') {
 
                             $.ajax({    //获取初始modi页面功能
-                                url: config.domain+'' + path,
+                                url: config.domain + '' + path,
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function (data) {
@@ -707,7 +840,7 @@ define(function (require, exports, module) {
                     commonFunction: {
                         addTitle: function () { //添加窗口标题
                             var titleText = $('nav>div a[data-pageName=' + thisPageName + ']').text()
-                            $('.content').prepend('<h1>' + titleText + '</h1');
+                            $('.content').prepend('<h1>' + titleText + '</h1>');
                         },
                         tableChooseAble: function () {     //设置table可选中
                             var add = thisPageName.indexOf('add') > -1 ? true : false;
@@ -822,7 +955,7 @@ define(function (require, exports, module) {
                                     var pop = controller.component.popMsg('loading');
 
                                     $.ajax({    //提交修改表格
-                                        url: config.domain+'' + path,
+                                        url: config.domain + '' + path,
                                         data: {data: JSON.stringify(inputArr), method: method},
                                         type: type,
                                         dataType: 'json',
@@ -865,7 +998,7 @@ define(function (require, exports, module) {
                         var pop = controller.component.popMsg('loading');
 
                         $.ajax({    //获取自动生成决策页面功能
-                            url: config.domain+'autoGenerateDispatch',
+                            url: config.domain + 'autoGenerateDispatch',
                             type: 'GET',
                             dataType: 'json',
                             success: function (data) {
@@ -948,7 +1081,7 @@ define(function (require, exports, module) {
                                 var pop = controller.component.popMsg('loading');
 
                                 $.ajax({    //提交修改密码
-                                    url: config.domain+'authentication',
+                                    url: config.domain + 'authentication',
                                     data: obj,
                                     type: 'POST',
                                     dataType: 'json',
@@ -1052,13 +1185,11 @@ define(function (require, exports, module) {
     exports.init = function () {
         controller.component.addEventListener();
         controller.component.popLogin();
-        controller.page.switchPage('index');  //默认页
-        thisPageName = 'index';
+        controller.page.switchPage('textDispatch');  //默认页
+        thisPageName = 'textDispatch';
         controller.tools.loadImg('../img/pop-mid.png', function () {
-            console.log('loaded');
         });
         controller.tools.loadImg('../img/loading.gif', function () {
-            console.log('loaded');
         });
 
 

@@ -548,3 +548,28 @@ nav > div > div > a {
     display: block;
     margin: 24px auto;
 }
+
+.textDispatch{
+    margin: 50px auto;
+    width: 80%;
+    height: 500px;
+    display: block;
+    resize: none;
+    padding: 0 25px;
+}
+.textDispatchBtns{
+    text-align: center;
+}
+.textDispatchBtns a{
+    vertical-align: middle;
+    margin: 10px 10px;
+    line-height: 32px;
+    width: 115px;
+    background-color: #4cb0f9;
+    color: #FFF;
+    border-radius: 2px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+}

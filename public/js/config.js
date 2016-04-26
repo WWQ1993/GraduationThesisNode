@@ -65,6 +65,64 @@ define(function (require, exports, module) {
             t_dispatch:'派遣方案',
             t_learn:'学习规则'
         },
+        textDispatch:[
+            {
+                "title": "火灾类别",
+                "text": "有火灾类别的信息吗？必须输入火灾类别信息：",
+                "name": "t_firetype"
+            },
+            {
+                "title": "火灾面积",
+                "text": "有火灾面积的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_area"
+            },
+            {
+                "title": "火灾容积",
+                "text": "有火灾容积的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_volume"
+            },
+            {
+                "title": "呼叫次数",
+                "text": "有呼叫次数的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_callingtime"
+            },
+            {
+                "title": "所处阶段",
+                "text": "有所处阶段的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_stage"
+            },
+            {
+                "title": "火灾火势",
+                "text": "有火灾火势的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_fire"
+            },
+            {
+                "title": "蔓延状态",
+                "text": "有蔓延状态的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_spreading"
+            },
+            {
+                "title": "被困人数",
+                "text": "有被困人数的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_trappedpeople"
+            },
+            {
+                "title": "受伤人数",
+                "text": "有受伤人数的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_injuredpeople"
+            },
+            {
+                "title": "死亡人数",
+                "text": "有死亡人数的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_deathtoll"
+            },
+            {
+                "title": "突变险情",
+                "text": "有突变险情的信息吗？有，请直接输入，否则，请回车忽略该问题：",
+                "name": "t_danger"
+            }
+        ]
+        ,
         domain:'http://localhost:3000/'
     }
 

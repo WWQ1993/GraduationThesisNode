@@ -519,7 +519,7 @@ module.exports = {
                     })
                 },
                 function (cb) {
-                    db.query('insert into tempLearn select * from t_learn', function (err) {   //清空之前记录
+                    db.query('insert into tempLearn select * from t_learn', function (err) {
                         if (err) {
                             console.log(err.message);
                             return
@@ -528,7 +528,7 @@ module.exports = {
                     })
                 },
                 function (cb) {
-                    db.query('insert into tempSimilarity select * from t_similarity', function (err) {   //清空之前记录
+                    db.query('insert into tempSimilarity select * from t_similarity', function (err) {
                         if (err) {
                             console.log(err.message);
                             return
@@ -538,7 +538,7 @@ module.exports = {
                 }
             ],
             function () {
-                console.log('清除之前记录完毕')
+                console.log('清除记录完毕')
 
                 var inputDetailArr = [];
 
@@ -594,11 +594,11 @@ module.exports = {
                                                     var fireLevelId = results[0]['FireLevelid'],
                                                         fireLevelName = results[0]['FireLevelName']
 
-                                                    console.log(name + ': ' + fireLevelName);
+
                                                     tipStr += "{" + inputArr[0]['detail'] + "}" + "*" + "[" + detail + "]" + "→" + title + "Dao" + "=> {" + inputArr[0]['detail'] + "}→"
                                                         + "(" + fireLevelName.split('火灾')[0] + ")（" + Number(obj.truth1).toFixed(2) + "," + (0.9 * obj.truth0 ).toFixed(2) + "）</br>";
                                                     var m_conclusion = function (ccb) {
-                                                        db.query('select * from mConclusion where conclusion = ' + fireLevelId, function (err, results) {
+                                                        db.query('select * from mconclusion where conclusion = ' + fireLevelId, function (err, results) {
                                                             if (err) {
                                                                 res.status(200).send({
                                                                     returnState: -1,
@@ -607,7 +607,6 @@ module.exports = {
                                                                 console.log(err.message);
                                                                 return;
                                                             }
-                                                            console.log('mConclusion result length: ' + results.length);
                                                             if (results.length > 0) {
                                                                 var f = 1.0 * obj.truth1,
                                                                     c = (obj.truth0 * 0.9 * 1.0 * obj.truth1),
@@ -615,7 +614,7 @@ module.exports = {
                                                                     c1 = results[0]['c'];
                                                                 f = (f * c * (1 - c1) + f1 * c1 * (1 - c)) / (c * (1 - c1) + c1 * (1 - c));
                                                                 c = (c * (1 - c1) + c1 * (1 - c)) / (c * (1 - c1) + c1 * (1 - c) + (1 - c) * (1 - c1));
-                                                                db.query("update mConclusion" +
+                                                                db.query("update mconclusion" +
                                                                     " set f=" + f + ",c=" + c + " where conclusion = " + fireLevelId, function () {
                                                                     ccb();
 
@@ -625,7 +624,7 @@ module.exports = {
 
                                                                 var f3 = 1.0 * obj.truth1,
                                                                     c3 = (obj.truth0 * 0.9 * 1.0 * obj.truth1);
-                                                                db.query('insert into mConclusion(conclusion,f,c) values(' + fireLevelId + ',' + f3 + ',' + c3 + ')', function () {
+                                                                db.query('insert into mconclusion(conclusion,f,c) values(' + fireLevelId + ',' + f3 + ',' + c3 + ')', function () {
                                                                     ccb();
                                                                 });
 
@@ -716,7 +715,6 @@ module.exports = {
                                 f1 = f;
                                 c1 = c;
 
-                                console.log("f=" + f + " c=" + c + '  typeId:  ' + fireTypeId);
                                 cb();
                             })
                         },
@@ -756,7 +754,7 @@ module.exports = {
 
                                                             //插进中间结论表---------
                                                             var newId = levelDetail;
-                                                            db.query("select * from mConclusion where conclusion = " + newId, function (err, resu) {
+                                                            db.query("select * from mconclusion where conclusion = " + newId, function (err, resu) {
                                                                 if (err) {
                                                                     console.log(err.message);
                                                                     return
@@ -769,7 +767,7 @@ module.exports = {
                                                                         f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1)),
                                                                         c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
 
-                                                                    db.query("update mConclusion" +
+                                                                    db.query("update mconclusion" +
                                                                         " set f=" + f3 + ",c=" + c3 + " where conclusion = " + newId, function (err) {
                                                                         if (err) {
                                                                             console.log(err.message);
@@ -782,7 +780,7 @@ module.exports = {
                                                                 } else {
                                                                     var f3 = f,
                                                                         c3 = c;
-                                                                    db.query("insert into mConclusion(conclusion,f,c) values(" + newId + ", " + f3 + "," + c3 + ")", function (err) {
+                                                                    db.query("insert into mconclusion(conclusion,f,c) values(" + newId + ", " + f3 + "," + c3 + ")", function (err) {
                                                                         if (err) {
                                                                             console.log(err.message);
                                                                             return
@@ -837,7 +835,6 @@ module.exports = {
                         function getLevel(cb) { //1262
                             async.series([
                                     function (cab) {//调用存储过程    1265
-                                        console.log('findmaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
                                         db.query("call findMax()", function (err, results) {
                                             if (err) {
                                                 console.log(err.message);
@@ -895,11 +892,10 @@ module.exports = {
                                                                     FireFighterNum = results[0]["FireFighterNum"],
                                                                     Equipment = results[0]["Equipment"];
                                                                 tipStr += "{" + inputArr[0]['detail'] + "}DAO" +
-                                                                    "→[火灾类别 " + inputArr[1]['detail'] + "]+[火灾级别 " + fireLevelDes + "] =>" + "{" + inputArr[0]['detail'] + "}" + "→(出动人数:" + FireFighterNum + ")+(设备数目:" + Equipment + ")（" + (1.0 * f) + "," + (0.9 * c) + "）</br>";
+                                                                    "→[火灾类别 " + inputArr[1]['detail'] + "]+[火灾级别 " + fireLevelDes + "] =>" + "{" + inputArr[0]['detail'] + "}" + "→(出动人数:" + FireFighterNum + ")+(设备数目:" + Equipment + ")（" + (1.0 * f).toFixed(2) + "," + (0.9 * c).toFixed(2) + "）</br>";
 
                                                                 dispatchStr += "出动人数：" + FireFighterNum.replace(/-/g, '') + "</br>设备数目：" + Equipment.replace(/∩/g, '、') +
                                                                     '</br>' + "事件频率为：" + (1.0 * f).toFixed(2) + "， 确信度为：" + (0.9 * c).toFixed(2) + "</br>";
-                                                                console.log(dispatchStr);
 
                                                                 db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {
                                                                     if (err) {
@@ -911,7 +907,6 @@ module.exports = {
 
                                                             }
                                                             else {
-                                                                console.log('未找到派遣方案\n\n' + LevelId)
                                                                 dispatchStr = '未找到派遣方案————火灾类别： ' + typeId + '  火灾级别: ' + LevelId;
                                                                 calb();
                                                             }
@@ -944,7 +939,7 @@ module.exports = {
                                                     f = results[ind]["Frequency"];
                                                     c = results[ind]["Confidence"];
 
-                                                    tipStr += "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
+                                                    tipStr += "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f.toFixed(2) + "," + c.toFixed(2) + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
                                                     calb();
                                                 };
                                                 func.ind = ind;
@@ -972,7 +967,7 @@ module.exports = {
                                                     f = results[ind]["Frequency"];
                                                     c = results[ind]["Confidence"];
 
-                                                    tipStr += "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f + "," + c + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
+                                                    tipStr += "{$事件}→([" + des1 + "])=> {$事件}→([" + des2 + "](" + f.toFixed(2) + "," + c.toFixed(2) + ")</br>" /*"新习得知识："+des1+"+"+des2+"("+f+","+c+")"*/;
                                                     calb();
                                                 };
                                                 func.ind = ind;
@@ -990,7 +985,7 @@ module.exports = {
                         }
 
                     ], function () {
-                        console.log('all done\n' + tipStr + '\n\n' + dispatchStr);
+                        console.log('all done\n');
 
                         res.status(200).send({returnState: 1, dispatch: dispatchStr, tipStr: tipStr});
                     })
@@ -999,15 +994,12 @@ module.exports = {
 
 
         function learnAndSimi(fireLevelId, id, detail, cback) {
-            console.log('--learnAndSimi input:  ' + fireLevelId + ' ' + id + ' ' + detail);
-
             var f1 = 0,
                 f2 = 0,
                 c1 = 0,
                 c2 = 0;
             async.series([
                 function (cab) {
-                    console.log("###update t_input" + " set conclusion=" + fireLevelId + " where input = " + id);
                     db.query("update t_input" +
                         " set conclusion = " + fireLevelId + " where input = " + id, function (err, results) {
                         if (err) {
@@ -1054,14 +1046,14 @@ module.exports = {
                         for (var ind = 0; ind < results.length; ind++) {
                             var resultFunc = function (resultFuncCb) {
                                 var ind = arguments.callee.ind,
-                                    f = results[ind]['f'],
-                                    c = results[ind]['c'],
                                     othierCdt = results[ind]["Condition2"],
-                                    conclusion = results[ind]["Condition"]
+                                    conclusion = results[ind]["Conclusion"],
+                                    f = results[ind]['Frequency'],
+                                    c = results[ind]['Confidence']
                                 if (c > 0.5) {
                                     f = f1 * f;//f值更新为输入的f值和规则的f值的运算结果
                                     c = c1 * c * f1 * f;
-                                    db.query("select * from mConclusion where conclusion = " + conclusion, function (err, results) {
+                                    db.query("select * from mconclusion where conclusion = " + conclusion, function (err, results) {
                                         if (err) {
                                             res.status(200).send({
                                                 returnState: -1,
@@ -1074,12 +1066,13 @@ module.exports = {
                                             f1 = f;
                                             c1 = c;
 
-                                            f2 = results[0]("f");
-                                            c2 = results[0]("c");
+                                            f2 = results[0]["f"];
+                                            c2 = results[0]["c"];
 
                                             var f3 = (f1 * c1 * (1 - c2) + f2 * c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1));
                                             var c3 = (c1 * (1 - c2) + c2 * (1 - c1)) / (c1 * (1 - c2) + c2 * (1 - c1) + (1 - c1) * (1 - c2));
-                                            db.query("update mConclusion" + " set f=" + f3 + ",c=" + c3 + " where conclusion = " + conclusion, function (err, results) {
+
+                                            db.query("update mconclusion" + " set f=" + f3 + ",c=" + c3 + " where conclusion = " + conclusion, function (err, results) {
                                                 if (err) {
                                                     res.status(200).send({
                                                         returnState: -1,
@@ -1094,7 +1087,7 @@ module.exports = {
                                         else {
                                             var f3 = f;
                                             var c3 = c;
-                                            db.query("insert into mConclusion(conclusion,f,c) values(" + conclusion + "," + f3 + "," + c3 + ")", function (err, results) {
+                                            db.query("insert into mconclusion(conclusion,f,c) values(" + conclusion + "," + f3 + "," + c3 + ")", function (err, results) {
                                                 if (err) {
                                                     res.status(200).send({
                                                         returnState: -1,
@@ -1274,9 +1267,111 @@ module.exports = {
                     });
                 }
             ], function () {
-                console.log('learnandSimi完毕')
                 cback();
             })
         }
+    },
+    textDispatch:{
+        post:function (req, res, next){
+            var obj = req.body,
+                title = obj.title,
+                detail = obj.detail,
+                truth = obj.truth,
+                name = obj.name,
+                position = obj.pos,
+                tipStr = '';
+            obj.truth1 = truth.split('(')[1].split(',')[0];
+            obj.truth0 = truth.split(')')[0].split(',')[1];
+
+            function getEach() {
+                db.query("select " + dbConfig.detail[name][0] + "  from " + name + " where " +
+                    dbConfig.detail[name][1] + "='" + detail + "'", function (err, results) {
+                    if (err) {
+                        res.status(200).send({returnState: -1, returnMsg: err.message});
+                        console.log(err.message);
+                        return
+                    }
+                    console.log(results.length)
+                    var eachIdArr = [];
+                    for (var j = 0; j < results.length; j++) {  //由detail搜出的每条id有：
+                        var id = results[j][dbConfig.detail[name][0]];
+
+                        var eachIdfunc = function (eachIdCb) {
+
+                            db.query('select FireLevelid,FireLevelName from t_firelevel where ' + dbConfig.detail[name][0] +
+                                ' = ' + id + ';', function (err, results) {
+                                if (err) {
+                                    res.status(200).send({returnState: -1, returnMsg: err.message});
+                                    console.log(err.message);
+                                    return;
+                                }
+                                var fireLevelId = results[0]['FireLevelid'],
+                                    fireLevelName = results[0]['FireLevelName']
+
+
+                                tipStr += "{" + position + "}" + "*" + "[" + detail + "]" + "→" + title + "=> {" + position + "}→"
+                                    + "(" + fireLevelName + ")（" + Number(obj.truth1).toFixed(2) + "," + (0.9 * obj.truth0 ).toFixed(2) + "）\n";
+                                eachIdCb();
+
+                            })
+
+                        };
+                        eachIdfunc.id = id;
+                        eachIdArr.push(eachIdfunc) ;
+                    }
+                    async.series(eachIdArr, function (err, values) {   //遍历每一项火情输入
+                        res.status(200).send({returnState: true, data: this.fireTypeCause+tipStr});
+                    })
+                });
+            }
+
+            if (name === 't_firetype') {
+                async.series(
+                    [
+                        function (cb) {
+                            db.query('call clearConclusion()', function (err) {   //清空之前记录
+                                if (err) {
+                                    console.log(err.message);
+                                    return
+                                }
+                                cb();
+                            })
+                        },
+                        function (cb) {
+                            db.query('insert into tempLearn select * from t_learn', function (err) {
+                                if (err) {
+                                    console.log(err.message);
+                                    return
+                                }
+                                cb();
+                            })
+                        },
+                        function (cb) {
+                            db.query('insert into tempSimilarity select * from t_similarity', function (err) {
+                                if (err) {
+                                    console.log(err.message);
+                                    return
+                                }
+                                cb();
+                            })
+                        }
+                    ],
+                    function () {
+                        console.log('清除记录完毕');
+                        tipStr += "{" + position + "}" + "*" + "[" + detail + "]" + "→火灾类别" + "=> {" + position + "}→"
+                            + "(" + detail + ")（" + (1.0 * obj.truth1) + "," + (0.9 * obj.truth0) + "）\n"
+
+
+                        this.fireTypeCause=tipStr;
+                        res.status(200).send({returnState: true, data: tipStr});
+                    });
+            }
+            else {
+                getEach();
+            }
+        },
+        fireTypeCause:''
+        
+
     }
 };
