@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+}
+#gaodeMap {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+
+    overflow: auto;
+}
+#container {
+    width: 100%;
+    height: 68%;
+
+}
+#left{
+    margin: 0;
+    width:100%;
+    height: 175px;
+    background-color: white;
+    overflow: hidden;
+}
+h6{
+    text-align: center;
+    margin: 0 auto;
+    padding: 0;
+    width: auto;
+    height: 20px;
+    border: 1px;
+    background-color: #d8e7ff;
+    font-size: 9px;
+}
+#div1{
+    /*-webkit-column-count:2;*/
+    /*-moz-column-count:2;*/
+    /*column-count:2;*/
+    background-color: white;
+    margin: auto;
+    width: auto;
+    /*border: 2px solid #d8e7ff;*/
+}
+#div2{
+    background-color: white;
+    margin: 2px 2px;
+    width: 100%;
+	text-align: center;
+    display: inline-block;
+
+}
+#gaodeMap  input[type="button"]{
+    background-color: white;
+    padding: 2px 2px;
+    width: 73px;
+    height: auto;
+}
+#gaodeMap input[type="button"]:hover{
+    cursor: pointer;
+}
+#gaodeMap  input[type="text"]{
+    margin: 2px 2px;
+    width: 95%;
+    height: auto;
+}
+#btnstart{
+    width: 90%;
+    padding: 2px 2px;
+    background-color: #d8e7ff;
+    height: auto;
+    margin: auto 2px ;
+}
+#panel {
+    position: absolute;
+    background-color: white;
+    max-height: 80%;
+    margin: 0 0;
+    overflow-y: auto;
+    right: 10px;
+    width: 280px;
+    z-index: 1;
+}
+#centerBtn{
+    width: 96%;
+    padding: 2px 2px;
+    background-color: #d8e7ff;
+    height: auto;
+    margin: auto 2px ;
+}
+#div3{
+    background-color: white;
+    margin: 2px 2px;
+    width: auto;
+    border: 2px solid #d8e7ff;
+	text-align: center;
+}
+#find{
+    margin: 1px 1px;
+    width: 60%;
+    height: auto;
+}
+#findCity{
+    margin: 1px 1px;
+    height: auto;
+}
+#findBtn{
+    margin: 1px 1px;
+    width: 30%;
+    height: auto;
+    text-align: center;
+    background-color: #d8e7ff;
+}
+#label{
+    font-size: 8px;
+    background-color: antiquewhite;
+    margin: 2px 2px;
+}
+#select{
+    margin: 3px 3px;
+    width: 78%;
+}
+#div4{
+    margin: 2px 2px;
+    background-color: darkgrey;
+    border: 2px solid #d8e7ff;
+    width: auto;
+}
+#div5{
+    margin: 2px 2px;
+    background-color: white;
+    border: 2px solid #d8e7ff;
+     width: 100%;
+    display: inline-block;
+}
+
+#tip {
+	background-color: #fff;
+	padding-left: 10px;
+	padding-right: 10px;
+	position: absolute;
+	font-size: 12px;
+	right: 10px;
+	top: 20px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	line-height: 30px;
+}
+#centerCity,#centerBtn,#div3{
+    display: none;
+}
+.mapDrive,.mapWatch{
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+}

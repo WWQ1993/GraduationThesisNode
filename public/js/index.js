@@ -2,7 +2,7 @@
  * Created by 58 on 2016/2/19 0019.
  */
 define(function (require, exports, module) {
-    var $ = require('./jquery.js');
+     
     var config = require('./config.js')
 
     var tableTitle = config['tableTitle'],
@@ -1116,10 +1116,12 @@ define(function (require, exports, module) {
                 map: null,
                 mapInit: function () {
                     //基本地图加载
-                    controller.map.map = new AMap.Map('container', {
-                        zoom: 10,
-                        center: [117.39, 39.1]
-                    });
+                    // controller.map.map = new AMap.Map('container', {
+                    //     zoom: 10,
+                    //     center: [117.39, 39.1]
+                    // });
+                    controller.map.map= $('#gaodeMap').leafletmaps({centre:'北京'});
+
                 },
                 getPos: function () {
 
@@ -1185,8 +1187,8 @@ define(function (require, exports, module) {
     exports.init = function () {
         controller.component.addEventListener();
         controller.component.popLogin();
-        controller.page.switchPage('textDispatch');  //默认页
-        thisPageName = 'textDispatch';
+        controller.page.switchPage('generateDispatch');  //默认页
+        thisPageName = 'generateDispatch';
         controller.tools.loadImg('../img/pop-mid.png', function () {
         });
         controller.tools.loadImg('../img/loading.gif', function () {

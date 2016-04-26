@@ -9,7 +9,6 @@ seajs.config({
 	//},
 	// 别名配置
 	alias: {
-	  'jquery': 'js/jquery',
 	  'index' :'js/index'
 	},
 	//预先加载
