@@ -123,7 +123,7 @@ define(function (require, exports, module) {
             }
         ]
         ,
-        domain:'http://localhost:3000/'
+        domain:window.location.origin+'/'
     }
 
 });
