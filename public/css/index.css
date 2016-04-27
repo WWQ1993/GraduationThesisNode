@@ -246,6 +246,7 @@ nav > div > div > a {
 }
 
 .loginArea {
+    z-index: 1000;
     display: none;
     position: fixed;
     top: 0;
