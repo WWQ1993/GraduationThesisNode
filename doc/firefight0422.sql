@@ -473,8 +473,8 @@ BEGIN
 	 truncate table mconclusion;
 	 truncate table t_input;
 	 truncate table t_conclusion;
-	 truncate table tempLearn;
-	 truncate table tempSimilarity;
+	 truncate table templearn;
+	 truncate table tempsimilarity;
 END;
 
 #
