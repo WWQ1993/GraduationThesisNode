@@ -52,6 +52,7 @@ h6{
     padding: 2px 2px;
     width: 73px;
     height: auto;
+    border: groove 1px #4cb0f9;
 }
 #gaodeMap input[type="button"]:hover{
     cursor: pointer;
