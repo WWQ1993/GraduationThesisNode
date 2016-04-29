@@ -51,24 +51,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="requestHandlers.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="requestHandlers.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/requestHandlers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="64">
-              <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
+            <state relative-caret-position="157">
+              <caret line="909" column="42" selection-start-line="909" selection-start-column="42" selection-end-line="909" selection-end-column="42" />
               <folding>
-                <element signature="e#633#3119#0" expanded="false" />
-                <element signature="e#3158#3179#0" expanded="false" />
-                <element signature="e#8380#8608#0" expanded="false" />
-                <element signature="e#8626#8856#0" expanded="false" />
-                <element signature="e#8872#9100#0" expanded="false" />
-                <element signature="e#9117#9339#0" expanded="false" />
-                <element signature="e#9367#11153#0" expanded="false" />
-                <element signature="e#11173#15806#0" expanded="false" />
-                <element signature="e#12020#13097#0" expanded="false" />
-                <element signature="e#14688#15173#0" expanded="false" />
-                <element signature="e#20573#27155#0" expanded="false" />
-                <marker date="1461952743967" expanded="true" signature="13427:13445" placeholder="..." />
+                <element signature="e#575#3061#0" expanded="false" />
+                <element signature="e#3100#3121#0" expanded="false" />
+                <element signature="e#8322#8550#0" expanded="false" />
+                <element signature="e#8568#8798#0" expanded="false" />
+                <element signature="e#8814#9042#0" expanded="false" />
+                <element signature="e#9059#9281#0" expanded="false" />
+                <element signature="e#9309#11095#0" expanded="false" />
+                <element signature="e#11115#15748#0" expanded="false" />
+                <element signature="e#11962#13039#0" expanded="false" />
+                <element signature="e#14630#15115#0" expanded="false" />
+                <element signature="e#20515#27097#0" expanded="false" />
+                <marker date="1461952931524" expanded="true" signature="13369:13387" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -104,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="db.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="db.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handler/db.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
+            <state relative-caret-position="80">
+              <caret line="5" column="40" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -298,74 +298,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GraduationThesisNode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GraduationThesisNode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="img" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GraduationThesisNode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="css" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GraduationThesisNode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="handler" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -503,7 +435,7 @@
       <workItem from="1461648613334" duration="18315000" />
       <workItem from="1461735702536" duration="3580000" />
       <workItem from="1461831220849" duration="13292000" />
-      <workItem from="1461895850204" duration="7097000" />
+      <workItem from="1461895850204" duration="7262000" />
     </task>
     <task id="LOCAL-00001" summary="testt">
       <created>1456843590927</created>
@@ -694,11 +626,18 @@
       <option name="project" value="LOCAL" />
       <updated>1461952668315</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="debug">
+      <created>1461952778815</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1461952778815</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45071000" />
+    <option name="totallyTimeSpent" value="45236000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1024" height="738" extended-state="0" />
@@ -1139,32 +1078,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handler/requestHandlers.js">
+    <entry file="file://$PROJECT_DIR$/handler/db.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
-          <folding>
-            <element signature="e#633#3119#0" expanded="false" />
-            <element signature="e#3158#3179#0" expanded="false" />
-            <element signature="e#8380#8608#0" expanded="false" />
-            <element signature="e#8626#8856#0" expanded="false" />
-            <element signature="e#8872#9100#0" expanded="false" />
-            <element signature="e#9117#9339#0" expanded="false" />
-            <element signature="e#9367#11153#0" expanded="false" />
-            <element signature="e#11173#15806#0" expanded="false" />
-            <element signature="e#12020#13097#0" expanded="false" />
-            <element signature="e#14688#15173#0" expanded="false" />
-            <element signature="e#20573#27155#0" expanded="false" />
-            <marker date="1461952743967" expanded="true" signature="13427:13445" placeholder="..." />
-          </folding>
+        <state relative-caret-position="80">
+          <caret line="5" column="40" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handler/db.js">
+    <entry file="file://$PROJECT_DIR$/handler/requestHandlers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
-          <folding />
+        <state relative-caret-position="157">
+          <caret line="909" column="42" selection-start-line="909" selection-start-column="42" selection-end-line="909" selection-end-column="42" />
+          <folding>
+            <element signature="e#575#3061#0" expanded="false" />
+            <element signature="e#3100#3121#0" expanded="false" />
+            <element signature="e#8322#8550#0" expanded="false" />
+            <element signature="e#8568#8798#0" expanded="false" />
+            <element signature="e#8814#9042#0" expanded="false" />
+            <element signature="e#9059#9281#0" expanded="false" />
+            <element signature="e#9309#11095#0" expanded="false" />
+            <element signature="e#11115#15748#0" expanded="false" />
+            <element signature="e#11962#13039#0" expanded="false" />
+            <element signature="e#14630#15115#0" expanded="false" />
+            <element signature="e#20515#27097#0" expanded="false" />
+            <marker date="1461952931524" expanded="true" signature="13369:13387" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
