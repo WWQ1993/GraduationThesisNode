@@ -4,6 +4,7 @@
     <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/db.js" afterPath="$PROJECT_DIR$/handler/db.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/requestHandlers.js" afterPath="$PROJECT_DIR$/handler/requestHandlers.js" />
     </list>
     <ignored path="myapp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,21 +54,21 @@
       <file leaf-file-name="requestHandlers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handler/requestHandlers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="624">
-              <caret line="107" column="20" selection-start-line="107" selection-start-column="20" selection-end-line="107" selection-end-column="20" />
+            <state relative-caret-position="64">
+              <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
               <folding>
-                <element signature="e#575#3061#0" expanded="false" />
-                <element signature="e#3100#3121#0" expanded="false" />
-                <element signature="e#8322#8550#0" expanded="false" />
-                <element signature="e#8568#8798#0" expanded="false" />
-                <element signature="e#8814#9042#0" expanded="false" />
-                <element signature="e#9059#9281#0" expanded="false" />
-                <element signature="e#9309#11095#0" expanded="false" />
-                <element signature="e#11115#15748#0" expanded="false" />
-                <element signature="e#11962#13039#0" expanded="false" />
-                <element signature="e#14630#15115#0" expanded="false" />
-                <element signature="e#20515#27097#0" expanded="false" />
-                <marker date="1461932180610" expanded="true" signature="13369:13387" placeholder="..." />
+                <element signature="e#633#3119#0" expanded="false" />
+                <element signature="e#3158#3179#0" expanded="false" />
+                <element signature="e#8380#8608#0" expanded="false" />
+                <element signature="e#8626#8856#0" expanded="false" />
+                <element signature="e#8872#9100#0" expanded="false" />
+                <element signature="e#9117#9339#0" expanded="false" />
+                <element signature="e#9367#11153#0" expanded="false" />
+                <element signature="e#11173#15806#0" expanded="false" />
+                <element signature="e#12020#13097#0" expanded="false" />
+                <element signature="e#14688#15173#0" expanded="false" />
+                <element signature="e#20573#27155#0" expanded="false" />
+                <marker date="1461952743967" expanded="true" signature="13427:13445" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -106,8 +107,8 @@
       <file leaf-file-name="db.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/db.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+            <state relative-caret-position="176">
+              <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -199,8 +200,8 @@
         <option value="$PROJECT_DIR$/public/css/dispatch.css" />
         <option value="$PROJECT_DIR$/public/js/index.js" />
         <option value="$PROJECT_DIR$/app.js" />
-        <option value="$PROJECT_DIR$/handler/requestHandlers.js" />
         <option value="$PROJECT_DIR$/handler/db.js" />
+        <option value="$PROJECT_DIR$/handler/requestHandlers.js" />
       </list>
     </option>
   </component>
@@ -502,7 +503,7 @@
       <workItem from="1461648613334" duration="18315000" />
       <workItem from="1461735702536" duration="3580000" />
       <workItem from="1461831220849" duration="13292000" />
-      <workItem from="1461895850204" duration="6974000" />
+      <workItem from="1461895850204" duration="7097000" />
     </task>
     <task id="LOCAL-00001" summary="testt">
       <created>1456843590927</created>
@@ -686,11 +687,18 @@
       <option name="project" value="LOCAL" />
       <updated>1461952280108</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="debug">
+      <created>1461952668315</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1461952668315</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44948000" />
+    <option name="totallyTimeSpent" value="45071000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1024" height="738" extended-state="0" />
@@ -763,10 +771,10 @@
     <MESSAGE value="Generally complete3" />
     <MESSAGE value="to complete popMsg" />
     <MESSAGE value="window.location.origin" />
-    <MESSAGE value="debug" />
     <MESSAGE value="opti" />
     <MESSAGE value="back" />
-    <option name="LAST_COMMIT_MESSAGE" value="back" />
+    <MESSAGE value="debug" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1123,27 +1131,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handler/requestHandlers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="624">
-          <caret line="107" column="20" selection-start-line="107" selection-start-column="20" selection-end-line="107" selection-end-column="20" />
-          <folding>
-            <element signature="e#575#3061#0" expanded="false" />
-            <element signature="e#3100#3121#0" expanded="false" />
-            <element signature="e#8322#8550#0" expanded="false" />
-            <element signature="e#8568#8798#0" expanded="false" />
-            <element signature="e#8814#9042#0" expanded="false" />
-            <element signature="e#9059#9281#0" expanded="false" />
-            <element signature="e#9309#11095#0" expanded="false" />
-            <element signature="e#11115#15748#0" expanded="false" />
-            <element signature="e#11962#13039#0" expanded="false" />
-            <element signature="e#14630#15115#0" expanded="false" />
-            <element signature="e#20515#27097#0" expanded="false" />
-            <marker date="1461932180610" expanded="true" signature="13369:13387" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/handler/dbconfig.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -1152,10 +1139,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/handler/requestHandlers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
+          <folding>
+            <element signature="e#633#3119#0" expanded="false" />
+            <element signature="e#3158#3179#0" expanded="false" />
+            <element signature="e#8380#8608#0" expanded="false" />
+            <element signature="e#8626#8856#0" expanded="false" />
+            <element signature="e#8872#9100#0" expanded="false" />
+            <element signature="e#9117#9339#0" expanded="false" />
+            <element signature="e#9367#11153#0" expanded="false" />
+            <element signature="e#11173#15806#0" expanded="false" />
+            <element signature="e#12020#13097#0" expanded="false" />
+            <element signature="e#14688#15173#0" expanded="false" />
+            <element signature="e#20573#27155#0" expanded="false" />
+            <marker date="1461952743967" expanded="true" signature="13427:13445" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handler/db.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+        <state relative-caret-position="176">
+          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
           <folding />
         </state>
       </provider>

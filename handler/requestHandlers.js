@@ -2,25 +2,25 @@
  * Created by 58 on 2016/3/1 0001.
  */
 var express = require('express');
-
+var db = require('./db')
 var dbConfig = require('./dbconfig');
 var app = express();
 var crypto = require('crypto');
 var async = require('async');
 var EventProxy = require('eventproxy');
 var bot = require('nodemw');
-
-var mysql = require('mysql');
-var TEST_DATABASE = 'firefight0806';
-//创建连接
-var db = mysql.createConnection({
-    user: 'root',
-    password: '123456',
-});
-db.TABLE = 'user';
-db.connect();
-db.query("use " + TEST_DATABASE);
-
+//
+// var mysql = require('mysql');
+// var TEST_DATABASE = 'firefight0806';
+// //创建连接
+// var db = mysql.createConnection({
+//     user: 'root',
+//     password: '123456',
+// });
+// db.TABLE = 'user';
+// db.connect();
+// db.query("use " + TEST_DATABASE);
+//
 
 var static = {};
 
