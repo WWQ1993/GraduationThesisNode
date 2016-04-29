@@ -5,7 +5,7 @@ html {
 
 body {
     font: 14px/20px Microsoft YaHei, Helvetica, Tahoma;
-    width: 1020px;
+    width: 1000px;
     margin: auto;
     border-top: none;
     background-color: #F7F7F7;
@@ -57,7 +57,7 @@ button {
 }
 
 nav {
-    width: 1020px;
+    width: 1000px;
     height: 30px;
     background-color: #f4f4f4;
     position: relative;
@@ -573,4 +573,15 @@ nav > div > div > a {
     cursor: pointer;
     border: none;
     display: inline-block;
+}
+body .content .leftRightBtn{
+    display: inline-block;
+    position: absolute;
+    top: 19px;
+    left: 40%;
+    background: url("../img/leftandright.png") no-repeat center;
+    width: 30px;
+    height: 24px;
+    background-size: contain;
+    cursor: col-resize;
 }

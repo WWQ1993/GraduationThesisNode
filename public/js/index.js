@@ -2,7 +2,7 @@
  * Created by 58 on 2016/2/19 0019.
  */
 define(function (require, exports, module) {
-     
+
     var config = require('./config.js')
 
     var tableTitle = config['tableTitle'],
@@ -350,7 +350,7 @@ define(function (require, exports, module) {
                             controller.component.popMsg('success');
                             controller.page.switchPage('textDispatch');
                         });
-                        
+
                         var textArea = $('.textDispatch'),
                             arr = config.textDispatch,
                             i = 0,
@@ -361,8 +361,8 @@ define(function (require, exports, module) {
 
                             if (i === arr.length) {
 
-                                if(inputArr.length<3){
-                                    controller.component.popMsg('fail','必须输入一项火灾详情，请重新输入！');
+                                if (inputArr.length < 3) {
+                                    controller.component.popMsg('fail', '必须输入一项火灾详情，请重新输入！');
                                     return;
                                 }
                                 var pop = controller.component.popMsg('loading');
@@ -393,7 +393,7 @@ define(function (require, exports, module) {
                                 $(window).unbind('keydown.textDispatch');
                                 return;
                             }
-                            str += '\n' + arr[i].text + '\n' ;
+                            str += '\n' + arr[i].text + '\n';
                             textArea.val(str);
                             textArea[0].scrollTop = textArea[0].scrollHeight;
                         };
@@ -634,6 +634,46 @@ define(function (require, exports, module) {
                         controller.map.mapInit();
                         controller.map.getPos();
 
+                        !function initLeftRightBtn() {
+
+                                console.log($('.leftRightBtn').width() )
+                                $('.leftRightBtn').css({
+                                    left:(40-50*($('.leftRightBtn').width()/$('.content').width()))+'%'
+                                })
+                                $('.leftRightBtn').bind('mousedown',function (e) {
+                                    e.preventDefault();
+                                    var pageX = e.pageX
+
+                                    console.log('down')
+                                    $(document).bind('mousemove.leftRightMove',function (e) {
+                                        $('.leftRightBtn').animate({
+                                            left: '+=' + (e.pageX - pageX)
+                                        }, 0)
+                                        pageX = e.pageX;
+
+                                        var left = $('.leftRightBtn').offset().left-$('.leftRightBtn').parent().offset().left+0.5*$('.leftRightBtn').width()
+
+                                        $('.content .information').width(left)
+                                        $('.content .result').width(999-left)
+                                    })
+                                    $(document).one('mouseup',function (em) {
+                                        $(document).unbind('mousemove.leftRightMove');
+                                        console.log(' '+$('.leftRightBtn').offset().left)
+
+
+
+
+
+                                    })
+
+                                });
+                           
+
+                        }();
+
+
+
+
                         var resultPopDispatch = $('.result .resultPopDispatch');
                         resultPopDispatch.find('.bar a').click(function (e) {
                             resultPopDispatch.hide();
@@ -679,7 +719,12 @@ define(function (require, exports, module) {
                                 controller.component.popMsg('fail', '请先提交派遣信息');
 
                             }
-                        })
+                        });
+
+
+                        $('.dispatchShowArea .close').click(function () {
+                            $('.dispatchShowArea').slideUp();
+                        });
 
 
                         var thisPageComponent = component.page['generateDispatch'] || {};
@@ -690,7 +735,6 @@ define(function (require, exports, module) {
                         //点击确认键
                         $('.content .information .buttons button').eq(0).click(function () {
                             var item = $('.information .items .item');
-                            console.log(item.eq(1).find('select:eq(0) option:selected').text());
                             if (!item.eq(0).find('input').val()) {
                                 controller.component.popMsg('fail', '请输入火灾发生地点');
                                 return;
@@ -709,15 +753,6 @@ define(function (require, exports, module) {
                                 return;
                             }
 
-                            //if (!static.pos) {    //取消注释
-                            //    var pop = controller.component.popMsg('loadingOther', '定位中，请稍等');
-                            //    setTimeout(function () {
-                            //        pop.closeLoading();
-                            //    }, 1500)
-                            //    return;
-                            //}
-
-                            controller.map.getRoad($('.content .information .item input').eq(0).val());
                             var str = '',
                                 i = 0,
                                 input = controller.component.getInput();
@@ -739,11 +774,33 @@ define(function (require, exports, module) {
                                         controller.component.loginFirst();
                                     }
                                     else if (data.returnState === 1) {
-                                        resultPopDispatch.show();
-                                        resultPopDispatch.find('.text').html(data['dispatch']);
+                                        // {   //结果弹窗
+                                        //     resultPopDispatch.show();
+                                        //     resultPopDispatch.find('.text').html(data['dispatch']);
+                                        //     resultPopExplain.find('.text').html(data['tipStr']);
+                                        //     $(window).trigger('resize_resultPopDispatch');
+                                        // }
+
+                                        $('.dispatchShowArea .dispatchText').html(data['dispatch']);
+
+                                        $('.dispatchShowArea').slideDown(function () {
+                                            $('#copyBtn').zclip({
+                                                path: 'js/ZeroClipboard10.swf',
+                                                copy:  $('.dispatchShowArea .dispatchText').text(),
+                                                afterCopy: function () {
+                                                    controller.component.popMsg('success');
+
+                                                }
+                                            });
+
+                                            controller.map.getRoad($('.content .information .item input').eq(0).val());
+
+
+                                        });
+
+
                                         resultPopExplain.find('.text').html(data['tipStr']);
-                                        $(window).trigger('resize_resultPopDispatch');
-                                        console.log(data['dispatch'] + '\n\n' + data['tipStr']);
+
 
                                     }
                                 },
@@ -1120,7 +1177,7 @@ define(function (require, exports, module) {
                     //     zoom: 10,
                     //     center: [117.39, 39.1]
                     // });
-                    controller.map.map= $('#gaodeMap').leafletmaps({centre:'北京'});
+                    controller.map.map = $('#gaodeMap').leafletmaps({centre: '北京'});
 
                 },
                 getPos: function () {

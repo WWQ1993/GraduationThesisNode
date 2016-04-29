@@ -51,6 +51,7 @@ script(type='text/html',id='generateDispatch')
     link(rel='stylesheet', href='css/dispatch.css' style='height: 0;' )
     link(rel='stylesheet', href='css/mainMap.css' style='height: 0;' )
 
+
     .information
         .title 火灾信息
         .items
@@ -178,6 +179,15 @@ script(type='text/html',id='generateDispatch')
             button.explain 解释器
             button(style='display:none;') 显示
             button.back 返回
+
+        .dispatchShowArea
+            .dispatchTitle 派遣方案
+            .dispatchText 方案详情
+            .btns
+                button#copyBtn 复制
+                button.close 关闭
+
+    .leftRightBtn
     .result
         .title 结果信息
         .resultPopDispatch
@@ -190,6 +200,7 @@ script(type='text/html',id='generateDispatch')
             .text
 
         #gaodeMap
+
 
 
 script(type='text/html',id='textDispatch')
@@ -414,6 +425,7 @@ script( src='js/jquery.leaflet.js')
 script(type='text/javascript', src='http://webapi.amap.com/maps?v=1.3&key=be75ce22e574d1f8e6f015ae1c338539')
 script(src='js/sea.js')
 script(src='js/sea-config.js')
+script(src='js/zclip.js')
 script.
     seajs.use('./js/index.js', function (i) {
         i.init();

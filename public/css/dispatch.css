@@ -5,6 +5,7 @@
     background-color: #f4f4f4;
     padding-top: 1px;
     overflow-y: hidden;
+    position: relative;
 }
 
 .content > * {
@@ -14,8 +15,8 @@
 }
 
 .content .information {
-    margin-left: 4px;
-    width: 400px;
+    box-sizing: border-box;
+    width: 40%;
     margin-top: 50px;
     vertical-align: top;
     border-right: 1px #4cb0f9 solid;
@@ -29,44 +30,56 @@
     z-index: 5;
     font-size: 16px;
     line-height: 32px;
+    width: 80%;
 }
 
 .content .result {
-    width: 600px;
+    width: 60%;
     height: 700px;
     vertical-align: top;
+    margin: auto;
     margin-top: 50px;
 }
 
 .content .information .items {
-    width: 100%;
-    margin: 0 5px 20px 5px;
+    width: 98%;
+    margin: 0 auto 20px auto;
 
 }
 
 .content .information .item {
-    width: 95%;
-    line-height: 37px;
+    width: 100%;
+    line-height: 25px;
     font-size: 15px;
 }
+.content .information .item>span:first-child{
+    width: 22%;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
+}
 .content .information .item .right {
     float: right;
-
+    width: 78%;
 }
 
 .content .information .item select {
-    width: 140px;
-    height: 21px;
+
+    height: 25px;
     outline: none;
     background-color: #f4f4f4;
-    margin-right: 10px;
+
+    width: 48%;
+    margin-right: 2%;
 }
 
 .content .information .item input {
-    width: 138px;
-    height: 19px;
-    margin-right: 10px;
+    width: 48%;
+    height: 25px;
+    margin-right: 2%;
+    box-sizing: border-box;
 }
 
 .content .information .buttons {
@@ -76,8 +89,8 @@
 
 .content .information button {
     padding: 2px 6px;
-    margin: 0 10px;
-    width: 80px;
+    margin: 0 3%;
+    width: 25%;
     height: 28px;
     background-color: #4cb0f9;
     border-color: #4cb0f9;
@@ -147,4 +160,30 @@
     max-height: 500px;
     word-wrap: break-word;
     overflow: auto;
+}
+.dispatchShowArea{
+    display: none;
+    width: 90%;
+    background: #f0f8fc;
+    text-align: center;
+    height: 208px;
+    margin: 15px auto;
+    border: 2px outset #B4D9F4;
+}
+
+.dispatchShowArea .dispatchTitle{
+    font-size: 20px;
+    line-height: 38px;
+    color: red;
+}
+.dispatchShowArea .dispatchText{
+    height: 130px;
+    text-align: left;
+    padding: 0 22px;
+    overflow-y: auto;
+    line-height: 25px;
+    font-size: 16px;
+}
+.dispatchShowArea .btns{
+    margin-top: 5px;
 }

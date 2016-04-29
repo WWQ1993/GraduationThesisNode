@@ -2,13 +2,25 @@
  * Created by 58 on 2016/3/1 0001.
  */
 var express = require('express');
-var db = require('./db');
+
 var dbConfig = require('./dbconfig');
 var app = express();
 var crypto = require('crypto');
 var async = require('async');
 var EventProxy = require('eventproxy');
 var bot = require('nodemw');
+
+var mysql = require('mysql');
+var TEST_DATABASE = 'firefight0806';
+//创建连接
+var db = mysql.createConnection({
+    user: 'root',
+    password: '123456',
+});
+db.TABLE = 'user';
+db.connect();
+db.query("use " + TEST_DATABASE);
+
 
 var static = {};
 
@@ -897,13 +909,13 @@ module.exports = {
                                                                 dispatchStr += "出动人数：" + FireFighterNum.replace(/-/g, '') + "</br>设备数目：" + Equipment.replace(/∩/g, '、') +
                                                                     '</br>' + "事件频率为：" + (1.0 * f).toFixed(2) + "， 确信度为：" + (0.9 * c).toFixed(2) + "</br>";
 
-                                                                db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {
-                                                                    if (err) {
-                                                                        console.log(err.message);
-                                                                        return;
-                                                                    }
-                                                                    calb();
-                                                                });
+                                                                // db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {
+                                                                //     if (err) {
+                                                                //         console.log(err.message);
+                                                                //         return;
+                                                                //     }
+                                                                //     calb();
+                                                                // });
 
                                                             }
                                                             else {
