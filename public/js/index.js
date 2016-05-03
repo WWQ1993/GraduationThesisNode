@@ -654,15 +654,11 @@ define(function (require, exports, module) {
                                         var left = $('.leftRightBtn').offset().left-$('.leftRightBtn').parent().offset().left+0.5*$('.leftRightBtn').width()
 
                                         $('.content .information').width(left)
-                                        $('.content .result').width(999-left)
+                                        $('.content .result').width(998-left)
                                     })
                                     $(document).one('mouseup',function (em) {
                                         $(document).unbind('mousemove.leftRightMove');
                                         console.log(' '+$('.leftRightBtn').offset().left)
-
-
-
-
 
                                     })
 
@@ -670,8 +666,6 @@ define(function (require, exports, module) {
                            
 
                         }();
-
-
 
 
                         var resultPopDispatch = $('.result .resultPopDispatch');

@@ -845,6 +845,8 @@ module.exports = {
                             });
                         },
                         function getLevel(cb) { //1262
+                            var maxFireResult=[];
+
                             async.series([
                                     function (cab) {//调用存储过程    1265
                                         db.query("call findMax()", function (err, results) {
@@ -852,16 +854,33 @@ module.exports = {
                                                 console.log(err.message);
                                                 return;
                                             }
-                                            cab();
+                                            db.query("select * from mconclusion", function (err, results) {
+                                                if (err) {
+                                                    console.log(err.message);
+                                                    return;
+                                                }
+                                                var maxE=0;
+                                                for (var ind=0;ind<results.length;ind++){
+                                                    console.log(results[ind]);
+                                                    if(results[ind]['e']>maxE){
+                                                        maxFireResult=[];
+                                                        maxE=results[ind]['e'];
+                                                        maxFireResult.push(results[ind]);
+                                                    }
+                                                    else if(results[ind]['e']===maxE){
+                                                        maxFireResult.push(results[ind]);
+                                                    }
+                                                }
+                                                console.log(maxFireResult);
+                                                cab();
+                                            });
                                         });
                                     },
                                     function (cab) {    //1270
-                                        db.query("select * from t_conclusion", function (err, results) {
-                                            if (err) {
-                                                console.log(err.message);
-                                                return;
-                                            }
-                                            var funcArr = [];
+
+                                            var funcArr = [],
+                                                results=maxFireResult;
+                                        
                                             for (var ind = 0; ind < results.length; ind++) {
                                                 var func = function (calb) {
                                                     var ind = arguments.callee.ind,
@@ -909,13 +928,7 @@ module.exports = {
                                                                 dispatchStr += "出动人数：" + FireFighterNum.replace(/-/g, '') + "</br>设备数目：" + Equipment.replace(/∩/g, '、') +
                                                                     '</br>' + "事件频率为：" + (1.0 * f).toFixed(2) + "， 确信度为：" + (0.9 * c).toFixed(2) + "</br>";
 
-                                                                // db.query("insert into t_conclusion values(" + conclu + "," + f + "," + c + ")", function (err, results) {
-                                                                //     if (err) {
-                                                                //         console.log(err.message);
-                                                                //         return;
-                                                                //     }
-                                                                //     calb();
-                                                                // });
+                                                                calb();
 
                                                             }
                                                             else {
@@ -932,7 +945,7 @@ module.exports = {
                                             async.series(funcArr, function () {
                                                 cab();
                                             })
-                                        });
+
 
                                     },
                                     function (cab) {//1346
@@ -1283,8 +1296,8 @@ module.exports = {
             })
         }
     },
-    textDispatch:{
-        post:function (req, res, next){
+    textDispatch: {
+        post: function (req, res, next) {
             var obj = req.body,
                 title = obj.title,
                 detail = obj.detail,
@@ -1329,10 +1342,10 @@ module.exports = {
 
                         };
                         eachIdfunc.id = id;
-                        eachIdArr.push(eachIdfunc) ;
+                        eachIdArr.push(eachIdfunc);
                     }
                     async.series(eachIdArr, function (err, values) {   //遍历每一项火情输入
-                        res.status(200).send({returnState: true, data: this.fireTypeCause+tipStr});
+                        res.status(200).send({returnState: true, data: this.fireTypeCause + tipStr});
                     })
                 });
             }
@@ -1374,7 +1387,7 @@ module.exports = {
                             + "(" + detail + ")（" + (1.0 * obj.truth1) + "," + (0.9 * obj.truth0) + "）\n"
 
 
-                        this.fireTypeCause=tipStr;
+                        this.fireTypeCause = tipStr;
                         res.status(200).send({returnState: true, data: tipStr});
                     });
             }
@@ -1382,8 +1395,8 @@ module.exports = {
                 getEach();
             }
         },
-        fireTypeCause:''
-        
+        fireTypeCause: ''
+
 
     }
 };
