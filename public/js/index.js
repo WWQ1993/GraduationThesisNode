@@ -265,7 +265,7 @@ define(function (require, exports, module) {
                         });
                     });
                     //含有二级选项的一级选项点击事件
-                    $('nav>div>a:not(.btn21,.btn22,.btn31,.btn32,.btn41,.btn42)').each(function () {
+                    $('nav>div>a:not(.btn21,.btn22,.btn31,.btn32,.btn33,.btn41,.btn42)').each(function () {
                         $(this).click(function (e) {
                             e.stopPropagation();
                         });
@@ -276,7 +276,7 @@ define(function (require, exports, module) {
                             $(this).nextAll('div:eq(0)').show();
                         })
                     });
-                    $('nav>div>div>a,nav>div>a.btn21,nav>div>a.btn22, nav>div>a.btn31,nav>div>a.btn32, nav>div>a.btn41, nav>div>a.btn42').each(function () {
+                    $('nav>div>div>a,nav>div>a.btn21,nav>div>a.btn22, nav>div>a.btn31,nav>div>a.btn32,nav>div>a.btn33, nav>div>a.btn41, nav>div>a.btn42').each(function () {
                         $(this).click(function (e) {
                             controller.page.switchPage($(this).attr('data-pageName'));
                         });
@@ -290,7 +290,7 @@ define(function (require, exports, module) {
                     component.popup.tip.show();
                     component._window.trigger('resize');
                 },
-                getInput: function () {
+                getInput: function () { //辅助决策页面获得所有输入
                     var input = [];
                     $('.information .items .item').each(function (i) {
                         var options = $("option:selected", $(this));
@@ -340,6 +340,92 @@ define(function (require, exports, module) {
 
                 initPage: {
                     index: function () {
+                    },
+                    firehouseConfig: function () {
+                        {
+                            // var map = new AMap.Map('container', {
+                            //         zoom: 10,
+                            //         center: [117.39, 39.1]
+                            //     }),
+                            //     inputPos = new AMap.LngLat(117.39, 39.1);
+                            // console.log(inputPos)
+
+                            // AMap.service(["AMap.PlaceSearch"], function () {
+                            //     var placeSearch = new AMap.PlaceSearch({ //构造地点查询类
+                            //         pageSize: 50,
+                            //         type: '消防机关',
+                            //         pageIndex: 1,
+                            //         city: "022", //城市
+                            //         citylimit: true,
+                            //         map: map
+                            //     });
+                            //
+                            //
+                            //     placeSearch.searchNearBy('', inputPos, 50000, function (status, result) {
+                            //         console.log(result)
+                            //         var arr = result.poiList.pois;
+                            //         for (var ind = 0, indj = arr.length; ind < indj; ind++) {
+                            //             var obj = arr[ind];
+                            //             console.log(obj.name);
+                            //             $.ajax({
+                            //                     url: config.domain + 'insertfirehouse',
+                            //                     data: {obj:JSON.stringify(obj) },
+                            //                     type: "POST",
+                            //                     dataType: 'json',
+                            //                     success: function (data) {
+                            //                         console.log(data);
+                            //
+                            //                     }
+                            //                 }
+                            //             );
+                            //
+                            //         }
+                            //     });
+                            // });
+                        }
+
+                        var pop = controller.component.popMsg('loading');
+                        $.ajax({    //获取自动生成决策页面功能
+                            url: config.domain + 'firehouse',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (data) {
+                                pop.closeLoading();
+                                if (data.returnState === -2) {
+                                    controller.component.loginFirst();
+                                }
+                                else if (data.returnState === 1) {
+
+                                    var obj = data['data'],
+                                        commonFunction = controller.page.initPage.commonFunction;
+
+                                    $('.table').html(controller.tools.arrToTable(obj));
+                                    commonFunction.filter(obj, true);
+
+                                    commonFunction.addTitle();
+                                    commonFunction.initBotInput(obj, {});
+                                    commonFunction.submitBtnsInit('firehouse');
+                                    commonFunction.tableChooseAble();
+                                    $('.content .botInput>span:eq(1)>input').attr('readonly', "readonly");
+                                    $('.content .botInput>span:eq(1)>input').css({
+                                        'backgroundColor': 'rgb(226, 226, 226)',
+                                        'color': 'rgb(120, 120, 120)',
+                                        'cursor': 'no-drop'
+                                    });
+                                    $('.content .botInput>span:eq(2)>input').attr('readonly', "readonly");
+                                    $('.content .botInput>span:eq(2)>input').css({
+                                        'backgroundColor': 'rgb(226, 226, 226)',
+                                        'color': 'rgb(120, 120, 120)',
+                                        'cursor': 'no-drop'
+                                    });
+
+                                }
+                            },
+                            error: function () {
+                                pop.closeLoading();
+                                controller.component.popMsg('error');
+                            }
+                        })
 
                     },
                     textDispatch: function () {
@@ -636,34 +722,34 @@ define(function (require, exports, module) {
 
                         !function initLeftRightBtn() {
 
-                                console.log($('.leftRightBtn').width() )
-                                $('.leftRightBtn').css({
-                                    left:(40-50*($('.leftRightBtn').width()/$('.content').width()))+'%'
+                            console.log($('.leftRightBtn').width())
+                            $('.leftRightBtn').css({
+                                left: (40 - 50 * ($('.leftRightBtn').width() / $('.content').width())) + '%'
+                            })
+                            $('.leftRightBtn').bind('mousedown', function (e) {
+                                e.preventDefault();
+                                var pageX = e.pageX
+
+                                console.log('down')
+                                $(document).bind('mousemove.leftRightMove', function (e) {
+                                    $('.leftRightBtn').animate({
+                                        left: '+=' + (e.pageX - pageX)
+                                    }, 0)
+                                    pageX = e.pageX;
+
+                                    var left = $('.leftRightBtn').offset().left - $('.leftRightBtn').parent().offset().left + 0.5 * $('.leftRightBtn').width()
+
+                                    $('.content .information').width(left)
+                                    $('.content .result').width(998 - left)
                                 })
-                                $('.leftRightBtn').bind('mousedown',function (e) {
-                                    e.preventDefault();
-                                    var pageX = e.pageX
+                                $(document).one('mouseup', function (em) {
+                                    $(document).unbind('mousemove.leftRightMove');
+                                    console.log(' ' + $('.leftRightBtn').offset().left)
 
-                                    console.log('down')
-                                    $(document).bind('mousemove.leftRightMove',function (e) {
-                                        $('.leftRightBtn').animate({
-                                            left: '+=' + (e.pageX - pageX)
-                                        }, 0)
-                                        pageX = e.pageX;
+                                })
 
-                                        var left = $('.leftRightBtn').offset().left-$('.leftRightBtn').parent().offset().left+0.5*$('.leftRightBtn').width()
+                            });
 
-                                        $('.content .information').width(left)
-                                        $('.content .result').width(998-left)
-                                    })
-                                    $(document).one('mouseup',function (em) {
-                                        $(document).unbind('mousemove.leftRightMove');
-                                        console.log(' '+$('.leftRightBtn').offset().left)
-
-                                    })
-
-                                });
-                           
 
                         }();
 
@@ -780,14 +866,18 @@ define(function (require, exports, module) {
                                         $('.dispatchShowArea').slideDown(function () {
                                             $('#copyBtn').zclip({
                                                 path: 'js/ZeroClipboard10.swf',
-                                                copy:  $('.dispatchShowArea .dispatchText').text(),
+                                                copy: $('.dispatchShowArea .dispatchText').text(),
                                                 afterCopy: function () {
                                                     controller.component.popMsg('success');
 
                                                 }
                                             });
 
-                                            controller.map.getRoad($('.content .information .item input').eq(0).val());
+                                            var str = data['dispatch'].replace(/<\/br>/g, '');
+
+                                            controller.map.getRoad($('.content .information .item input').eq(0).val(),
+                                                parseInt(str.split('出动人数：')[1].split('名消防员设备数目')[0], 10),
+                                                str.split('设备数目：')[1].split('事件频率')[0]);
 
 
                                         });
@@ -892,7 +982,8 @@ define(function (require, exports, module) {
                         addTitle: function () { //添加窗口标题
                             var titleText = $('nav>div a[data-pageName=' + thisPageName + ']').text()
                             $('.content').prepend('<h1>' + titleText + '</h1>');
-                        },
+                        }
+                        ,
                         tableChooseAble: function () {     //设置table可选中
                             var add = thisPageName.indexOf('add') > -1 ? true : false;
 
@@ -900,8 +991,8 @@ define(function (require, exports, module) {
                                 //id input不可输入
                                 $('.content .botInput>span:eq(0)>input').attr('readonly', "readonly");
                                 $('.content .botInput>span:eq(0)>input').css({
-                                    'backgroundColor': '#CCC',
-                                    'color': '#F6F6F6',
+                                    'backgroundColor': 'rgb(226, 226, 226)',
+                                    'color': 'rgb(120, 120, 120)',
                                     'cursor': 'no-drop'
                                 });
                             }
@@ -929,7 +1020,8 @@ define(function (require, exports, module) {
                                     })
                                 });
                             });
-                        },
+                        }
+                        ,
                         filter: function (originArr, tableChooseAble) {  //设置顶部过滤查询功能
                             !function initSelect() {
                                 var str = '';
@@ -966,7 +1058,8 @@ define(function (require, exports, module) {
                                     }
                                 }
                             })
-                        },
+                        }
+                        ,
                         initBotInput: function (originArr, selectFields) {//设置底部输入框
                             var str = '';
 
@@ -983,7 +1076,8 @@ define(function (require, exports, module) {
                                 }
                             }
                             $('.botInput').html(str);
-                        },
+                        }
+                        ,
                         submitBtnsInit: function (path) {   //设置底部按钮功能
                             function listener(btn, type, method) {  //根据传入不同参数，请求提交不同请求数据给服务器
                                 return function () {
@@ -1041,10 +1135,10 @@ define(function (require, exports, module) {
                             $('.content .botBtns .back').click(function () {
                                 controller.page.switchPage('index');
                             })
-                        },
+                        }
+                        ,
 
                     },
-
                     autoGenerateDispatch: function () {
                         var pop = controller.component.popMsg('loading');
 
@@ -1159,7 +1253,6 @@ define(function (require, exports, module) {
                             }
                         });
                     }
-
                 }
             },
 
@@ -1171,16 +1264,161 @@ define(function (require, exports, module) {
                     //     zoom: 10,
                     //     center: [117.39, 39.1]
                     // });
-                    controller.map.map = $('#gaodeMap').leafletmaps({centre: '北京'});
+                    controller.map.map = $('#gaodeMap').leafletmaps({centre: '天津'});
 
                 },
                 getPos: function () {
 
                 },
-                getRoad: function (pos) {
+                getRoad: function (pos, requirePeopleNum, devices) {
                     //controller.map.map.clearMap();
+                    var arr = devices.split('、'),
+                        requireDevicesArr = [],
+                        relativePosArr = [],
+                        firehouseArr = [];
 
-                    var posLatLng = null;
+                    //设备需求种类和数量确定
+                    for (var i = 0; i < arr.length; i++) {
+                        var arr2 = arr[i].split('辆');
+                        requireDevicesArr.push({
+                            type: arr2[1],
+                            num: config.wordToNum(arr2[0])
+                        })
+                    }
+
+                    console.log(requireDevicesArr)
+
+
+                    $.ajax({    //获取自动生成决策页面功能
+                        url: config.domain + 'firehouse',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+
+                            if (data.returnState === -2) {
+                                controller.component.loginFirst();
+                            }
+                            else if (data.returnState === 1) {
+
+                                firehouseArr = data['data']
+                                getDispatchWithMap();
+                            }
+                        }
+                    });
+
+                    function getDispatchWithMap(pois,inputPos) {
+                        if (relativePosArr.length > 0 && requireDevicesArr.length > 0 && firehouseArr.length > 0 && requirePeopleNum) {
+
+                             console.log(firehouseArr)
+                           // console.log(requireDevicesArr)
+                             console.log(pois)
+
+                            var firehouseObj = {},
+                                dispatch = [];
+
+
+                            for (var i = 0; i < firehouseArr.length; i++) {
+                                console.log(firehouseArr[i].Id);
+                                firehouseObj[firehouseArr[i].Id] = {
+                                    address: firehouseArr[i].address,
+                                    devices: firehouseArr[i].devices,
+                                    name: firehouseArr[i].name,
+                                    peopleNum: firehouseArr[i].peopleNum
+                                }
+                            }
+                            console.log(firehouseObj)
+
+                            !function () {  //compute requireNum
+                                var i = 0,
+                                    sumBefore = 0,
+                                    sumPeople = 0;
+
+
+                                for (; i < relativePosArr.length; i++) {
+                                    var currentFirehousePeople = firehouseObj[relativePosArr[i]].peopleNum
+                                    dispatch[i] = dispatch[i] || {};
+                                    sumPeople += currentFirehousePeople;
+                                    if (sumPeople >= requirePeopleNum) {
+                                        dispatch[i].people = requirePeopleNum - sumBefore;
+
+                                        return;
+                                    }
+                                    else {
+                                        dispatch[i].people = currentFirehousePeople
+                                    }
+                                    sumBefore = sumPeople;
+                                }
+                            }();
+                            console.log(dispatch);
+
+                            for (var j = 0; j < requireDevicesArr.length; j++) {
+                                !function () {
+                                    var i = 0,
+                                        sumBefore = 0,
+                                        sumDevice = 0,
+                                        deviceRequireNum = requireDevicesArr[j].num,
+                                        deviceRequireType = requireDevicesArr[j].type;
+                                    dispatch['device' + j] = {};
+                                    dispatch['device' + j].deviceRequireType = deviceRequireType;
+                                    dispatch['device' + j].deviceRequireNum = deviceRequireNum;
+                                    for (; i < relativePosArr.length; i++) {
+                                        var currentFirehouseDeviceNum = 0;
+
+                                        dispatch[i] = dispatch[i] || {};
+                                        console.log(relativePosArr[i])
+
+                                        if (firehouseObj[relativePosArr[i]].devices.indexOf(deviceRequireType) > -1) {
+                                            currentFirehouseDeviceNum = parseInt(firehouseObj[relativePosArr[i]].devices.split(deviceRequireType + ':')[1].split(',')[0], 10);
+                                        }
+
+                                        sumDevice += currentFirehouseDeviceNum;
+                                        if (sumDevice >= deviceRequireNum) {
+                                            dispatch[i]['device' + j] = deviceRequireNum - sumBefore;
+
+                                            return;
+                                        }
+                                        else {
+                                            dispatch[i]['device' + j] = currentFirehouseDeviceNum
+                                        }
+                                        sumBefore = sumDevice;
+                                    }
+                                }();
+                            }
+                            console.log(dispatch);
+
+                            AMap.service(["AMap.Driving"], function () {
+
+                                var panel = document.createElement("div");
+                                panel.id = "panel";
+                                // $('#container')[0].appendChild(panel);
+
+                                for (i = 0; i < dispatch.length; i++) {
+                                    var breakMark = true;
+                                    for (var prop in dispatch[i]) {
+                                        if (dispatch[i][prop] > 0) {
+                                            breakMark = false;
+
+                                        }
+                                    }
+                                    if (breakMark) {
+                                        continue;
+                                    }
+                                    console.log(i);
+                                    var driving = new AMap.Driving({
+                                        map: controller.map.map,
+                                        // panel:panel
+                                    });
+                                    driving.search(pois[i].location, inputPos);
+
+
+                                }
+                            });
+
+
+                        }
+                    }
+
+
                     controller.map.map.clearMap();
                     AMap.service('AMap.Geocoder', function () {//回调函数
                         var geocoder = null;
@@ -1188,6 +1426,8 @@ define(function (require, exports, module) {
                         geocoder = new AMap.Geocoder({
                             city: "022"
                         });
+
+
                         geocoder.getLocation(pos, function (status, result) {
                             if (status === 'complete' && result.info === 'OK') {
                                 AMap.service(["AMap.Driving"], function () {
@@ -1196,30 +1436,35 @@ define(function (require, exports, module) {
 
                                     AMap.service(["AMap.PlaceSearch"], function () {
                                         var placeSearch = new AMap.PlaceSearch({ //构造地点查询类
-                                            pageSize: 3,
-                                            type: '消防',
+                                            pageSize: 50,
+                                            type: '消防机关',
                                             pageIndex: 1,
                                             city: "022", //城市
-                                            map: controller.map.map
+                                            citylimit: true,
+                                            // map: controller.map.map
                                         });
 
                                         placeSearch.searchNearBy('', inputPos, 50000, function (status, result) {
                                             console.log(result)
                                             var arr = result.poiList.pois;
                                             for (var ind = 0, indj = arr.length; ind < indj; ind++) {
-                                                var posLatLng = null;
-                                                AMap.service('AMap.Geocoder', function () {//回调函数
-                                                    AMap.service(["AMap.Driving"], function () {
-                                                        var driving = new AMap.Driving({
-                                                            map: controller.map.map
-                                                        });
-                                                        driving.search(arr[ind].location, inputPos);
-                                                    });
-
-
-                                                });
-
+                                                relativePosArr.push(arr[ind].id);
                                             }
+                                            getDispatchWithMap(result.poiList.pois,inputPos);
+
+                                            // var arr = result.poiList.pois;
+                                            // AMap.service('AMap.Geocoder', function () {
+                                            //     for (var ind = 0, indj = arr.length; ind < indj; ind++) {
+                                            //
+                                            //
+                                            //         AMap.service(["AMap.Driving"], function () {
+                                            //             var driving = new AMap.Driving({
+                                            //                 map: controller.map.map
+                                            //             });
+                                            //             driving.search(arr[ind].location, inputPos);
+                                            //         });
+                                            //     }
+                                            // });
                                         });
                                     });
                                 });

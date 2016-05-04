@@ -27,8 +27,10 @@ head
 
         button.system 系统管理
         div.system
-            a.btn31(href='javascript:;',data-pageName='password') 更改口令
+            a.btn31(href='javascript:;',data-pageName='password') 更改密码
             a.btn32(href='javascript:;',data-pageName='exportToWiki') 导出到wiki
+            a.btn33(href='javascript:;',data-pageName='firehouseConfig') 配置消防信息
+
 
         button.learn 学习管理
         div.learn
@@ -376,6 +378,23 @@ script(type='text/html',id='exportToWiki')
             .tableArea
                 center
         a.back(href='javascript:;') 返回
+
+script(type='text/html',id='firehouseConfig')
+    link(rel='stylesheet', href='css/adminDb.css')
+    div#firehouse
+        .twoInputLine
+            span 请选择查询类别：
+            select
+            span 请输入关键字：
+            input
+            button 查询
+        .table
+        .botInput
+        .botBtns
+            button.modi 修改
+            button.back 返回
+    #container
+
 script(type='text/html',id='modiLearnRule')
     link(rel='stylesheet', href='css/adminDb.css')
     .twoInputLine

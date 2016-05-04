@@ -161,7 +161,7 @@ nav > div > a:after {
     height: 0;
 }
 
-nav > div > a.btn21:after, nav > div > a.btn22:after, nav > div > a.btn31:after, nav > div > a.btn32:after, nav > div > a.btn41:after, nav > div > a.btn42:after {
+nav > div > a.btn21:after, nav > div > a.btn22:after, nav > div > a.btn31:after, nav > div > a.btn32:after, nav > div > a.btn33:after, nav > div > a.btn41:after, nav > div > a.btn42:after {
     content: none;
 }
 
