@@ -8,11 +8,11 @@
 
 (function ($, mw) {
     $.fn.leafletmaps = function (options) {
-        var map=null;
+        var map = null;
         var _this = this;
         // this.map = null;
         this.options = options;
-		//console.log(options);
+        //console.log(options);
         /**
          * array point of all map elements (markers, lines, polygons, etc.)
          * for map fit
@@ -138,8 +138,7 @@
             var panel = document.createElement("div");
             panel.id = "panel";
             div.appendChild(panel);
-            
-            
+
 
             /*-------------------------右侧地图布局----------------------------*/
 
@@ -150,7 +149,7 @@
             if (options.minzoom !== false) mapOptions.minZoom = options.minzoom;
             if (options.maxzoom !== false) mapOptions.maxZoom = options.maxzoom;
 
-            map= new AMap.Map("container", mapOptions);
+            map = new AMap.Map("container", mapOptions);
 
             this.map = map;
             map.plugin(["AMap.ToolBar"], function () {
@@ -235,72 +234,70 @@
 //            document.getElementById("leftpan").addEventListener("mouseout",function () {
 //                clearTimeout(timeLeft);
 //            })
-          
-            
+
+
 //鼠标画线
-          var sbhuaxian = document.createElement("input");
-          sbhuaxian.type = "button";
-          sbhuaxian.value = "鼠标画线";
-          sbhuaxian.id = "huaxian";
-          div1.appendChild(sbhuaxian);
-        
-          AMap.event.addDomListener(document.getElementById("huaxian"), "click", function() {
-        	  map.plugin(["AMap.MouseTool"],function(){
-          	    var mousetool = new AMap.MouseTool(map);   	 
-          	    	mousetool.polyline();
-          	  });
-        	   
-        	}, false);
-         
+            var sbhuaxian = document.createElement("input");
+            sbhuaxian.type = "button";
+            sbhuaxian.value = "鼠标画线";
+            sbhuaxian.id = "huaxian";
+            div1.appendChild(sbhuaxian);
 
-            
+            AMap.event.addDomListener(document.getElementById("huaxian"), "click", function () {
+                map.plugin(["AMap.MouseTool"], function () {
+                    var mousetool = new AMap.MouseTool(map);
+                    mousetool.polyline();
+                });
 
-        //鼠标画面
-          var sbhuamian = document.createElement("input");
-          sbhuamian.type = "button";
-          sbhuamian.value = "鼠标画面";
-          sbhuamian.id = "huamian";
-          div1.appendChild(sbhuamian);
-        
-          AMap.event.addDomListener(document.getElementById("huamian"), "click", function() {
-        	  map.plugin(["AMap.MouseTool"],function(){
-          	    var mousetool = new AMap.MouseTool(map);   	 
-          	    	  mousetool.polygon();
-          	    	  mousetool.measureArea();
-          	  });
-        	   
-        	}, false);
+            }, false);
 
-        //测量距离
-          var ceju = document.createElement("input");
-          ceju.type = "button";
-          ceju.value = "测量距离";
-          ceju.id = "cj";
-          div1.appendChild(ceju); 
-          map.plugin(["AMap.RangingTool"],function(){
-    		  ruler = new AMap.RangingTool(map);   
-    	        AMap.event.addListener(ruler,"end",function(e){  
-    	            ruler.turnOff();  
-    	         });          
-      	  });
-          AMap.event.addDomListener(document.getElementById("cj"), "click", function() {
-        	    ruler.turnOn();     	   
-        	});
 
-        //实时路况
+            //鼠标画面
+            var sbhuamian = document.createElement("input");
+            sbhuamian.type = "button";
+            sbhuamian.value = "鼠标画面";
+            sbhuamian.id = "huamian";
+            div1.appendChild(sbhuamian);
+
+            AMap.event.addDomListener(document.getElementById("huamian"), "click", function () {
+                map.plugin(["AMap.MouseTool"], function () {
+                    var mousetool = new AMap.MouseTool(map);
+                    mousetool.polygon();
+                    mousetool.measureArea();
+                });
+
+            }, false);
+
+            //测量距离
+            var ceju = document.createElement("input");
+            ceju.type = "button";
+            ceju.value = "测量距离";
+            ceju.id = "cj";
+            div1.appendChild(ceju);
+            map.plugin(["AMap.RangingTool"], function () {
+                ruler = new AMap.RangingTool(map);
+                AMap.event.addListener(ruler, "end", function (e) {
+                    ruler.turnOff();
+                });
+            });
+            AMap.event.addDomListener(document.getElementById("cj"), "click", function () {
+                ruler.turnOn();
+            });
+
+            //实时路况
             var sslk = document.createElement("input");
             sslk.id = "lk";
             sslk.type = "button";
             sslk.value = "实时路况";
             div1.appendChild(sslk);
-           
+
             var trafficLayer = new AMap.TileLayer.Traffic({
                 zIndex: 10
             });
             trafficLayer.setMap(map);
-        	
-            var isVisible = true;
-            AMap.event.addDomListener(document.getElementById('lk'), 'click', function() {
+
+            var isVisible = false;
+            AMap.event.addDomListener(document.getElementById('lk'), 'click', function () {
                 if (isVisible) {
                     trafficLayer.hide();
                     isVisible = false;
@@ -308,11 +305,11 @@
                     trafficLayer.show();
                     isVisible = true;
                 }
-            }, false);   
-            
-            
-        
-            
+            }, false);
+
+            trafficLayer.hide();
+
+
 //2D地图
             var square = document.createElement("input");
             square.type = "button";
@@ -438,7 +435,7 @@
             /*-------------------------地图导航布局----------------------------*/
 
             var div = document.createElement('div');
-            div.className='mapDrive';
+            div.className = 'mapDrive';
             containerLeft.appendChild(div);
 
             var text2 = document.createElement("h6");
@@ -546,11 +543,11 @@
 
             /*---------------------------地图查询------------------------------*/
 
-            
+
             var div3 = document.createElement("div");
             div3.id = "div3";
             containerLeft.appendChild(div3);
-            
+
             var findCity = document.createElement("input");
             findCity.type = "text";
             findCity.id = "findCity";
@@ -580,48 +577,47 @@
                         city: city
                     })
                     place.search(name);
-                    
+
                 })
-                
-            dituzhuose();
-    	    function dituzhuose() {
-    	        //加载行政区划插件
-    	        AMap.service('AMap.DistrictSearch', function() {
-    	            var opts = {
-    	                subdistrict: 1,   //返回下一级行政区
-    	                extensions: 'all',  //返回行政区边界坐标组等具体信息
-    	                level: 'city'  //查询行政级别为 市
-    	            };
-    	            //实例化DistrictSearch
-    	            district = new AMap.DistrictSearch(opts);
-    	            district.setLevel('city');
-    	            //行政区查询
-    	            district.search(document.getElementById("find").value, function(status, result) {
-    	                var bounds = result.districtList[0].boundaries;
-    	                var polygons = [];
-    	                if (bounds) {
-    	                    for (var i = 0, l = bounds.length; i < l; i++) {
-    	                        //生成行政区划polygon
-    	                        var polygon = new AMap.Polygon({
-    	                            map: map,
-    	                            strokeWeight: 1,
-    	                            path: bounds[i],
-    	                            fillOpacity: 0.7,
-    	                            fillColor: '#CCF3FF',
-    	                            strokeColor: '#CC66CC'
-    	                        });
-    	                        polygons.push(polygon);
-    	                    }
-    	                    map.setFitView();//地图自适应
-    	                }
-    	            });
-    	        });
-    	    }
-                                          
+
+                dituzhuose();
+                function dituzhuose() {
+                    //加载行政区划插件
+                    AMap.service('AMap.DistrictSearch', function () {
+                        var opts = {
+                            subdistrict: 1,   //返回下一级行政区
+                            extensions: 'all',  //返回行政区边界坐标组等具体信息
+                            level: 'city'  //查询行政级别为 市
+                        };
+                        //实例化DistrictSearch
+                        district = new AMap.DistrictSearch(opts);
+                        district.setLevel('city');
+                        //行政区查询
+                        district.search(document.getElementById("find").value, function (status, result) {
+                            var bounds = result.districtList[0].boundaries;
+                            var polygons = [];
+                            if (bounds) {
+                                for (var i = 0, l = bounds.length; i < l; i++) {
+                                    //生成行政区划polygon
+                                    var polygon = new AMap.Polygon({
+                                        map: map,
+                                        strokeWeight: 1,
+                                        path: bounds[i],
+                                        fillOpacity: 0.7,
+                                        fillColor: '#CCF3FF',
+                                        strokeColor: '#CC66CC'
+                                    });
+                                    polygons.push(polygon);
+                                }
+                                map.setFitView();//地图自适应
+                            }
+                        });
+                    });
+                }
+
             });
-            
-      
-            
+
+
 //范围
             var Label = document.createElement("label");
             Label.id = "label";
@@ -650,7 +646,7 @@
             /*---------------------------地图视野------------------------------*/
 
             var div = document.createElement('div');
-            div.className='mapWatch';
+            div.className = 'mapWatch';
             containerLeft.appendChild(div);
 
             var text4 = document.createElement("h6");
