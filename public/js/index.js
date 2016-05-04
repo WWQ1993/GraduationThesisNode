@@ -873,7 +873,8 @@ define(function (require, exports, module) {
                                                 }
                                             });
 
-                                            var str = data['dispatch'].replace(/<\/br>/g, '');
+                                            var str = data['dispatch'].replace(/[<\/br>|' ']/g, '');
+
 
                                             controller.map.getRoad($('.content .information .item input').eq(0).val(),
                                                 parseInt(str.split('出动人数：')[1].split('名消防员设备数目')[0], 10),
@@ -1280,6 +1281,7 @@ define(function (require, exports, module) {
                     //设备需求种类和数量确定
                     for (var i = 0; i < arr.length; i++) {
                         var arr2 = arr[i].split('辆');
+                        console.log(arr2[0])
                         requireDevicesArr.push({
                             type: arr2[1],
                             num: config.wordToNum(arr2[0])
@@ -1310,15 +1312,14 @@ define(function (require, exports, module) {
                         if (relativePosArr.length > 0 && requireDevicesArr.length > 0 && firehouseArr.length > 0 && requirePeopleNum) {
 
                              console.log(firehouseArr)
-                           // console.log(requireDevicesArr)
-                             console.log(pois)
+                             console.log(relativePosArr)
+                              console.log(requireDevicesArr)
 
                             var firehouseObj = {},
                                 dispatch = [];
 
 
                             for (var i = 0; i < firehouseArr.length; i++) {
-                                console.log(firehouseArr[i].Id);
                                 firehouseObj[firehouseArr[i].Id] = {
                                     address: firehouseArr[i].address,
                                     devices: firehouseArr[i].devices,
@@ -1349,7 +1350,7 @@ define(function (require, exports, module) {
                                     sumBefore = sumPeople;
                                 }
                             }();
-                            console.log(dispatch);
+
 
                             for (var j = 0; j < requireDevicesArr.length; j++) {
                                 !function () {
@@ -1365,7 +1366,6 @@ define(function (require, exports, module) {
                                         var currentFirehouseDeviceNum = 0;
 
                                         dispatch[i] = dispatch[i] || {};
-                                        console.log(relativePosArr[i])
 
                                         if (firehouseObj[relativePosArr[i]].devices.indexOf(deviceRequireType) > -1) {
                                             currentFirehouseDeviceNum = parseInt(firehouseObj[relativePosArr[i]].devices.split(deviceRequireType + ':')[1].split(',')[0], 10);
@@ -1386,11 +1386,14 @@ define(function (require, exports, module) {
                             }
                             console.log(dispatch);
 
+                            var lnglats =[],
+                                sum=0;
                             AMap.service(["AMap.Driving"], function () {
 
-                                var panel = document.createElement("div");
-                                panel.id = "panel";
+                                // var panel = document.createElement("div");
+                                // panel.id = "panel";
                                 // $('#container')[0].appendChild(panel);
+
 
                                 for (i = 0; i < dispatch.length; i++) {
                                     var breakMark = true;
@@ -1403,16 +1406,62 @@ define(function (require, exports, module) {
                                     if (breakMark) {
                                         continue;
                                     }
-                                    console.log(i);
+
                                     var driving = new AMap.Driving({
                                         map: controller.map.map,
                                         // panel:panel
                                     });
-                                    driving.search(pois[i].location, inputPos);
-
-
+                                    var arr = [pois[i].location.lng,pois[i].location.lat];
+                                    arr.index = i
+                                    lnglats.push(arr);
+                                    sum++;
+                                    driving.search(pois[i].location, inputPos,function () {
+                                        sum--;
+                                        if(!sum){
+                                            setMark();
+                                        }
+                                    });
                                 }
                             });
+                            function setMark() {
+
+                                console.log(lnglats)
+                                var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+                                for (var i = 0, marker; i < lnglats.length; i++) {
+                                    var marker = new AMap.Marker({
+                                        position: lnglats[i],
+                                        map: controller.map.map
+                                    });
+
+                                    console.log(lnglats[i].index);
+                                    var index = lnglats[i].index,
+                                      id= relativePosArr[index];
+
+
+                                    var str ='名称：'+firehouseObj[id].name+'</br>地址：'+firehouseObj[id].address+
+                                    '</br>出动消防员：'+(dispatch[index].people||0)+'</br>出动设备：</br>'
+
+                                    for(var name in dispatch[index]){
+                                        if(name!=='people'&&dispatch[index][name]){
+                                            str+=dispatch[index][name]+'辆'+dispatch[name]['deviceRequireType']+'</br>';
+                                        }
+                                    }
+
+                                    marker.content =str;
+                                    marker.on('click', markerClick);
+                                    // marker.emit('click', {target: marker});
+                                }
+                                function markerClick(e) {
+                                    infoWindow.setContent(e.target.content);
+                                    infoWindow.open(controller.map.map, e.target.getPosition());
+                                    console.log('dfdf')
+                                    return false;
+                                }
+                                // controller.map.map.setFitView();
+                            }
+
+
+
 
 
                         }
@@ -1489,7 +1538,25 @@ define(function (require, exports, module) {
         });
         controller.tools.loadImg('../img/loading.gif', function () {
         });
-
+        // //基本地图加载
+        // var map = new AMap.Map("container", {
+        //     resizeEnable: true,
+        //     center: [116.397428, 39.90923],//地图中心点
+        //     zoom: 13 //地图显示的缩放级别
+        // });
+        // //构造路线导航类
+        // AMap.service(["AMap.Driving"], function () {
+        //     var driving = new AMap.Driving({
+        //         map: map,
+        //         panel: "panel"
+        //     });
+        //     // 根据起终点名称规划驾车导航路线
+        //     driving.search([
+        //         {keyword: '北京市地震局(公交站)'},
+        //         {keyword: '亦庄文化园(地铁站)'}
+        //     ]);
+        //
+        // });
 
     };
 })

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        #container{
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+<div id="container"></div>
+
+<script src="http://webapi.amap.com/maps?v=1.3&key=be75ce22e574d1f8e6f015ae1c338539"></script>
+<script>
+
+    //基本地图加载
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [116.397428, 39.90923],//地图中心点
+        zoom: 13 //地图显示的缩放级别
+    });
+
+    AMap.service(["AMap.Driving"], function () {
+        //构造路线导航类
+        var driving = new AMap.Driving({
+            map: map,
+
+        });
+        // 根据起终点名称规划驾车导航路线
+        driving.search(new AMap.LngLat(116.368904, 39.923423), new AMap.LngLat(116.382122, 39.921176),function () {
+            var  lnglats=[
+                [116.368904, 39.923423],
+                [116.382122, 39.921176]
+            ]
+            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+            for (var i = 0, marker; i < lnglats.length; i++) {
+                var marker = new AMap.Marker({
+                    position: lnglats[i],
+                    map:   map
+                });
+                marker.content = '我是第' + (i + 1) + '个Marker';
+                marker.on('click', markerClick);
+//        marker.emit('click', {target: marker});
+            }
+            function markerClick(e) {
+                infoWindow.setContent(e.target.content);
+                infoWindow.open( map, e.target.getPosition());
+                console.log('dfdf')
+
+            }
+            map.setFitView();
+        });
+    });
+
+
+
+
+
+</script>
+</body>
+</html>
