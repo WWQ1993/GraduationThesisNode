@@ -153,6 +153,10 @@ define(function (require, exports, module) {
                     }
                 },
                 addEventListener: function () {
+                    component._window.bind('hashchange', function () {
+                        console.log('df')
+                        controller.page.switchPage(component._window[0].location.hash.split('#')[1])
+                    });
 
                     component.popMsg.close.bind('click', function () {  //弹出消息框右上角按钮点击事件
                         $(this).parent().slideUp(function () {
@@ -278,7 +282,7 @@ define(function (require, exports, module) {
                     });
                     $('nav>div>div>a,nav>div>a.btn21,nav>div>a.btn22, nav>div>a.btn31,nav>div>a.btn32,nav>div>a.btn33, nav>div>a.btn41, nav>div>a.btn42').each(function () {
                         $(this).click(function (e) {
-                            controller.page.switchPage($(this).attr('data-pageName'));
+                            window.location.hash=($(this).attr('data-pageName'));
                         });
                     })
 
@@ -335,6 +339,8 @@ define(function (require, exports, module) {
                     else {
                         controller.page.initPage[pageName]();
                     }
+                    // window.location.hash = pageName;
+                   
 
                 },
 
@@ -430,7 +436,7 @@ define(function (require, exports, module) {
                     },
                     textDispatch: function () {
                         $('.content .textDispatchBtns .back').click(function () {
-                            controller.page.switchPage('index');
+                            window.location.hash=('index');
                         });
                         $('.content .textDispatchBtns .reset').click(function () {
                             controller.component.popMsg('success');
@@ -644,7 +650,7 @@ define(function (require, exports, module) {
                         leftTableArea.html(tableStrLeft);
 
                         $('#exportToWikiPad .back').click(function () {
-                            controller.page.switchPage('index');
+                            window.location.hash=('index');
                         });
 
                         $('.exportEach').each(function () {
@@ -786,7 +792,7 @@ define(function (require, exports, module) {
                         });
 
                         $('.content .back').click(function () {
-                            controller.page.switchPage('index');
+                            window.location.hash=('index');
                         })
 
                         $('.content .buttons .explain').click(function () {
@@ -1133,7 +1139,7 @@ define(function (require, exports, module) {
                             $('.content .botBtns .delete').one('click', listener($('.content .botBtns .delete'), 'POST', 'DELETE'));
 
                             $('.content .botBtns .back').click(function () {
-                                controller.page.switchPage('index');
+                                window.location.hash='index';
                             })
                         }
                         ,
@@ -1162,7 +1168,7 @@ define(function (require, exports, module) {
 
                                     controller.page.initPage.commonFunction.addTitle();
                                     $('.content .botBtns .back').click(function () {
-                                        controller.page.switchPage('index');
+                                        window.location.hash=('index');
                                     })
                                 }
                             },
@@ -1192,7 +1198,7 @@ define(function (require, exports, module) {
                         $('.content .password .username>span:eq(1)').text(username);
 
                         $('.content .password .back').click(function () {
-                            controller.page.switchPage('index');
+                            window.location.hash=('index');
                         });
                         $('.content .password .reset').click(function () {
                             inputs.each(function () {
@@ -1424,8 +1430,6 @@ define(function (require, exports, module) {
                                     var index = lnglats[i].index,
                                         id = relativePosArr[index];
 
-                                    console.log(index);
-
                                     var str = '名称：' + firehouseObj[id].name + '</br>地址：' + firehouseObj[id].address +
                                         '</br>出动消防员：' + (dispatch[index].people || 0) + '</br>出动设备：</br>'
 
@@ -1498,6 +1502,7 @@ define(function (require, exports, module) {
         controller.component.popLogin();
         controller.page.switchPage('generateDispatch');  //默认页
         thisPageName = 'generateDispatch';
+        window.location.hash = thisPageName;
         controller.tools.loadImg('../img/pop-mid.png', function () {
         });
         controller.tools.loadImg('../img/loading.gif', function () {

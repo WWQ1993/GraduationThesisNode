@@ -59,7 +59,10 @@
 .table .chooseAble tr:hover {
     background-color: #e7e7e7;
 }
+.table .chooseAble tr:first-child:hover{
+    background-color: inherit;
 
+}
 .table tr:first-child {
     background-color: inherit;
     cursor: inherit;

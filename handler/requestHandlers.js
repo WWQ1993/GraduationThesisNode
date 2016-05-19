@@ -15,7 +15,7 @@ var TEST_DATABASE = 'firefight0806';
 //创建连接
 var db = mysql.createConnection({
     user: 'root',
-    password: '123456',
+    password: '123456'
 });
 db.TABLE = 'user';
 db.connect();
@@ -96,12 +96,13 @@ module.exports = {
                 var md5 = crypto.createHash('md5');
                 var mdPassword = md5.update(password).digest('base64');
                 res.cookie('authentication', {
-                    username: username,
-                    password: mdPassword
-                });
+                        username: username,
+                        password: mdPassword
+                    } 
+                );
 
                 //设置数据库中账户的密码加密值
-                db.query('update t_operator set identityCard="' + mdPassword + '" where name ="' + username + '"', function (err, result) {
+                db.query('update t_operator set md="' + mdPassword + '" where name ="' + username + '"', function (err, result) {
                     if (err) {
                         console.log('update md5值失败 ', err.message);
                     }
@@ -138,7 +139,7 @@ module.exports = {
     },
 
     autoLogin: function (req, res, next) { //自动登录——从cookie中读取用户名和密码以尝试登录，失败则显示登录窗口
-        console.log('auto')
+
         var successHandler,
             failHandler;
 
@@ -172,7 +173,7 @@ module.exports = {
 
         //尝试登录
         db.query(
-            'SELECT * FROM  t_operator where name ="' + username + '" and identityCard = "' + password + '"',
+            'SELECT * FROM  t_operator where name ="' + username + '" and md = "' + password + '"',
             function selectCb(err, results) {
                 if (err) {
                     console.log('select md5值失败', err.message);
