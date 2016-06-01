@@ -1500,32 +1500,13 @@ define(function (require, exports, module) {
     exports.init = function () {
         controller.component.addEventListener();
         controller.component.popLogin();
-        controller.page.switchPage('generateDispatch');  //默认页
-        thisPageName = 'generateDispatch';
+        controller.page.switchPage('index');  //默认页
+        thisPageName = 'index';
         window.location.hash = thisPageName;
         controller.tools.loadImg('../img/pop-mid.png', function () {
         });
         controller.tools.loadImg('../img/loading.gif', function () {
         });
-        // //基本地图加载
-        // var map = new AMap.Map("container", {
-        //     resizeEnable: true,
-        //     center: [116.397428, 39.90923],//地图中心点
-        //     zoom: 13 //地图显示的缩放级别
-        // });
-        // //构造路线导航类
-        // AMap.service(["AMap.Driving"], function () {
-        //     var driving = new AMap.Driving({
-        //         map: map,
-        //         panel: "panel"
-        //     });
-        //     // 根据起终点名称规划驾车导航路线
-        //     driving.search([
-        //         {keyword: '北京市地震局(公交站)'},
-        //         {keyword: '亦庄文化园(地铁站)'}
-        //     ]);
-        //
-        // });
 
     };
 })
