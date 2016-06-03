@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="">
+    <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="back zonggao">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/毕业论文.doc" afterPath="$PROJECT_DIR$/doc/毕业论文.doc" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/index.js" afterPath="$PROJECT_DIR$/public/js/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.jade" afterPath="$PROJECT_DIR$/views/index.jade" />
     </list>
     <ignored path="myapp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -203,7 +201,7 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1160" />
+    <option name="width" value="916" />
     <option name="height" value="738" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
@@ -231,7 +229,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -344,7 +342,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -487,7 +485,8 @@
       <workItem from="1463819336737" duration="6997000" />
       <workItem from="1464595849678" duration="79000" />
       <workItem from="1464620331813" duration="858000" />
-      <workItem from="1464805248424" duration="8000" />
+      <workItem from="1464805248424" duration="167000" />
+      <workItem from="1464942311810" duration="7000" />
     </task>
     <task id="LOCAL-00001" summary="testt">
       <created>1456843590927</created>
@@ -783,17 +782,24 @@
       <option name="project" value="LOCAL" />
       <updated>1464620355023</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="back zonggao">
+      <created>1464805289004</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1464805289004</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="134360000" />
+    <option name="totallyTimeSpent" value="134526000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1160" height="738" extended-state="0" />
-    <editor active="false" />
+    <frame x="0" y="0" width="916" height="738" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14514692" sideWeight="0.49425286" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14448236" sideWeight="0.49425286" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32454696" sideWeight="0.52760184" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19467402" sideWeight="0.50574714" order="2" side_tool="true" content_ui="tabs" />
@@ -871,7 +877,8 @@
     <MESSAGE value="黑白化前" />
     <MESSAGE value="back after heibaihua" />
     <MESSAGE value="back after geshihua" />
-    <option name="LAST_COMMIT_MESSAGE" value="back after geshihua" />
+    <MESSAGE value="back zonggao" />
+    <option name="LAST_COMMIT_MESSAGE" value="back zonggao" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
