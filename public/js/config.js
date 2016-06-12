@@ -147,6 +147,7 @@ define(function (require, exports, module) {
                 case '十四':return 14;
                 case '七':return 7;
                 case '二十四':return 24;
+                case '二':return 2;
             }
         }
     }
