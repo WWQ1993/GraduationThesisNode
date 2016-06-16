@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/毕业论文.doc" afterPath="$PROJECT_DIR$/doc/毕业论文.doc" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="myapp.iws" />
@@ -386,7 +385,7 @@
       <workItem from="1465056496544" duration="20000" />
       <workItem from="1465708963362" duration="1135000" />
       <workItem from="1465818048662" duration="2550000" />
-      <workItem from="1465977515796" duration="25000" />
+      <workItem from="1465977515796" duration="46000" />
     </task>
     <task id="LOCAL-00001" summary="testt">
       <created>1456843590927</created>
@@ -717,11 +716,18 @@
       <option name="project" value="LOCAL" />
       <updated>1465827057658</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="back doc终稿without fanyi&#10;">
+      <created>1465977543439</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1465977543439</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="138885000" />
+    <option name="totallyTimeSpent" value="138906000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1206" height="738" extended-state="0" />
