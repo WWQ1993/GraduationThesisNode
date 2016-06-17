@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b19eb0b5-2e63-47e5-b239-958d686c95d0" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/毕业论文.doc" afterPath="$PROJECT_DIR$/doc/毕业论文.doc" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="myapp.iws" />
@@ -124,7 +125,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -237,7 +238,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -386,6 +387,7 @@
       <workItem from="1465708963362" duration="1135000" />
       <workItem from="1465818048662" duration="2550000" />
       <workItem from="1465977515796" duration="46000" />
+      <workItem from="1466071656508" duration="37000" />
     </task>
     <task id="LOCAL-00001" summary="testt">
       <created>1456843590927</created>
@@ -727,10 +729,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="138906000" />
+    <option name="totallyTimeSpent" value="138943000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1206" height="738" extended-state="0" />
+    <frame x="0" y="0" width="1206" height="738" extended-state="1" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23011121" sideWeight="0.49425286" order="0" side_tool="false" content_ui="combo" />
@@ -863,13 +865,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Readme.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="18" column="48" selection-start-line="18" selection-start-column="48" selection-end-line="18" selection-end-column="48" />
         </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/img/pop-mid.png">
